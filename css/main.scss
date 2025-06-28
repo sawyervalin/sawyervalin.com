@@ -41,4 +41,11 @@ $theme-dark: #222;
 @import
         "mixins",
         "base"
+
+
 ;
+
+.email-text {
+  display: block;
+  margin-left: -10px; // or adjust value
+}
