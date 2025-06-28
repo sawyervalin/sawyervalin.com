@@ -34,8 +34,8 @@
 // }
 
 // variables.less
-$theme-primary: #F05F40;
-$theme-dark: #222;
+$theme-primary: #1276d4;
+$theme-dark: #b6b5b5;
 
 // Import partials from `sass_dir` (defaults to `_sass`)
 @import
@@ -47,5 +47,5 @@ $theme-dark: #222;
 
 .email-text {
   display: block;
-  margin-left: -20px; // or adjust value
+  margin-left: -40px; // or adjust value
 }
