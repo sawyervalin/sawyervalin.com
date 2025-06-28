@@ -44,19 +44,12 @@
 
     // Initialize WOW.js Scrolling Animations
     new WOW().init();
-
-})(jQuery); // End of use strict
-
-
-document.addEventListener("DOMContentLoaded", function () {
-  const btn = document.getElementById("scrollBtn");
-  if (btn) {
-    btn.addEventListener("click", function (e) {
-      e.preventDefault();
-      window.scrollTo({
-        top: document.body.scrollHeight,
-        behavior: "smooth"
-      });
+        
+    // Custom scroll-to-bottom behavior for #scrollBtn
+    $('#scrollBtn').on('click', function (e) {
+        e.preventDefault();
+        $('html, body').animate({
+            scrollTop: $(document).height()
+        }, 1000); // Duration: 1000ms
     });
-  }
-});
+})(jQuery); // End of use strict
