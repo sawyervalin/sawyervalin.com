@@ -5,7 +5,7 @@ description: Creative Technologist & Data Explorer
 baseurl: "" # the subpath of your site, e.g. /blog/
 url: "" # the base hostname & protocol for your site
 
-twitter_username:
+linkedin_username: sawyervalin
 github_username: sawyervalin
 
 # Build settings
