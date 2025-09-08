@@ -1,11 +1,14 @@
-<header>
-    <div class="header-content">
-        <div class="header-content-inner">
-            <h1>Hi I'm Sawyer Valin, nice to meet you!</h1>
-            <hr>
-            <p>Sawyer Valin - Informatics @ UCI | Data Science • IT Systems • Creative Engineering
-Currently building an AI-powered collectibles resale platform!</p>
-            <a href="#about" class="btn btn-primary btn-xl page-scroll">Find Out More</a>
-        </div>
+<header style="background-image: url('{{ page.header_image | default: "/img/newheader.jpg" }}'); background-size: cover; background-position: center; text-align: center; color: white; min-height: 100vh;">
+  <div class="header-content">
+    <div class="header-content-inner">
+      <h1>{{ page.title | default: "Hi I'm Sawyer Valin, nice to meet you!" }}</h1>
+      <hr>
+      <p>{{ page.subtitle | default: "Informatics @ UCI | Data Science • IT Systems • Creative Engineering<br>Currently building an AI-powered collectibles resale platform!" }}</p>
+      {% if page.url == "/" %}
+        <a href="#about" class="btn btn-primary btn-xl page-scroll">Find Out More</a>
+      {% else %}
+        <a href="/" class="btn btn-primary btn-xl">Back to Home</a>
+      {% endif %}
     </div>
+  </div>
 </header>
