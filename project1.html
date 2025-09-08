@@ -31,58 +31,103 @@ permalink: /project1/
   </div>
 </section>
 
+<!-- Load JSON and Generate Plotly Charts -->
 <script>
-async function fetchData(file) {
-  const res = await fetch(`/data/${file}`);
-  return await res.json();
-}
+  fetch('/assets/data/cleaned_ebay_orders.json')
+    .then(response => response.json())
+    .then(data => {
+      const salesOverTime = {};
+      const categoryTotals = {};
+      const priceCounts = [];
 
-async function renderCharts() {
-  const timeLabels = await fetchData('net_profit_time.json');
-  const profitValues = await fetchData('net_profit_values.json');
-  const itemTitles = await fetchData('item_titles.json');
-  const itemProfits = await fetchData('net_profits.json');
-  const topTitles = await fetchData('top_titles.json');
-  const topRevenue = await fetchData('top_revenue.json');
+      data.forEach(item => {
+        const date = item["Order Date"]?.split("T")[0];
+        const category = item["Category"] || "Unknown";
+        const price = parseFloat(item["Sold For"] || 0);
 
-  // Chart 1: Net Profit Over Time
-  Plotly.newPlot('net-profit-over-time', [{
-    x: timeLabels,
-    y: profitValues,
-    type: 'scatter',
-    mode: 'lines+markers',
-    marker: { color: 'blue' }
-  }], {
-    title: 'Net Profit Over Time',
-    xaxis: { title: 'Week' },
-    yaxis: { title: 'Net Profit ($)' }
-  });
+        if (date) {
+          salesOverTime[date] = (salesOverTime[date] || 0) + price;
+        }
 
-  // Chart 2: Top 10 Items by Revenue
-  Plotly.newPlot('top-items', [{
-    x: topRevenue,
-    y: topTitles,
-    type: 'bar',
-    orientation: 'h',
-    marker: { color: 'orange' }
-  }], {
-    title: 'Top 10 Items by Revenue',
-    xaxis: { title: 'Revenue ($)' },
-    yaxis: { automargin: true }
-  });
+        categoryTotals[category] = (categoryTotals[category] || 0) + price;
 
-  // Chart 3: Net Profit by Item
-  Plotly.newPlot('net-profit-items', [{
-    x: itemTitles,
-    y: itemProfits,
-    type: 'bar',
-    marker: { color: 'green' }
-  }], {
-    title: 'Net Profit by Item',
-    xaxis: { title: 'Item', tickangle: -45, automargin: true },
-    yaxis: { title: 'Net Profit ($)' }
-  });
-}
+        if (!isNaN(price)) {
+          priceCounts.push(price);
+        }
+      });
 
-renderCharts();
+      // 1. Line Chart: Sales Over Time
+      const trace1 = {
+        x: Object.keys(salesOverTime),
+        y: Object.values(salesOverTime),
+        type: 'scatter',
+        mode: 'lines+markers',
+        name: 'Sales',
+        line: { shape: 'spline' }
+      };
+
+      // 2. Bar Chart: Category Sales
+      const trace2 = {
+        x: Object.keys(categoryTotals),
+        y: Object.values(categoryTotals),
+        type: 'bar',
+        name: 'Category Sales',
+        marker: { color: '#009FFD' }
+      };
+
+      // 3. Histogram: Distribution of Sale Prices
+      const trace3 = {
+        x: priceCounts,
+        type: 'histogram',
+        xbins: {
+          size: 10
+        },
+        marker: { color: '#232528' },
+        name: 'Sale Price Distribution'
+      };
+
+      // Tabs & Containers
+      const tabs = [
+        { id: 'sales-chart', title: 'Sales Over Time', data: [trace1] },
+        { id: 'category-chart', title: 'Category Breakdown', data: [trace2] },
+        { id: 'histogram-chart', title: 'Sale Price Distribution', data: [trace3] }
+      ];
+
+      // Inject tab UI
+      const container = document.querySelector('.data-viz .container');
+      const tabNav = document.createElement('div');
+      tabNav.style.textAlign = 'center';
+      tabNav.style.marginBottom = '20px';
+
+      tabs.forEach((tab, i) => {
+        const btn = document.createElement('button');
+        btn.textContent = tab.title;
+        btn.style.margin = '0 10px';
+        btn.className = 'btn btn-default';
+        btn.onclick = () => {
+          tabs.forEach((t, j) => {
+            document.getElementById(t.id).style.display = j === i ? 'block' : 'none';
+          });
+        };
+        tabNav.appendChild(btn);
+      });
+
+      container.insertBefore(tabNav, container.children[1]);
+
+      // Create all chart containers
+      tabs.forEach((tab, i) => {
+        const div = document.createElement('div');
+        div.id = tab.id;
+        div.style.width = '100%';
+        div.style.maxWidth = '900px';
+        div.style.height = '500px';
+        div.style.margin = 'auto';
+        div.style.display = i === 0 ? 'block' : 'none';
+        container.appendChild(div);
+        Plotly.newPlot(tab.id, tab.data, { title: tab.title });
+      });
+    })
+    .catch(error => {
+      console.error('Error loading JSON:', error);
+    });
 </script>
