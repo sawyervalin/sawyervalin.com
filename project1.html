@@ -62,6 +62,17 @@ permalink: /project1/
   #project-journal p{ margin:.5rem 0; line-height:1.65; }
 </style>
 
+<style>
+  /* tighten the handoff from Journal → Dashboard */
+  #project-journal { margin-bottom: 8px; }
+  #project-journal .container { padding-bottom: 0; }
+  #project-journal p:last-child { margin-bottom: 0; }
+
+  .section-tight + .data-viz { margin-top: 8px; }       /* shrink section gap */
+  .data-viz { padding-top: 0; margin-top: 0; }
+  .data-viz .container { padding-top: 0; }
+  .data-viz h2 { margin-top: 0; margin-bottom: 8px; }   /* kill top margin on the heading */
+</style>
 
 <!-- Plotly JS -->
 <section class="data-viz">
