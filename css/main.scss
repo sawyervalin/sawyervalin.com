@@ -38,19 +38,20 @@ $theme-primary: #009FFD;
 $theme-dark: #232528;
 
 // Import partials from `sass_dir` (defaults to `_sass`)
-@import
-        "mixins",
-        "base"
+@import "mixins","base";
 
 
-;
-
+// Custom styles
 .email-text {
   display: block;
   margin-left: -40px; // or adjust value
-}        
+}
+
 .project-header h1,
 .project-header p {
-  color: rgba(0, 0, 0, 0.85); // or pure black: #000;
+  font-size: 18px;
+  font-weight: 500;
+  margin-top: 5px;
+  color: rgba(0, 0, 0, 0.85); // or use #000 for full black
   text-shadow: 1px 1px 2px white; // optional for readability
 }
