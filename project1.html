@@ -16,54 +16,18 @@ permalink: /project1/
 <!-- Plotly JS -->
 <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
 
-<style>
-  .viz-wrap { max-width: 1100px; margin: 0 auto; }
-  .controls { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; margin: 10px 0 20px; }
-  .controls label { font-weight: 600; margin-right: 6px; }
-  .controls select, .controls button, .controls input[type="checkbox"] { padding: 6px 10px; }
-  .chart { width: 100%; height: 520px; }
-</style>
-
-<section class="data-viz">
-  <div class="container viz-wrap">
-    <h2>Collectible Sales Overview</h2>
-
-    <div class="controls">
-      <label for="franchise">Franchise</label>
-      <select id="franchise">
-        <option value="All">All</option>
-      </select>
-
-      <label for="grouping">Date grouping</label>
-      <select id="grouping">
-        <option value="day">Daily</option>
-        <option value="week">Weekly</option>
-        <option value="month">Monthly</option>
-      </select>
-
-      <label>
-        <input type="checkbox" id="toggleRolling" checked>
-        Show 7-period rolling averages
-      </label>
-
-      <button id="btnOverview">Revenue and Items Over Time</button>
-      <button id="btnProfitSpread">Profit Spread and Histogram</button>
-      <button id="btnComponents">Sold vs Shipping vs Tax</button>
-      <button id="btnScatter">Price vs Profit</button>
-    </div>
-
-    <div id="chart" class="chart"></div>
-  </div>
-</section>
-
 <script>
-  // Helper: parse float safely
+  // 1) Config: where is your JSON
+  const DATA_URL = "{{ '/assets/data/cleaned_ebay_orders.json' | relative_url }}";
+  // If you kept a separate bundles file instead, point to it:
+  // const DATA_URL = "{{ '/assets/data/cleaned_ebay_orders_bundles_resolved.json' | relative_url }}";
+
+  // 2) Helpers
   const num = v => {
     const x = parseFloat(v);
     return Number.isFinite(x) ? x : 0;
   };
 
-  // Simple franchise extractor from item title
   function getFranchise(title) {
     if (!title) return "Unknown";
     const t = title.toLowerCase();
@@ -77,7 +41,6 @@ permalink: /project1/
     return "Other";
   }
 
-  // Rolling average
   function rolling(arr, win=7) {
     const out = [];
     let sum = 0;
@@ -89,9 +52,66 @@ permalink: /project1/
     return out;
   }
 
-  // Group by day, week, or month
+  // 3) Client side bundle guard
+  // If a row has empty title and Quantity >= 2, treat it as a header and allocate its totals to next N rows
+  function resolveBundlesClientSide(rows) {
+    const out = [];
+    let i = 0;
+    let bundleId = 1;
+
+    const get = (obj, k) => obj && obj[k] != null ? obj[k] : null;
+
+    while (i < rows.length) {
+      const r = rows[i];
+      const title = get(r, "Item Title");
+      const qty = parseInt(get(r, "Quantity") || 1, 10);
+      const isHeader = (!title || String(title).trim() === "") && qty >= 2;
+
+      if (isHeader) {
+        const q = qty;
+        const comps = rows.slice(i + 1, i + 1 + q);
+        const soldSum = comps.reduce((s, c) => s + num(c["Sold For"]), 0);
+        const weights = soldSum > 0
+          ? comps.map(c => num(c["Sold For"]) / soldSum)
+          : comps.map(() => 1 / Math.max(1, comps.length));
+
+        comps.forEach((c, idx) => {
+          const copy = { ...c };
+          copy["Quantity"] = 1;
+          ["Shipping And Handling","eBay Collected Tax","Total Price","Revenue","Gross Profit","Net Profit"].forEach(col => {
+            const compVal = num(copy[col]);
+            const headVal = num(r[col]);
+            if (!compVal && headVal) copy[col] = headVal * weights[idx];
+          });
+          if (!num(copy["Sold For"]) && num(r["Sold For"])) {
+            copy["Sold For"] = num(r["Sold For"]) * weights[idx];
+          }
+          if ((!copy["Sale Date"] || copy["Sale Date"] === "") && r["Sale Date"]) {
+            copy["Sale Date"] = r["Sale Date"];
+          }
+          copy["Bundle Flag"] = copy["Bundle Flag"] || "FromHeader";
+          copy["Bundle ID"] = copy["Bundle ID"] || `B${bundleId}`;
+          copy["Bundle Size"] = copy["Bundle Size"] || q;
+          out.push(copy);
+        });
+
+        i += 1 + comps.length;
+        bundleId += 1;
+      } else {
+        const copy = { ...r };
+        copy["Bundle Flag"] = copy["Bundle Flag"] || "SingleOrOriginal";
+        copy["Bundle ID"] = copy["Bundle ID"] || null;
+        copy["Bundle Size"] = copy["Bundle Size"] || 1;
+        out.push(copy);
+        i += 1;
+      }
+    }
+    return out;
+  }
+
+  // 4) Grouping helpers
   function groupDates(rows, mode) {
-    const fmt = d => {
+    function fmtKey(d) {
       const dt = new Date(d);
       if (mode === "month") {
         return `${dt.getFullYear()}-${String(dt.getMonth() + 1).padStart(2,"0")}`;
@@ -104,31 +124,33 @@ permalink: /project1/
         const weekNo = Math.ceil((((tmp - yearStart) / 86400000) + 1) / 7);
         return `${tmp.getUTCFullYear()}-W${String(weekNo).padStart(2,"0")}`;
       }
-      // default daily
-      return d.split("T")[0] || d;
-    };
+      return dt.toISOString().slice(0,10);
+    }
 
     const map = new Map();
     rows.forEach(r => {
-      const key = fmt(r.saleDateISO);
-      const cur = map.get(key) || { revenue: 0, qty: 0, profit: 0 };
-      cur.revenue += r.revenue;
+      const k = fmtKey(r.saleDateISO);
+      const cur = map.get(k) || { rev: 0, qty: 0, prof: 0 };
+      cur.rev += r.revenue;
       cur.qty += r.qty;
-      cur.profit += r.netProfit;
-      map.set(key, cur);
+      cur.prof += r.netProfit;
+      map.set(k, cur);
     });
 
-    const keys = Array.from(map.keys()).sort((a, b) => a.localeCompare(b));
-    const revenue = keys.map(k => map.get(k).revenue);
-    const qty = keys.map(k => map.get(k).qty);
-    const profit = keys.map(k => map.get(k).profit);
-    return { keys, revenue, qty, profit };
+    const keys = Array.from(map.keys()).sort((a,b) => a.localeCompare(b));
+    return {
+      keys,
+      revenue: keys.map(k => map.get(k).rev),
+      qty: keys.map(k => map.get(k).qty),
+      profit: keys.map(k => map.get(k).prof)
+    };
   }
 
+  // 5) Plot makers
   function makeOverview(dates, revenue, qty, showRolling) {
     const traces = [
       { x: dates, y: revenue, type: "scatter", mode: "lines+markers", name: "Revenue", yaxis: "y1" },
-      { x: dates, y: qty, type: "bar", name: "Items sold", yaxis: "y2", opacity: 0.5 }
+      { x: dates, y: qty, type: "bar", name: "Items", yaxis: "y2", opacity: 0.5 }
     ];
     if (showRolling) {
       traces.push({ x: dates, y: rolling(revenue, 7), type: "scatter", mode: "lines", name: "Revenue rolling", yaxis: "y1" });
@@ -152,6 +174,10 @@ permalink: /project1/
       { y: profits, type: "box", name: "Net profit per sale", boxpoints: "outliers", orientation: "v" },
       { x: profits, type: "histogram", name: "Histogram", xbins: { size: 10 }, opacity: 0.6 }
     ];
+    traces[0].xaxis = "x";
+    traces[0].yaxis = "y";
+    traces[1].xaxis = "x2";
+    traces[1].yaxis = "y2";
     const layout = {
       title: "Profit spread and histogram",
       grid: { rows: 1, columns: 2, pattern: "independent" },
@@ -160,11 +186,6 @@ permalink: /project1/
       xaxis2: { title: "Net profit" },
       yaxis2: { title: "Count" }
     };
-    // Place box on left, histogram on right
-    traces[0].xaxis = "x";
-    traces[0].yaxis = "y";
-    traces[1].xaxis = "x2";
-    traces[1].yaxis = "y2";
     Plotly.newPlot("chart", traces, layout, {responsive: true});
   }
 
@@ -172,7 +193,7 @@ permalink: /project1/
     const sold = rows.reduce((s, r) => s + r.soldFor, 0);
     const ship = rows.reduce((s, r) => s + r.shipping, 0);
     const tax  = rows.reduce((s, r) => s + r.tax, 0);
-    const traces = [{ x: ["Sold For", "Shipping", "Tax"], y: [sold, ship, tax], type: "bar", name: "Totals" }];
+    const traces = [{ x: ["Sold For","Shipping","Tax"], y: [sold, ship, tax], type: "bar", name: "Totals" }];
     const layout = { title: "Sold price vs shipping vs tax", yaxis: { rangemode: "tozero", title: "Total dollars" } };
     Plotly.newPlot("chart", traces, layout, {responsive: true});
   }
@@ -181,68 +202,156 @@ permalink: /project1/
     const x = rows.map(r => r.soldFor);
     const y = rows.map(r => r.netProfit);
     const text = rows.map(r => r.title);
-    const traces = [{ x, y, text, mode: "markers", type: "scatter", name: "Items", hovertemplate: "%{text}<br>Sold %{x:$,.2f}<br>Profit %{y:$,.2f}<extra></extra>" }];
+    const traces = [{
+      x, y, text, mode: "markers", type: "scatter",
+      name: "Items",
+      hovertemplate: "%{text}<br>Sold %{x:$,.2f}<br>Profit %{y:$,.2f}<extra></extra>"
+    }];
     const layout = { title: "Sold price vs net profit", xaxis: { title: "Sold price" }, yaxis: { title: "Net profit" } };
     Plotly.newPlot("chart", traces, layout, {responsive: true});
   }
 
-  // Load and render
-  fetch("{{ '/assets/data/cleaned_ebay_orders.json' | relative_url }}")
-    .then(r => r.json())
-    .then(data => {
-      // Normalize rows
-      const rows = data
-        .filter(d => d["Sale Date"])
-        .map(d => ({
+  // 6) UI wiring
+  function hydrateControls(rows) {
+    const sel = document.getElementById("franchise");
+    const uniques = Array.from(new Set(rows.map(r => r.franchise))).sort();
+    uniques.forEach(f => {
+      const opt = document.createElement("option");
+      opt.value = f; opt.textContent = f;
+      sel.appendChild(opt);
+    });
+  }
+
+  function applyFilters(baseRows) {
+    const fSel = document.getElementById("franchise").value;
+    const bSel = document.getElementById("bundleView").value; // All, Components only, Singles only
+    return baseRows.filter(r => {
+      const okF = fSel === "All" ? true : r.franchise === fSel;
+      const flag = r.bundleFlag || r["Bundle Flag"];
+      const isComp = flag === "FromHeader";
+      const isSingle = flag === "SingleOrOriginal" || !flag;
+      const okB =
+        bSel === "All" ? true :
+        bSel === "Components" ? isComp :
+        bSel === "Singles" ? isSingle : true;
+      return okF && okB;
+    });
+  }
+
+  function renderOverviewFlow(rows) {
+    const showRolling = document.getElementById("toggleRolling").checked;
+    const grouping = document.getElementById("grouping").value;
+    const g = groupDates(rows, grouping);
+    makeOverview(g.keys, g.revenue, g.qty, showRolling);
+  }
+
+  // 7) Bootstrap
+  document.addEventListener("DOMContentLoaded", () => {
+    fetch(DATA_URL)
+      .then(r => r.json())
+      .then(raw => {
+        // Normalize keys, resolve bundles if needed
+        let rows = raw.map(d => ({
           title: d["Item Title"] || "",
           franchise: getFranchise(d["Item Title"] || ""),
-          saleDateISO: new Date(d["Sale Date"]).toISOString(),
+          saleDateISO: d["Sale Date"] ? new Date(d["Sale Date"]).toISOString() : null,
           revenue: num(d["Revenue"]),
           netProfit: num(d["Net Profit"]),
           soldFor: num(d["Sold For"]),
           shipping: num(d["Shipping And Handling"]),
           tax: num(d["eBay Collected Tax"]),
-          qty: num(d["Quantity"] || 1)
-        }));
+          qty: num(d["Quantity"] || 1),
+          bundleFlag: d["Bundle Flag"] || null,
+          bundleId: d["Bundle ID"] || null,
+          bundleSize: d["Bundle Size"] || 1
+        })).filter(r => r.saleDateISO);
 
-      // Populate franchise filter
-      const uniqueFranchises = Array.from(new Set(rows.map(r => r.franchise))).sort();
-      const sel = document.getElementById("franchise");
-      uniqueFranchises.forEach(f => {
-        const opt = document.createElement("option");
-        opt.value = f; opt.textContent = f;
-        sel.appendChild(opt);
+        // If any empty title headers exist, fix in browser
+        const hasHeaders = raw.some(d => (!d["Item Title"] || String(d["Item Title"]).trim() === "") && num(d["Quantity"]) >= 2);
+        if (hasHeaders) {
+          // Convert back to the original shape before running the resolver
+          const back = raw.map(d => ({ ...d }));
+          rows = resolveBundlesClientSide(back).map(d => ({
+            title: d["Item Title"] || "",
+            franchise: getFranchise(d["Item Title"] || ""),
+            saleDateISO: d["Sale Date"] ? new Date(d["Sale Date"]).toISOString() : null,
+            revenue: num(d["Revenue"]),
+            netProfit: num(d["Net Profit"]),
+            soldFor: num(d["Sold For"]),
+            shipping: num(d["Shipping And Handling"]),
+            tax: num(d["eBay Collected Tax"]),
+            qty: 1,
+            bundleFlag: d["Bundle Flag"] || null,
+            bundleId: d["Bundle ID"] || null,
+            bundleSize: d["Bundle Size"] || 1
+          })).filter(r => r.saleDateISO);
+        }
+
+        // Build controls if not already present
+        const container = document.querySelector('.data-viz .viz-wrap') || document.querySelector('.data-viz .container');
+        if (!document.getElementById("controls-mounted")) {
+          const controls = document.createElement("div");
+          controls.id = "controls-mounted";
+          controls.className = "controls";
+          controls.innerHTML = `
+            <label for="franchise">Franchise</label>
+            <select id="franchise"><option value="All">All</option></select>
+
+            <label for="grouping">Date grouping</label>
+            <select id="grouping">
+              <option value="day">Daily</option>
+              <option value="week">Weekly</option>
+              <option value="month">Monthly</option>
+            </select>
+
+            <label><input type="checkbox" id="toggleRolling" checked> Show 7 period rolling averages</label>
+
+            <label for="bundleView">Rows</label>
+            <select id="bundleView">
+              <option value="All">All</option>
+              <option value="Components">Components only</option>
+              <option value="Singles">Singles only</option>
+            </select>
+
+            <button id="btnOverview">Revenue and Items</button>
+            <button id="btnProfitSpread">Profit Spread</button>
+            <button id="btnComponents">Sold vs Ship vs Tax</button>
+            <button id="btnScatter">Price vs Profit</button>
+          `;
+          container.prepend(controls);
+          const chartDiv = document.createElement("div");
+          chartDiv.id = "chart";
+          chartDiv.className = "chart";
+          container.appendChild(chartDiv);
+        }
+
+        hydrateControls(rows);
+
+        function currentRows() { return applyFilters(rows); }
+
+        function renderOverview() { renderOverviewFlow(currentRows()); }
+        function renderSpread()   { makeProfitSpread(currentRows()); }
+        function renderComp()     { makeComponents(currentRows()); }
+        function renderScatter()  { makeScatter(currentRows()); }
+
+        // Initial view
+        renderOverview();
+
+        // Wire events
+        document.getElementById("franchise").addEventListener("change", renderOverview);
+        document.getElementById("grouping").addEventListener("change", renderOverview);
+        document.getElementById("toggleRolling").addEventListener("change", renderOverview);
+        document.getElementById("bundleView").addEventListener("change", renderOverview);
+
+        document.getElementById("btnOverview").addEventListener("click", renderOverview);
+        document.getElementById("btnProfitSpread").addEventListener("click", renderSpread);
+        document.getElementById("btnComponents").addEventListener("click", renderComp);
+        document.getElementById("btnScatter").addEventListener("click", renderScatter);
+      })
+      .catch(err => {
+        console.error("Error loading JSON", err);
+        const el = document.getElementById("chart");
+        if (el) el.innerHTML = "<p>Could not load data. Make sure your JSON exists at assets/data/ and has correct keys.</p>";
       });
-
-      const grouping = document.getElementById("grouping");
-      const toggleRolling = document.getElementById("toggleRolling");
-
-      function filtered() {
-        const f = sel.value;
-        return f === "All" ? rows : rows.filter(r => r.franchise === f);
-      }
-
-      function renderOverview() {
-        const g = groupDates(filtered(), grouping.value);
-        makeOverview(g.keys, g.revenue, g.qty, toggleRolling.checked);
-      }
-
-      // Initial view
-      renderOverview();
-
-      // Controls behavior
-      sel.addEventListener("change", renderOverview);
-      grouping.addEventListener("change", renderOverview);
-      toggleRolling.addEventListener("change", renderOverview);
-
-      document.getElementById("btnOverview").addEventListener("click", renderOverview);
-      document.getElementById("btnProfitSpread").addEventListener("click", () => makeProfitSpread(filtered()));
-      document.getElementById("btnComponents").addEventListener("click", () => makeComponents(filtered()));
-      document.getElementById("btnScatter").addEventListener("click", () => makeScatter(filtered()));
-    })
-    .catch(err => {
-      console.error("Error loading JSON", err);
-      const el = document.getElementById("chart");
-      el.innerHTML = "<p>Could not load data. Make sure cleaned_ebay_orders.json is in /assets/data/.</p>";
-    });
+  });
 </script>
