@@ -1,4 +1,6 @@
-<header style="background-image: url('{{ page.header_image | default: "/img/newheader.jpg" }}'); background-size: cover; background-position: center; text-align: center; color: white; min-height: 100vh;">
+<header
+  class="{% unless page.url == '/' %}project-header{% endunless %}"
+  style="background-image: url('{{ page.header_image | default: "/img/newheader.jpg" }}'); background-size: cover; background-position: center; text-align: center; color: white; min-height: 100vh;">
   <div class="header-content">
     <div class="header-content-inner">
       <h1>{{ page.title | default: "Hi I'm Sawyer Valin, nice to meet you!" }}</h1>
