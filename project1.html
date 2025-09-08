@@ -5,13 +5,78 @@ subtitle: Tracking and analyzing collectibles using data dashboards
 header_image: /img/project1.jpg
 permalink: /project1/
 ---
-
 <section>
   <div class="container">
     <h2>About This Project</h2>
     <p>This project tracks and analyzes sales of collectibles using barcode scanning, Sheets, APIs, and Python tools.</p>
   </div>
 </section>
+
+<style>
+  .controls {
+    display: flex;
+    gap: 8px;
+    align-items: center;
+    flex-wrap: nowrap;
+    overflow-x: auto;
+    white-space: nowrap;
+    margin: 10px 0 20px;
+  }
+  .controls label, .controls select, .controls button { margin: 0; }
+  .chart { width: 100%; height: 520px; border: 1px solid rgba(0,0,0,.08); border-radius: 10px; }
+</style>
+
+<section class="data-viz">
+  <div class="container" style="max-width:1100px;margin:0 auto">
+    <h2>Interactive Dashboard</h2>
+    <div id="viz-status" style="margin:10px 0;font-weight:600;"></div>
+
+    <div class="controls">
+      <label>Franchise
+        <select id="franchise">
+          <option value="All">All</option>
+        </select>
+      </label>
+
+      <label>Date grouping
+        <select id="grouping">
+          <option value="day">Daily</option>
+          <option value="week">Weekly</option>
+          <option value="month">Monthly</option>
+        </select>
+      </label>
+
+      <label><input type="checkbox" id="toggleRolling" checked> Show 7 period rolling averages</label>
+
+      <label>Rows
+        <select id="bundleView">
+          <option value="All">All</option>
+          <option value="Components">Components only</option>
+          <option value="Singles">Singles only</option>
+        </select>
+      </label>
+
+      <!-- new: outlier and focus controls -->
+      <label><input type="checkbox" id="excludeOutliers"> Exclude outliers</label>
+      <select id="outlierPct" title="percentile cutoff">
+        <option value="0.95">95th pct</option>
+        <option value="0.98" selected>98th pct</option>
+        <option value="0.99">99th pct</option>
+      </select>
+
+      <label><input type="checkbox" id="focusSmall"> Focus small values</label>
+
+      <button id="btnOverview">Revenue and Items</button>
+      <button id="btnProfitSpread">Profit Spread</button>
+      <button id="btnComponents">Sold vs Ship vs Tax</button>
+      <button id="btnScatter">Price vs Profit</button>
+    </div>
+
+    <div id="chart" class="chart"></div>
+  </div>
+</section>
+
+<script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
 
 <section class="data-viz">
   <div class="container" id="viz-root" style="max-width:1100px;margin:0 auto">
@@ -44,6 +109,16 @@ permalink: /project1/
         </select>
       </label>
 
+      <label><input type="checkbox" id="excludeOutliers"> Exclude outliers</label>
+      <select id="outlierPct" title="percentile cutoff">
+        <option value="0.95">95th pct</option>
+        <option value="0.98" selected>98th pct</option>
+        <option value="0.99">99th pct</option>
+      </select>
+
+<label><input type="checkbox" id="focusSmall"> Focus small price and profit</label>
+
+      
       <button id="btnOverview">Revenue and Items</button>
       <button id="btnProfitSpread">Profit Spread</button>
       <button id="btnComponents">Sold vs Ship vs Tax</button>
@@ -60,72 +135,79 @@ permalink: /project1/
 
 <script>
 (function(){
-  const STATUS = document.getElementById('viz-status');
-  function say(msg){ STATUS.textContent = msg; }
-
-  // Adjust this if you kept a separate file name
   const DATA_URL = "{{ '/assets/data/cleaned_ebay_orders.json' | relative_url }}";
+  const STATUS = document.getElementById('viz-status');
+  const say = msg => STATUS.textContent = msg || '';
 
   const num = v => {
     const x = parseFloat(v);
     return Number.isFinite(x) ? x : 0;
   };
 
-  function getFranchise(title) {
-    if (!title) return "Unknown";
+  function getFranchise(title){
+    if(!title) return "Unknown";
     const t = title.toLowerCase();
-    if (t.includes("batman")) return "Batman";
-    if (t.includes("peanuts")) return "Peanuts";
-    if (t.includes("star trek")) return "Star Trek";
-    if (t.includes("star wars")) return "Star Wars";
-    if (t.includes("x-men")) return "X-Men";
-    if (t.includes("superman")) return "Superman";
-    if (t.includes("buffy")) return "Buffy";
+    if(t.includes("batman")) return "Batman";
+    if(t.includes("peanuts")) return "Peanuts";
+    if(t.includes("star trek")) return "Star Trek";
+    if(t.includes("star wars")) return "Star Wars";
+    if(t.includes("x-men")) return "X-Men";
+    if(t.includes("superman")) return "Superman";
+    if(t.includes("buffy")) return "Buffy";
     return "Other";
   }
 
-  function rolling(arr, win=7){
-    const out=[], n=arr.length; let s=0;
-    for(let i=0;i<n;i++){ s+=arr[i]; if(i>=win) s-=arr[i-win]; out.push(i>=win-1? s/win : s/(i+1)); }
-    return out;
+  function percentile(arr, p){
+    const a = arr.slice().filter(Number.isFinite).sort((x,y)=>x-y);
+    if(!a.length) return 0;
+    const idx = (a.length - 1) * p;
+    const lo = Math.floor(idx), hi = Math.ceil(idx);
+    if(lo === hi) return a[lo];
+    const w = idx - lo;
+    return a[lo]*(1-w) + a[hi]*w;
   }
 
-  // Client guard for raw bundle headers
+  // Optional guard if a raw file with bundle headers slips in
   function resolveBundlesClientSide(rows){
-    const out=[], get=(o,k)=>o && o[k]!=null? o[k]:null;
-    let i=0, bundleId=1;
-    while(i<rows.length){
-      const r=rows[i];
-      const title=get(r,"Item Title");
-      const qty=parseInt(get(r,"Quantity")||1,10);
-      const isHeader=(!title || String(title).trim()==="") && qty>=2;
+    const out = [];
+    let i = 0, bundleId = 1;
+    const get = (o,k) => o && o[k] != null ? o[k] : null;
+
+    while(i < rows.length){
+      const r = rows[i];
+      const title = get(r, "Item Title");
+      const qty = parseInt(get(r,"Quantity") || 1, 10);
+      const isHeader = (!title || String(title).trim() === "") && qty >= 2;
+
       if(isHeader){
-        const q=qty;
-        const comps=rows.slice(i+1, i+1+q);
-        const soldSum=comps.reduce((s,c)=>s+num(c["Sold For"]),0);
-        const weights=soldSum>0? comps.map(c=>num(c["Sold For"])/soldSum)
-                                : comps.map(()=>1/Math.max(1, comps.length));
-        comps.forEach((c,idx)=>{
-          const copy={...c};
-          copy["Quantity"]=1;
+        const comps = rows.slice(i+1, i+1+qty);
+        const soldSum = comps.reduce((s,c)=>s+num(c["Sold For"]),0);
+        const weights = soldSum > 0 ? comps.map(c=>num(c["Sold For"])/soldSum)
+                                    : comps.map(()=>1/Math.max(1, comps.length));
+        comps.forEach((c, idx)=>{
+          const copy = { ...c };
+          copy["Quantity"] = 1;
           ["Shipping And Handling","eBay Collected Tax","Total Price","Revenue","Gross Profit","Net Profit"].forEach(col=>{
-            const compVal=num(copy[col]), headVal=num(r[col]);
-            if(!compVal && headVal) copy[col]=headVal*weights[idx];
+            const compVal = num(copy[col]);
+            const headVal = num(r[col]);
+            if(!compVal && headVal) copy[col] = headVal * weights[idx];
           });
-          if(!num(copy["Sold For"]) && num(r["Sold For"])) copy["Sold For"]=num(r["Sold For"])*weights[idx];
-          if((!copy["Sale Date"] || copy["Sale Date"]==="") && r["Sale Date"]) copy["Sale Date"]=r["Sale Date"];
-          copy["Bundle Flag"]=copy["Bundle Flag"]||"FromHeader";
-          copy["Bundle ID"]=copy["Bundle ID"]||`B${bundleId}`;
-          copy["Bundle Size"]=copy["Bundle Size"]||q;
+          if(!num(copy["Sold For"]) && num(r["Sold For"])) copy["Sold For"] = num(r["Sold For"]) * weights[idx];
+          if((!copy["Sale Date"] || copy["Sale Date"] === "") && r["Sale Date"]) copy["Sale Date"] = r["Sale Date"];
+          copy["Bundle Flag"] = copy["Bundle Flag"] || "FromHeader";
+          copy["Bundle ID"] = copy["Bundle ID"] || `B${bundleId}`;
+          copy["Bundle Size"] = copy["Bundle Size"] || qty;
           out.push(copy);
         });
-        i+=1+comps.length; bundleId+=1;
+        i += 1 + comps.length;
+        bundleId += 1;
       } else {
-        const copy={...r};
-        copy["Bundle Flag"]=copy["Bundle Flag"]||"SingleOrOriginal";
-        copy["Bundle ID"]=copy["Bundle ID"]||null;
-        copy["Bundle Size"]=copy["Bundle Size"]||1;
-        out.push(copy); i+=1;
+        const copy = { ...r };
+        copy["Bundle Flag"] = copy["Bundle Flag"] || "SingleOrOriginal";
+        copy["Bundle ID"] = copy["Bundle ID"] || null;
+        copy["Bundle Size"] = copy["Bundle Size"] || 1;
+        out.push(copy);
+        i += 1;
       }
     }
     return out;
@@ -133,37 +215,47 @@ permalink: /project1/
 
   function groupDates(rows, mode){
     function key(d){
-      const dt=new Date(d);
-      if(mode==="month") return `${dt.getFullYear()}-${String(dt.getMonth()+1).padStart(2,"0")}`;
-      if(mode==="week"){
-        const tmp=new Date(Date.UTC(dt.getFullYear(), dt.getMonth(), dt.getDate()));
-        const day=tmp.getUTCDay()||7; tmp.setUTCDate(tmp.getUTCDate()+4-day);
-        const start=new Date(Date.UTC(tmp.getUTCFullYear(),0,1));
-        const week=Math.ceil((((tmp-start)/86400000)+1)/7);
+      const dt = new Date(d);
+      if(mode === "month") return `${dt.getFullYear()}-${String(dt.getMonth()+1).padStart(2,"0")}`;
+      if(mode === "week"){
+        const tmp = new Date(Date.UTC(dt.getFullYear(), dt.getMonth(), dt.getDate()));
+        const day = tmp.getUTCDay() || 7;
+        tmp.setUTCDate(tmp.getUTCDate() + 4 - day);
+        const start = new Date(Date.UTC(tmp.getUTCFullYear(),0,1));
+        const week = Math.ceil((((tmp - start)/86400000) + 1)/7);
         return `${tmp.getUTCFullYear()}-W${String(week).padStart(2,"0")}`;
       }
       return dt.toISOString().slice(0,10);
     }
-    const m=new Map();
+    const m = new Map();
     rows.forEach(r=>{
-      const k=key(r.saleDateISO);
-      const cur=m.get(k)||{rev:0,qty:0,prof:0};
-      cur.rev+=r.revenue; cur.qty+=r.qty; cur.prof+=r.netProfit; m.set(k,cur);
+      const k = key(r.saleDateISO);
+      const cur = m.get(k) || { rev:0, qty:0, prof:0 };
+      cur.rev += r.revenue;
+      cur.qty += r.qty;
+      cur.prof += r.netProfit;
+      m.set(k, cur);
     });
-    const keys=[...m.keys()].sort((a,b)=>a.localeCompare(b));
+    const keys = [...m.keys()].sort((a,b)=>a.localeCompare(b));
     return { keys, revenue: keys.map(k=>m.get(k).rev), qty: keys.map(k=>m.get(k).qty), profit: keys.map(k=>m.get(k).prof) };
   }
 
-  function makeOverview(dates, revenue, qty, showRolling){
-    const traces=[
+  // dynamic axis helper for focus mode
+  function smartRange(values, pct=0.9){
+    const top = percentile(values, pct);
+    return [0, top || Math.max(...values, 10)];
+  }
+
+  function makeOverview(dates, revenue, qty, showRolling, focusSmall){
+    const traces = [
       { x:dates, y:revenue, type:"scatter", mode:"lines+markers", name:"Revenue", yaxis:"y1" },
-      { x:dates, y:qty,     type:"bar",     name:"Items",  yaxis:"y2", opacity:0.5 }
+      { x:dates, y:qty,     type:"bar",     name:"Items", yaxis:"y2", opacity:0.5 }
     ];
     if(showRolling){
-      traces.push({ x:dates, y:rolling(revenue,7), type:"scatter", mode:"lines", name:"Revenue rolling", yaxis:"y1" });
-      traces.push({ x:dates, y:rolling(qty,7),     type:"scatter", mode:"lines", name:"Items rolling",  yaxis:"y2" });
+      traces.push({ x:dates, y:revenue.length? rolling(revenue,7):[], type:"scatter", mode:"lines", name:"Revenue rolling", yaxis:"y1" });
+      traces.push({ x:dates, y:qty.length? rolling(qty,7):[],         type:"scatter", mode:"lines", name:"Items rolling",  yaxis:"y2" });
     }
-    Plotly.newPlot("chart", traces, {
+    const layout = {
       title:"Revenue and items over time",
       barmode:"overlay",
       xaxis:{title:"Date"},
@@ -171,70 +263,131 @@ permalink: /project1/
       yaxis2:{title:"Items",  rangemode:"tozero", overlaying:"y", side:"right"},
       legend:{orientation:"h"},
       margin:{t:50,r:40,l:60,b:60}
-    }, {responsive:true});
+    };
+    if(focusSmall){
+      layout.yaxis.range = smartRange(revenue, 0.9);
+      layout.yaxis2.range = smartRange(qty, 0.95);
+    }
+    Plotly.newPlot("chart", traces, layout, {responsive:true});
   }
+
   function makeProfitSpread(rows){
-    const profits=rows.map(r=>r.netProfit).filter(v=>Number.isFinite(v));
-    Plotly.newPlot("chart", [
-      { y:profits, type:"box", name:"Net profit per sale", boxpoints:"outliers", orientation:"v" },
-      { x:profits, type:"histogram", name:"Histogram", xbins:{size:10}, opacity:0.6, xaxis:"x2", yaxis:"y2" }
-    ], {
+    const profits = rows.map(r=>r.netProfit).filter(Number.isFinite);
+    const layout = {
       title:"Profit spread and histogram",
       grid:{rows:1, columns:2, pattern:"independent"},
-      xaxis:{title:"Net profit"}, yaxis:{title:"Count"},
-      xaxis2:{title:"Net profit"}, yaxis2:{title:"Count"}
-    }, {responsive:true});
+      xaxis:{title:"Net profit"},
+      yaxis:{title:"Count"},
+      xaxis2:{title:"Net profit"},
+      yaxis2:{title:"Count"}
+    };
+    if(rows.__focusSmall) {
+      const r = smartRange(profits, 0.9);
+      layout.xaxis.range = r;
+      layout.xaxis2.range = r;
+    }
+    Plotly.newPlot("chart", [
+      { y:profits, type:"box", name:"Net profit per sale", boxpoints:"outliers", orientation:"v" },
+      { x:profits, type:"histogram", name:"Histogram", xbins:{size:5}, opacity:0.7, xaxis:"x2", yaxis:"y2" }
+    ], layout, {responsive:true});
   }
+
   function makeComponents(rows){
-    const sold=rows.reduce((s,r)=>s+r.soldFor,0);
-    const ship=rows.reduce((s,r)=>s+r.shipping,0);
-    const tax =rows.reduce((s,r)=>s+r.tax,0);
-    Plotly.newPlot("chart", [{ x:["Sold For","Shipping","Tax"], y:[sold,ship,tax], type:"bar"}],
-      { title:"Sold price vs shipping vs tax", yaxis:{title:"Total dollars", rangemode:"tozero"} },
-      {responsive:true});
+    const sold = rows.reduce((s,r)=>s+r.soldFor,0);
+    const ship = rows.reduce((s,r)=>s+r.shipping,0);
+    const tax  = rows.reduce((s,r)=>s+r.tax,0);
+    const layout = { title:"Sold price vs shipping vs tax", yaxis:{title:"Total dollars", rangemode:"tozero"} };
+    if(rows.__focusSmall) layout.yaxis.range = smartRange([sold, ship, tax], 1);
+    Plotly.newPlot("chart", [{ x:["Sold For","Shipping","Tax"], y:[sold,ship,tax], type:"bar" }], layout, {responsive:true});
   }
+
   function makeScatter(rows){
-    const x=rows.map(r=>r.soldFor), y=rows.map(r=>r.netProfit), text=rows.map(r=>r.title);
+    const x = rows.map(r=>r.soldFor);
+    const y = rows.map(r=>r.netProfit);
+    const text = rows.map(r=>r.title);
+    const layout = { title:"Sold price vs net profit", xaxis:{title:"Sold price"}, yaxis:{title:"Net profit"} };
+    if(rows.__focusSmall){
+      layout.xaxis.range = smartRange(x, 0.9);
+      layout.yaxis.range = smartRange(y, 0.9);
+    }
     Plotly.newPlot("chart", [{
-      x,y,text, mode:"markers", type:"scatter", name:"Items",
-      hovertemplate:"%{text}<br>Sold %{x:$,.2f}<br>Profit %{y:$,.2f}<extra></extra>"
-    }], { title:"Sold price vs net profit", xaxis:{title:"Sold price"}, yaxis:{title:"Net profit"} }, {responsive:true});
+      x, y, text, mode:"markers", type:"scatter", name:"Items",
+      hovertemplate:"%{text}<br>Sold %{x:$,.2f}<br>Profit %{y:$,.2f}<extra></extra>",
+      marker:{ size:8, opacity:0.85 }
+    }], layout, {responsive:true});
   }
 
   function hydrateControls(rows){
-    const sel=document.getElementById("franchise");
-    const set=new Set(rows.map(r=>r.franchise)); [...set].sort().forEach(f=>{
-      const o=document.createElement("option"); o.value=f; o.textContent=f; sel.appendChild(o);
+    const sel = document.getElementById("franchise");
+    const uniques = [...new Set(rows.map(r=>r.franchise))].sort();
+    uniques.forEach(f => {
+      const opt = document.createElement("option");
+      opt.value = f; opt.textContent = f;
+      sel.appendChild(opt);
     });
   }
+
   function applyFilters(base){
-    const f=document.getElementById("franchise").value;
-    const b=document.getElementById("bundleView").value;
-    return base.filter(r=>{
-      const okF= f==="All" ? true : r.franchise===f;
-      const flag=r.bundleFlag || r["Bundle Flag"];
-      const isComp= flag==="FromHeader";
-      const isSingle= flag==="SingleOrOriginal" || !flag;
-      const okB= b==="All" ? true : b==="Components" ? isComp : b==="Singles" ? isSingle : true;
+    const fSel = document.getElementById("franchise").value;
+    const bSel = document.getElementById("bundleView").value;
+    const excl = document.getElementById("excludeOutliers").checked;
+    const pct  = parseFloat(document.getElementById("outlierPct").value || "0.98");
+    const focusSmall = document.getElementById("focusSmall").checked;
+
+    let rows = base.filter(r => {
+      const okF = fSel === "All" ? true : r.franchise === fSel;
+      const flag = r.bundleFlag || r["Bundle Flag"];
+      const isComp = flag === "FromHeader";
+      const isSingle = flag === "SingleOrOriginal" || !flag;
+      const okB = bSel === "All" ? true : bSel === "Components" ? isComp : bSel === "Singles" ? isSingle : true;
       return okF && okB;
     });
-  }
-  function renderOverviewFlow(rows){
-    const showRoll=document.getElementById("toggleRolling").checked;
-    const grouping=document.getElementById("grouping").value;
-    const g=groupDates(rows, grouping);
-    makeOverview(g.keys, g.revenue, g.qty, showRoll);
+
+    if(excl && rows.length){
+      const profCut = percentile(rows.map(r=>r.netProfit), pct);
+      const priceCut = percentile(rows.map(r=>r.soldFor), pct);
+      rows = rows.filter(r => r.netProfit <= profCut && r.soldFor <= priceCut);
+      console.log(`Outlier filter active. Profit ≤ ${profCut.toFixed(2)}, Price ≤ ${priceCut.toFixed(2)}. Rows: ${rows.length}`);
+    }
+
+    rows.__focusSmall = focusSmall;
+    return rows;
   }
 
-  // Boot
-  document.addEventListener('DOMContentLoaded', async () => {
+  function renderOverviewFlow(rows){
+    const showRolling = document.getElementById("toggleRolling").checked;
+    const grouping = document.getElementById("grouping").value;
+    const g = groupDates(rows, grouping);
+    makeOverview(g.keys, g.revenue, g.qty, showRolling, rows.__focusSmall);
+  }
+
+  function connectControls(baseRows){
+    const rOverview = () => renderOverviewFlow(applyFilters(baseRows));
+    const rSpread   = () => makeProfitSpread(applyFilters(baseRows));
+    const rComp     = () => makeComponents(applyFilters(baseRows));
+    const rScatter  = () => makeScatter(applyFilters(baseRows));
+
+    ["franchise","bundleView","excludeOutliers","outlierPct","toggleRolling","grouping","focusSmall"].forEach(id=>{
+      const el = document.getElementById(id);
+      if(el) el.addEventListener("change", rOverview);
+    });
+
+    document.getElementById("btnOverview").addEventListener("click", rOverview);
+    document.getElementById("btnProfitSpread").addEventListener("click", rSpread);
+    document.getElementById("btnComponents").addEventListener("click", rComp);
+    document.getElementById("btnScatter").addEventListener("click", rScatter);
+
+    rOverview();  // initial render
+  }
+
+  document.addEventListener("DOMContentLoaded", async () => {
     try {
-      say('Loading data…');
+      say("Loading data…");
       const res = await fetch(DATA_URL, { cache: "no-store" });
-      if(!res.ok) throw new Error(`HTTP ${res.status} for ${DATA_URL}`);
+      if(!res.ok) throw new Error(`HTTP ${res.status}`);
       const raw = await res.json();
 
-      // Build normalized rows
+      // normalize rows
       let rows = raw.map(d => ({
         title: d["Item Title"] || "",
         franchise: getFranchise(d["Item Title"] || ""),
@@ -250,10 +403,10 @@ permalink: /project1/
         bundleSize: d["Bundle Size"] || 1
       })).filter(r => r.saleDateISO);
 
-      // If headers slipped in, fix in browser
+      // fallback bundle resolver if raw headers present
       const hasHeaders = raw.some(d => (!d["Item Title"] || String(d["Item Title"]).trim()==="") && num(d["Quantity"])>=2);
       if(hasHeaders){
-        console.warn("Bundle headers detected in JSON. Resolving in browser.");
+        console.warn("Bundle headers detected. Resolving in browser.");
         const fixed = resolveBundlesClientSide(raw);
         rows = fixed.map(d => ({
           title: d["Item Title"] || "",
@@ -272,36 +425,38 @@ permalink: /project1/
       }
 
       hydrateControls(rows);
-
-      function current(){ return applyFilters(rows); }
-      function renderOverview(){ renderOverviewFlow(current()); }
-      function renderSpread(){ makeProfitSpread(current()); }
-      function renderComp(){ makeComponents(current()); }
-      function renderScatter(){ makeScatter(current()); }
-
-      // Initial render
-      renderOverview();
+      connectControls(rows);
       say('');
-
-      // Wire events
-      document.getElementById("franchise").addEventListener("change", renderOverview);
-      document.getElementById("grouping").addEventListener("change", renderOverview);
-      document.getElementById("toggleRolling").addEventListener("change", renderOverview);
-      document.getElementById("bundleView").addEventListener("change", renderOverview);
-      document.getElementById("btnOverview").addEventListener("click", renderOverview);
-      document.getElementById("btnProfitSpread").addEventListener("click", renderSpread);
-      document.getElementById("btnComponents").addEventListener("click", renderComp);
-      document.getElementById("btnScatter").addEventListener("click", renderScatter);
-
-      console.log("Loaded rows:", rows.length);
-    } catch (err) {
-      console.error(err);
-      say("Could not load data. Check the console for details. Confirm the JSON path and that it is committed on the Pages branch.");
-      // Draw an empty placeholder so the page is not blank
-      Plotly.newPlot("chart", [{x:[0], y:[0], type:"bar", name:"Placeholder"}],
-        {title:"No data loaded"}, {responsive:true});
+    } catch (e) {
+      console.error(e);
+      say("Could not load data. Open the console for details. Confirm the JSON path.");
+      Plotly.newPlot("chart", [{x:[0],y:[0],type:"bar"}], {title:"No data loaded"});
     }
   });
 })();
 </script>
+
+
+#Google Sheets Input
+<section class="viz-sheet">
+  <div class="container" style="max-width:1100px;margin:30px auto 0">
+    <h3>Live Google Sheet</h3>
+    <p>
+      <a class="btn" href="https://docs.google.com/spreadsheets/d/1aB2IzxG7Vv5amtnuLUvg0qsrHw6Hu8sP1gwmYkh0gNE/edit?usp=sharing" target="_blank" rel="noopener">
+        Open in Google Sheets
+      </a>
+      <a class="btn" href="{{ '/assets/data/cleaned_ebay_orders.csv' | relative_url }}">
+        Download CSV
+      </a>
+    </p>
+    <div style="position:relative;padding-top:56.25%;height:0;overflow:hidden;border:1px solid rgba(0,0,0,.1);border-radius:10px">
+      <iframe
+        src="https://docs.google.com/spreadsheets/d/1aB2IzxG7Vv5amtnuLUvg0qsrHw6Hu8sP1gwmYkh0gNE/pubhtml?widget=true&headers=false"
+        style="position:absolute;top:0;left:0;width:100%;height:100%;border:0"
+        loading="lazy"
+        referrerpolicy="no-referrer-when-downgrade"
+      ></iframe>
+    </div>
+  </div>
+</section>
 
