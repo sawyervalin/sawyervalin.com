@@ -45,6 +45,13 @@ permalink: /project1/
         </select>
       </label>
 
+      <label><input type="checkbox" id="excludeOutliers"> Exclude outliers</label>
+        <select id="outlierPct" title="percentile cutoff">
+          <option value="0.95">95th pct</option>
+          <option value="0.98" selected>98th pct</option>
+          <option value="0.99">99th pct</option>
+        </select>
+
       <button id="btnOverview">Revenue and Items</button>
       <button id="btnProfitSpread">Profit Spread</button>
       <button id="btnComponents">Sold vs Ship vs Tax</button>
@@ -81,6 +88,18 @@ permalink: /project1/
     if (t.includes("buffy")) return "Buffy";
     return "Other";
   }
+  
+  function percentile(arr, p){
+    const a = arr.filter(Number.isFinite).sort((x,y)=>x-y);
+    if (!a.length) return Infinity;
+    const idx = (a.length - 1) * p;
+    const lo = Math.floor(idx), hi = Math.ceil(idx);
+    if (lo === hi) return a[lo];
+    const w = idx - lo;
+    return a[lo]*(1-w) + a[hi]*w;
+  }
+
+  
 
   function rolling(arr, win = 7){
     const out = [], n = arr.length; let s = 0;
@@ -208,17 +227,31 @@ permalink: /project1/
     uniques.forEach(f => { const opt = document.createElement("option"); opt.value = f; opt.textContent = f; sel.appendChild(opt); });
   }
 
-  function applyFilters(base){
-    const f = document.getElementById("franchise").value;
-    const b = document.getElementById("bundleView").value; // All / Components / Singles
-    return base.filter(r => {
-      const okF = f === "All" ? true : r.franchise === f;
-      const flag = r.bundleFlag || r["Bundle Flag"];
-      const isComp = flag === "FromHeader";
-      const isSingle = flag === "SingleOrOriginal" || !flag;
-      const okB = b === "All" ? true : b === "Components" ? isComp : b === "Singles" ? isSingle : true;
-      return okF && okB;
-    });
+  function applyFilters(baseRows){
+  const fSel = document.getElementById("franchise").value;
+  const bSel = document.getElementById("bundleView").value;
+  const excl = document.getElementById("excludeOutliers")?.checked;
+  const pct  = parseFloat(document.getElementById("outlierPct")?.value || "0.98");
+
+  // Existing filters
+  let rows = baseRows.filter(r => {
+    const okF = fSel === "All" ? true : r.franchise === fSel;
+    const flag = r.bundleFlag || r["Bundle Flag"];
+    const isComp = flag === "FromHeader";
+    const isSingle = flag === "SingleOrOriginal" || !flag;
+    const okB = bSel === "All" ? true : bSel === "Components" ? isComp : bSel === "Singles" ? isSingle : true;
+    return okF && okB;
+  });
+
+  // Outlier removal: drop rows above both cutoffs (sold price or profit)
+  if (excl && rows.length){
+    const priceCut  = percentile(rows.map(r => r.soldFor),  pct);
+    const profitCut = percentile(rows.map(r => r.netProfit), pct);
+    rows = rows.filter(r => r.soldFor <= priceCut && r.netProfit <= profitCut);
+    console.log(`Outliers removed at p=${pct}. Price ≤ ${priceCut.toFixed(2)}, Profit ≤ ${profitCut.toFixed(2)}. Rows left: ${rows.length}`);
+  }
+
+  return rows;
   }
 
   function renderOverviewFlow(rows){
@@ -253,6 +286,9 @@ permalink: /project1/
           bundleId: d["Bundle ID"] || null,
           bundleSize: d["Bundle Size"] || 1
         }));
+      
+
+        
 
       // fallback: resolve any raw headers
       const hasHeaders = raw.some(d => (!d["Item Title"] || String(d["Item Title"]).trim()==="") && num(d["Quantity"]) >= 2);
@@ -295,7 +331,8 @@ permalink: /project1/
       document.getElementById("btnProfitSpread").addEventListener("click", renderSpread);
       document.getElementById("btnComponents").addEventListener("click", renderComp);
       document.getElementById("btnScatter").addEventListener("click", renderScatter);
-
+      document.getElementById("excludeOutliers").addEventListener("change", renderOverview);
+      document.getElementById("outlierPct").addEventListener("change", renderOverview);
       console.log("Loaded rows:", rows.length);
     } catch (err) {
       console.error(err);
