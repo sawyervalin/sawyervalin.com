@@ -13,16 +13,59 @@ permalink: /project1/
   </div>
 </section>
 
-<!-- Plotly JS -->
+<section class="data-viz">
+  <div class="container" id="viz-root" style="max-width:1100px;margin:0 auto">
+    <h2>Interactive Dashboard</h2>
+    <div id="viz-status" style="margin:10px 0; font-weight:600;"></div>
+
+    <!-- Controls -->
+    <div class="controls" style="display:flex;gap:8px;flex-wrap:wrap;margin:10px 0 20px">
+      <label>Franchise
+        <select id="franchise">
+          <option value="All">All</option>
+        </select>
+      </label>
+
+      <label>Date grouping
+        <select id="grouping">
+          <option value="day">Daily</option>
+          <option value="week">Weekly</option>
+          <option value="month">Monthly</option>
+        </select>
+      </label>
+
+      <label><input type="checkbox" id="toggleRolling" checked> Show 7 period rolling averages</label>
+
+      <label>Rows
+        <select id="bundleView">
+          <option value="All">All</option>
+          <option value="Components">Components only</option>
+          <option value="Singles">Singles only</option>
+        </select>
+      </label>
+
+      <button id="btnOverview">Revenue and Items</button>
+      <button id="btnProfitSpread">Profit Spread</button>
+      <button id="btnComponents">Sold vs Ship vs Tax</button>
+      <button id="btnScatter">Price vs Profit</button>
+    </div>
+
+    <!-- Chart area -->
+    <div id="chart" style="width:100%;height:520px;border:1px solid rgba(0,0,0,.08);border-radius:10px"></div>
+  </div>
+</section>
+
+<!-- Plotly -->
 <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
 
 <script>
-  // 1) Config: where is your JSON
-  const DATA_URL = "{{ '/assets/data/cleaned_ebay_orders.json' | relative_url }}";
-  // If you kept a separate bundles file instead, point to it:
-  // const DATA_URL = "{{ '/assets/data/cleaned_ebay_orders_bundles_resolved.json' | relative_url }}";
+(function(){
+  const STATUS = document.getElementById('viz-status');
+  function say(msg){ STATUS.textContent = msg; }
 
-  // 2) Helpers
+  // Adjust this if you kept a separate file name
+  const DATA_URL = "{{ '/assets/data/cleaned_ebay_orders.json' | relative_url }}";
+
   const num = v => {
     const x = parseFloat(v);
     return Number.isFinite(x) ? x : 0;
@@ -41,217 +84,178 @@ permalink: /project1/
     return "Other";
   }
 
-  function rolling(arr, win=7) {
-    const out = [];
-    let sum = 0;
-    for (let i = 0; i < arr.length; i++) {
-      sum += arr[i];
-      if (i >= win) sum -= arr[i - win];
-      out.push(i >= win - 1 ? sum / win : sum / (i + 1));
-    }
+  function rolling(arr, win=7){
+    const out=[], n=arr.length; let s=0;
+    for(let i=0;i<n;i++){ s+=arr[i]; if(i>=win) s-=arr[i-win]; out.push(i>=win-1? s/win : s/(i+1)); }
     return out;
   }
 
-  // 3) Client side bundle guard
-  // If a row has empty title and Quantity >= 2, treat it as a header and allocate its totals to next N rows
-  function resolveBundlesClientSide(rows) {
-    const out = [];
-    let i = 0;
-    let bundleId = 1;
-
-    const get = (obj, k) => obj && obj[k] != null ? obj[k] : null;
-
-    while (i < rows.length) {
-      const r = rows[i];
-      const title = get(r, "Item Title");
-      const qty = parseInt(get(r, "Quantity") || 1, 10);
-      const isHeader = (!title || String(title).trim() === "") && qty >= 2;
-
-      if (isHeader) {
-        const q = qty;
-        const comps = rows.slice(i + 1, i + 1 + q);
-        const soldSum = comps.reduce((s, c) => s + num(c["Sold For"]), 0);
-        const weights = soldSum > 0
-          ? comps.map(c => num(c["Sold For"]) / soldSum)
-          : comps.map(() => 1 / Math.max(1, comps.length));
-
-        comps.forEach((c, idx) => {
-          const copy = { ...c };
-          copy["Quantity"] = 1;
-          ["Shipping And Handling","eBay Collected Tax","Total Price","Revenue","Gross Profit","Net Profit"].forEach(col => {
-            const compVal = num(copy[col]);
-            const headVal = num(r[col]);
-            if (!compVal && headVal) copy[col] = headVal * weights[idx];
+  // Client guard for raw bundle headers
+  function resolveBundlesClientSide(rows){
+    const out=[], get=(o,k)=>o && o[k]!=null? o[k]:null;
+    let i=0, bundleId=1;
+    while(i<rows.length){
+      const r=rows[i];
+      const title=get(r,"Item Title");
+      const qty=parseInt(get(r,"Quantity")||1,10);
+      const isHeader=(!title || String(title).trim()==="") && qty>=2;
+      if(isHeader){
+        const q=qty;
+        const comps=rows.slice(i+1, i+1+q);
+        const soldSum=comps.reduce((s,c)=>s+num(c["Sold For"]),0);
+        const weights=soldSum>0? comps.map(c=>num(c["Sold For"])/soldSum)
+                                : comps.map(()=>1/Math.max(1, comps.length));
+        comps.forEach((c,idx)=>{
+          const copy={...c};
+          copy["Quantity"]=1;
+          ["Shipping And Handling","eBay Collected Tax","Total Price","Revenue","Gross Profit","Net Profit"].forEach(col=>{
+            const compVal=num(copy[col]), headVal=num(r[col]);
+            if(!compVal && headVal) copy[col]=headVal*weights[idx];
           });
-          if (!num(copy["Sold For"]) && num(r["Sold For"])) {
-            copy["Sold For"] = num(r["Sold For"]) * weights[idx];
-          }
-          if ((!copy["Sale Date"] || copy["Sale Date"] === "") && r["Sale Date"]) {
-            copy["Sale Date"] = r["Sale Date"];
-          }
-          copy["Bundle Flag"] = copy["Bundle Flag"] || "FromHeader";
-          copy["Bundle ID"] = copy["Bundle ID"] || `B${bundleId}`;
-          copy["Bundle Size"] = copy["Bundle Size"] || q;
+          if(!num(copy["Sold For"]) && num(r["Sold For"])) copy["Sold For"]=num(r["Sold For"])*weights[idx];
+          if((!copy["Sale Date"] || copy["Sale Date"]==="") && r["Sale Date"]) copy["Sale Date"]=r["Sale Date"];
+          copy["Bundle Flag"]=copy["Bundle Flag"]||"FromHeader";
+          copy["Bundle ID"]=copy["Bundle ID"]||`B${bundleId}`;
+          copy["Bundle Size"]=copy["Bundle Size"]||q;
           out.push(copy);
         });
-
-        i += 1 + comps.length;
-        bundleId += 1;
+        i+=1+comps.length; bundleId+=1;
       } else {
-        const copy = { ...r };
-        copy["Bundle Flag"] = copy["Bundle Flag"] || "SingleOrOriginal";
-        copy["Bundle ID"] = copy["Bundle ID"] || null;
-        copy["Bundle Size"] = copy["Bundle Size"] || 1;
-        out.push(copy);
-        i += 1;
+        const copy={...r};
+        copy["Bundle Flag"]=copy["Bundle Flag"]||"SingleOrOriginal";
+        copy["Bundle ID"]=copy["Bundle ID"]||null;
+        copy["Bundle Size"]=copy["Bundle Size"]||1;
+        out.push(copy); i+=1;
       }
     }
     return out;
   }
 
-  // 4) Grouping helpers
-  function groupDates(rows, mode) {
-    function fmtKey(d) {
-      const dt = new Date(d);
-      if (mode === "month") {
-        return `${dt.getFullYear()}-${String(dt.getMonth() + 1).padStart(2,"0")}`;
-      }
-      if (mode === "week") {
-        const tmp = new Date(Date.UTC(dt.getFullYear(), dt.getMonth(), dt.getDate()));
-        const day = tmp.getUTCDay() || 7;
-        tmp.setUTCDate(tmp.getUTCDate() + 4 - day);
-        const yearStart = new Date(Date.UTC(tmp.getUTCFullYear(),0,1));
-        const weekNo = Math.ceil((((tmp - yearStart) / 86400000) + 1) / 7);
-        return `${tmp.getUTCFullYear()}-W${String(weekNo).padStart(2,"0")}`;
+  function groupDates(rows, mode){
+    function key(d){
+      const dt=new Date(d);
+      if(mode==="month") return `${dt.getFullYear()}-${String(dt.getMonth()+1).padStart(2,"0")}`;
+      if(mode==="week"){
+        const tmp=new Date(Date.UTC(dt.getFullYear(), dt.getMonth(), dt.getDate()));
+        const day=tmp.getUTCDay()||7; tmp.setUTCDate(tmp.getUTCDate()+4-day);
+        const start=new Date(Date.UTC(tmp.getUTCFullYear(),0,1));
+        const week=Math.ceil((((tmp-start)/86400000)+1)/7);
+        return `${tmp.getUTCFullYear()}-W${String(week).padStart(2,"0")}`;
       }
       return dt.toISOString().slice(0,10);
     }
-
-    const map = new Map();
-    rows.forEach(r => {
-      const k = fmtKey(r.saleDateISO);
-      const cur = map.get(k) || { rev: 0, qty: 0, prof: 0 };
-      cur.rev += r.revenue;
-      cur.qty += r.qty;
-      cur.prof += r.netProfit;
-      map.set(k, cur);
+    const m=new Map();
+    rows.forEach(r=>{
+      const k=key(r.saleDateISO);
+      const cur=m.get(k)||{rev:0,qty:0,prof:0};
+      cur.rev+=r.revenue; cur.qty+=r.qty; cur.prof+=r.netProfit; m.set(k,cur);
     });
-
-    const keys = Array.from(map.keys()).sort((a,b) => a.localeCompare(b));
-    return {
-      keys,
-      revenue: keys.map(k => map.get(k).rev),
-      qty: keys.map(k => map.get(k).qty),
-      profit: keys.map(k => map.get(k).prof)
-    };
+    const keys=[...m.keys()].sort((a,b)=>a.localeCompare(b));
+    return { keys, revenue: keys.map(k=>m.get(k).rev), qty: keys.map(k=>m.get(k).qty), profit: keys.map(k=>m.get(k).prof) };
   }
 
-  // 5) Plot makers
-  function makeOverview(dates, revenue, qty, showRolling) {
-    const traces = [
-      { x: dates, y: revenue, type: "scatter", mode: "lines+markers", name: "Revenue", yaxis: "y1" },
-      { x: dates, y: qty, type: "bar", name: "Items", yaxis: "y2", opacity: 0.5 }
+  function makeOverview(dates, revenue, qty, showRolling){
+    const traces=[
+      { x:dates, y:revenue, type:"scatter", mode:"lines+markers", name:"Revenue", yaxis:"y1" },
+      { x:dates, y:qty,     type:"bar",     name:"Items",  yaxis:"y2", opacity:0.5 }
     ];
-    if (showRolling) {
-      traces.push({ x: dates, y: rolling(revenue, 7), type: "scatter", mode: "lines", name: "Revenue rolling", yaxis: "y1" });
-      traces.push({ x: dates, y: rolling(qty, 7), type: "scatter", mode: "lines", name: "Items rolling", yaxis: "y2" });
+    if(showRolling){
+      traces.push({ x:dates, y:rolling(revenue,7), type:"scatter", mode:"lines", name:"Revenue rolling", yaxis:"y1" });
+      traces.push({ x:dates, y:rolling(qty,7),     type:"scatter", mode:"lines", name:"Items rolling",  yaxis:"y2" });
     }
-    const layout = {
-      title: "Revenue and items over time",
-      barmode: "overlay",
-      xaxis: { title: "Date" },
-      yaxis: { title: "Revenue", rangemode: "tozero" },
-      yaxis2: { title: "Items", rangemode: "tozero", overlaying: "y", side: "right" },
-      legend: { orientation: "h" },
-      margin: { t: 50, r: 40, l: 60, b: 60 }
-    };
-    Plotly.newPlot("chart", traces, layout, {responsive: true});
+    Plotly.newPlot("chart", traces, {
+      title:"Revenue and items over time",
+      barmode:"overlay",
+      xaxis:{title:"Date"},
+      yaxis:{title:"Revenue", rangemode:"tozero"},
+      yaxis2:{title:"Items",  rangemode:"tozero", overlaying:"y", side:"right"},
+      legend:{orientation:"h"},
+      margin:{t:50,r:40,l:60,b:60}
+    }, {responsive:true});
+  }
+  function makeProfitSpread(rows){
+    const profits=rows.map(r=>r.netProfit).filter(v=>Number.isFinite(v));
+    Plotly.newPlot("chart", [
+      { y:profits, type:"box", name:"Net profit per sale", boxpoints:"outliers", orientation:"v" },
+      { x:profits, type:"histogram", name:"Histogram", xbins:{size:10}, opacity:0.6, xaxis:"x2", yaxis:"y2" }
+    ], {
+      title:"Profit spread and histogram",
+      grid:{rows:1, columns:2, pattern:"independent"},
+      xaxis:{title:"Net profit"}, yaxis:{title:"Count"},
+      xaxis2:{title:"Net profit"}, yaxis2:{title:"Count"}
+    }, {responsive:true});
+  }
+  function makeComponents(rows){
+    const sold=rows.reduce((s,r)=>s+r.soldFor,0);
+    const ship=rows.reduce((s,r)=>s+r.shipping,0);
+    const tax =rows.reduce((s,r)=>s+r.tax,0);
+    Plotly.newPlot("chart", [{ x:["Sold For","Shipping","Tax"], y:[sold,ship,tax], type:"bar"}],
+      { title:"Sold price vs shipping vs tax", yaxis:{title:"Total dollars", rangemode:"tozero"} },
+      {responsive:true});
+  }
+  function makeScatter(rows){
+    const x=rows.map(r=>r.soldFor), y=rows.map(r=>r.netProfit), text=rows.map(r=>r.title);
+    Plotly.newPlot("chart", [{
+      x,y,text, mode:"markers", type:"scatter", name:"Items",
+      hovertemplate:"%{text}<br>Sold %{x:$,.2f}<br>Profit %{y:$,.2f}<extra></extra>"
+    }], { title:"Sold price vs net profit", xaxis:{title:"Sold price"}, yaxis:{title:"Net profit"} }, {responsive:true});
   }
 
-  function makeProfitSpread(rows) {
-    const profits = rows.map(r => r.netProfit).filter(v => Number.isFinite(v));
-    const traces = [
-      { y: profits, type: "box", name: "Net profit per sale", boxpoints: "outliers", orientation: "v" },
-      { x: profits, type: "histogram", name: "Histogram", xbins: { size: 10 }, opacity: 0.6 }
-    ];
-    traces[0].xaxis = "x";
-    traces[0].yaxis = "y";
-    traces[1].xaxis = "x2";
-    traces[1].yaxis = "y2";
-    const layout = {
-      title: "Profit spread and histogram",
-      grid: { rows: 1, columns: 2, pattern: "independent" },
-      xaxis: { title: "Net profit" },
-      yaxis: { title: "Count" },
-      xaxis2: { title: "Net profit" },
-      yaxis2: { title: "Count" }
-    };
-    Plotly.newPlot("chart", traces, layout, {responsive: true});
-  }
-
-  function makeComponents(rows) {
-    const sold = rows.reduce((s, r) => s + r.soldFor, 0);
-    const ship = rows.reduce((s, r) => s + r.shipping, 0);
-    const tax  = rows.reduce((s, r) => s + r.tax, 0);
-    const traces = [{ x: ["Sold For","Shipping","Tax"], y: [sold, ship, tax], type: "bar", name: "Totals" }];
-    const layout = { title: "Sold price vs shipping vs tax", yaxis: { rangemode: "tozero", title: "Total dollars" } };
-    Plotly.newPlot("chart", traces, layout, {responsive: true});
-  }
-
-  function makeScatter(rows) {
-    const x = rows.map(r => r.soldFor);
-    const y = rows.map(r => r.netProfit);
-    const text = rows.map(r => r.title);
-    const traces = [{
-      x, y, text, mode: "markers", type: "scatter",
-      name: "Items",
-      hovertemplate: "%{text}<br>Sold %{x:$,.2f}<br>Profit %{y:$,.2f}<extra></extra>"
-    }];
-    const layout = { title: "Sold price vs net profit", xaxis: { title: "Sold price" }, yaxis: { title: "Net profit" } };
-    Plotly.newPlot("chart", traces, layout, {responsive: true});
-  }
-
-  // 6) UI wiring
-  function hydrateControls(rows) {
-    const sel = document.getElementById("franchise");
-    const uniques = Array.from(new Set(rows.map(r => r.franchise))).sort();
-    uniques.forEach(f => {
-      const opt = document.createElement("option");
-      opt.value = f; opt.textContent = f;
-      sel.appendChild(opt);
+  function hydrateControls(rows){
+    const sel=document.getElementById("franchise");
+    const set=new Set(rows.map(r=>r.franchise)); [...set].sort().forEach(f=>{
+      const o=document.createElement("option"); o.value=f; o.textContent=f; sel.appendChild(o);
     });
   }
-
-  function applyFilters(baseRows) {
-    const fSel = document.getElementById("franchise").value;
-    const bSel = document.getElementById("bundleView").value; // All, Components only, Singles only
-    return baseRows.filter(r => {
-      const okF = fSel === "All" ? true : r.franchise === fSel;
-      const flag = r.bundleFlag || r["Bundle Flag"];
-      const isComp = flag === "FromHeader";
-      const isSingle = flag === "SingleOrOriginal" || !flag;
-      const okB =
-        bSel === "All" ? true :
-        bSel === "Components" ? isComp :
-        bSel === "Singles" ? isSingle : true;
+  function applyFilters(base){
+    const f=document.getElementById("franchise").value;
+    const b=document.getElementById("bundleView").value;
+    return base.filter(r=>{
+      const okF= f==="All" ? true : r.franchise===f;
+      const flag=r.bundleFlag || r["Bundle Flag"];
+      const isComp= flag==="FromHeader";
+      const isSingle= flag==="SingleOrOriginal" || !flag;
+      const okB= b==="All" ? true : b==="Components" ? isComp : b==="Singles" ? isSingle : true;
       return okF && okB;
     });
   }
-
-  function renderOverviewFlow(rows) {
-    const showRolling = document.getElementById("toggleRolling").checked;
-    const grouping = document.getElementById("grouping").value;
-    const g = groupDates(rows, grouping);
-    makeOverview(g.keys, g.revenue, g.qty, showRolling);
+  function renderOverviewFlow(rows){
+    const showRoll=document.getElementById("toggleRolling").checked;
+    const grouping=document.getElementById("grouping").value;
+    const g=groupDates(rows, grouping);
+    makeOverview(g.keys, g.revenue, g.qty, showRoll);
   }
 
-  // 7) Bootstrap
-  document.addEventListener("DOMContentLoaded", () => {
-    fetch(DATA_URL)
-      .then(r => r.json())
-      .then(raw => {
-        // Normalize keys, resolve bundles if needed
-        let rows = raw.map(d => ({
+  // Boot
+  document.addEventListener('DOMContentLoaded', async () => {
+    try {
+      say('Loading data…');
+      const res = await fetch(DATA_URL, { cache: "no-store" });
+      if(!res.ok) throw new Error(`HTTP ${res.status} for ${DATA_URL}`);
+      const raw = await res.json();
+
+      // Build normalized rows
+      let rows = raw.map(d => ({
+        title: d["Item Title"] || "",
+        franchise: getFranchise(d["Item Title"] || ""),
+        saleDateISO: d["Sale Date"] ? new Date(d["Sale Date"]).toISOString() : null,
+        revenue: num(d["Revenue"]),
+        netProfit: num(d["Net Profit"]),
+        soldFor: num(d["Sold For"]),
+        shipping: num(d["Shipping And Handling"]),
+        tax: num(d["eBay Collected Tax"]),
+        qty: num(d["Quantity"] || 1),
+        bundleFlag: d["Bundle Flag"] || null,
+        bundleId: d["Bundle ID"] || null,
+        bundleSize: d["Bundle Size"] || 1
+      })).filter(r => r.saleDateISO);
+
+      // If headers slipped in, fix in browser
+      const hasHeaders = raw.some(d => (!d["Item Title"] || String(d["Item Title"]).trim()==="") && num(d["Quantity"])>=2);
+      if(hasHeaders){
+        console.warn("Bundle headers detected in JSON. Resolving in browser.");
+        const fixed = resolveBundlesClientSide(raw);
+        rows = fixed.map(d => ({
           title: d["Item Title"] || "",
           franchise: getFranchise(d["Item Title"] || ""),
           saleDateISO: d["Sale Date"] ? new Date(d["Sale Date"]).toISOString() : null,
@@ -260,98 +264,44 @@ permalink: /project1/
           soldFor: num(d["Sold For"]),
           shipping: num(d["Shipping And Handling"]),
           tax: num(d["eBay Collected Tax"]),
-          qty: num(d["Quantity"] || 1),
+          qty: 1,
           bundleFlag: d["Bundle Flag"] || null,
           bundleId: d["Bundle ID"] || null,
           bundleSize: d["Bundle Size"] || 1
         })).filter(r => r.saleDateISO);
+      }
 
-        // If any empty title headers exist, fix in browser
-        const hasHeaders = raw.some(d => (!d["Item Title"] || String(d["Item Title"]).trim() === "") && num(d["Quantity"]) >= 2);
-        if (hasHeaders) {
-          // Convert back to the original shape before running the resolver
-          const back = raw.map(d => ({ ...d }));
-          rows = resolveBundlesClientSide(back).map(d => ({
-            title: d["Item Title"] || "",
-            franchise: getFranchise(d["Item Title"] || ""),
-            saleDateISO: d["Sale Date"] ? new Date(d["Sale Date"]).toISOString() : null,
-            revenue: num(d["Revenue"]),
-            netProfit: num(d["Net Profit"]),
-            soldFor: num(d["Sold For"]),
-            shipping: num(d["Shipping And Handling"]),
-            tax: num(d["eBay Collected Tax"]),
-            qty: 1,
-            bundleFlag: d["Bundle Flag"] || null,
-            bundleId: d["Bundle ID"] || null,
-            bundleSize: d["Bundle Size"] || 1
-          })).filter(r => r.saleDateISO);
-        }
+      hydrateControls(rows);
 
-        // Build controls if not already present
-        const container = document.querySelector('.data-viz .viz-wrap') || document.querySelector('.data-viz .container');
-        if (!document.getElementById("controls-mounted")) {
-          const controls = document.createElement("div");
-          controls.id = "controls-mounted";
-          controls.className = "controls";
-          controls.innerHTML = `
-            <label for="franchise">Franchise</label>
-            <select id="franchise"><option value="All">All</option></select>
+      function current(){ return applyFilters(rows); }
+      function renderOverview(){ renderOverviewFlow(current()); }
+      function renderSpread(){ makeProfitSpread(current()); }
+      function renderComp(){ makeComponents(current()); }
+      function renderScatter(){ makeScatter(current()); }
 
-            <label for="grouping">Date grouping</label>
-            <select id="grouping">
-              <option value="day">Daily</option>
-              <option value="week">Weekly</option>
-              <option value="month">Monthly</option>
-            </select>
+      // Initial render
+      renderOverview();
+      say('');
 
-            <label><input type="checkbox" id="toggleRolling" checked> Show 7 period rolling averages</label>
+      // Wire events
+      document.getElementById("franchise").addEventListener("change", renderOverview);
+      document.getElementById("grouping").addEventListener("change", renderOverview);
+      document.getElementById("toggleRolling").addEventListener("change", renderOverview);
+      document.getElementById("bundleView").addEventListener("change", renderOverview);
+      document.getElementById("btnOverview").addEventListener("click", renderOverview);
+      document.getElementById("btnProfitSpread").addEventListener("click", renderSpread);
+      document.getElementById("btnComponents").addEventListener("click", renderComp);
+      document.getElementById("btnScatter").addEventListener("click", renderScatter);
 
-            <label for="bundleView">Rows</label>
-            <select id="bundleView">
-              <option value="All">All</option>
-              <option value="Components">Components only</option>
-              <option value="Singles">Singles only</option>
-            </select>
-
-            <button id="btnOverview">Revenue and Items</button>
-            <button id="btnProfitSpread">Profit Spread</button>
-            <button id="btnComponents">Sold vs Ship vs Tax</button>
-            <button id="btnScatter">Price vs Profit</button>
-          `;
-          container.prepend(controls);
-          const chartDiv = document.createElement("div");
-          chartDiv.id = "chart";
-          chartDiv.className = "chart";
-          container.appendChild(chartDiv);
-        }
-
-        hydrateControls(rows);
-
-        function currentRows() { return applyFilters(rows); }
-
-        function renderOverview() { renderOverviewFlow(currentRows()); }
-        function renderSpread()   { makeProfitSpread(currentRows()); }
-        function renderComp()     { makeComponents(currentRows()); }
-        function renderScatter()  { makeScatter(currentRows()); }
-
-        // Initial view
-        renderOverview();
-
-        // Wire events
-        document.getElementById("franchise").addEventListener("change", renderOverview);
-        document.getElementById("grouping").addEventListener("change", renderOverview);
-        document.getElementById("toggleRolling").addEventListener("change", renderOverview);
-        document.getElementById("bundleView").addEventListener("change", renderOverview);
-
-        document.getElementById("btnOverview").addEventListener("click", renderOverview);
-        document.getElementById("btnProfitSpread").addEventListener("click", renderSpread);
-        document.getElementById("btnComponents").addEventListener("click", renderComp);
-        document.getElementById("btnScatter").addEventListener("click", renderScatter);
-      })
-      .catch(err => {
-        console.error("Error loading JSON", err);
-        const el = document.getElementById("chart");
-        if (el) el.innerHTML = "<p>Could not load data. Make sure your JSON exists at assets/data/ and has correct keys.</p>";
-      });
+      console.log("Loaded rows:", rows.length);
+    } catch (err) {
+      console.error(err);
+      say("Could not load data. Check the console for details. Confirm the JSON path and that it is committed on the Pages branch.");
+      // Draw an empty placeholder so the page is not blank
+      Plotly.newPlot("chart", [{x:[0], y:[0], type:"bar", name:"Placeholder"}],
+        {title:"No data loaded"}, {responsive:true});
+    }
   });
+})();
 </script>
+
