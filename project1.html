@@ -16,118 +16,233 @@ permalink: /project1/
 <!-- Plotly JS -->
 <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
 
+<style>
+  .viz-wrap { max-width: 1100px; margin: 0 auto; }
+  .controls { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; margin: 10px 0 20px; }
+  .controls label { font-weight: 600; margin-right: 6px; }
+  .controls select, .controls button, .controls input[type="checkbox"] { padding: 6px 10px; }
+  .chart { width: 100%; height: 520px; }
+</style>
+
 <section class="data-viz">
-  <div class="container">
+  <div class="container viz-wrap">
     <h2>Collectible Sales Overview</h2>
 
-    <!-- Chart 1: Net Profit Over Time -->
-    <div id="net-profit-over-time" style="height: 500px;"></div>
+    <div class="controls">
+      <label for="franchise">Franchise</label>
+      <select id="franchise">
+        <option value="All">All</option>
+      </select>
 
-    <!-- Chart 2: Top 10 Items by Revenue -->
-    <div id="top-items" style="height: 500px;"></div>
+      <label for="grouping">Date grouping</label>
+      <select id="grouping">
+        <option value="day">Daily</option>
+        <option value="week">Weekly</option>
+        <option value="month">Monthly</option>
+      </select>
 
-    <!-- Chart 3: Net Profit by Item -->
-    <div id="net-profit-items" style="height: 500px;"></div>
+      <label>
+        <input type="checkbox" id="toggleRolling" checked>
+        Show 7-period rolling averages
+      </label>
+
+      <button id="btnOverview">Revenue and Items Over Time</button>
+      <button id="btnProfitSpread">Profit Spread and Histogram</button>
+      <button id="btnComponents">Sold vs Shipping vs Tax</button>
+      <button id="btnScatter">Price vs Profit</button>
+    </div>
+
+    <div id="chart" class="chart"></div>
   </div>
 </section>
 
-<!-- Load JSON and Generate Plotly Charts -->
 <script>
-  fetch('/assets/data/cleaned_ebay_orders.json')
-    .then(response => response.json())
+  // Helper: parse float safely
+  const num = v => {
+    const x = parseFloat(v);
+    return Number.isFinite(x) ? x : 0;
+  };
+
+  // Simple franchise extractor from item title
+  function getFranchise(title) {
+    if (!title) return "Unknown";
+    const t = title.toLowerCase();
+    if (t.includes("batman")) return "Batman";
+    if (t.includes("peanuts")) return "Peanuts";
+    if (t.includes("star trek")) return "Star Trek";
+    if (t.includes("star wars")) return "Star Wars";
+    if (t.includes("x-men")) return "X-Men";
+    if (t.includes("superman")) return "Superman";
+    if (t.includes("buffy")) return "Buffy";
+    return "Other";
+  }
+
+  // Rolling average
+  function rolling(arr, win=7) {
+    const out = [];
+    let sum = 0;
+    for (let i = 0; i < arr.length; i++) {
+      sum += arr[i];
+      if (i >= win) sum -= arr[i - win];
+      out.push(i >= win - 1 ? sum / win : sum / (i + 1));
+    }
+    return out;
+  }
+
+  // Group by day, week, or month
+  function groupDates(rows, mode) {
+    const fmt = d => {
+      const dt = new Date(d);
+      if (mode === "month") {
+        return `${dt.getFullYear()}-${String(dt.getMonth() + 1).padStart(2,"0")}`;
+      }
+      if (mode === "week") {
+        const tmp = new Date(Date.UTC(dt.getFullYear(), dt.getMonth(), dt.getDate()));
+        const day = tmp.getUTCDay() || 7;
+        tmp.setUTCDate(tmp.getUTCDate() + 4 - day);
+        const yearStart = new Date(Date.UTC(tmp.getUTCFullYear(),0,1));
+        const weekNo = Math.ceil((((tmp - yearStart) / 86400000) + 1) / 7);
+        return `${tmp.getUTCFullYear()}-W${String(weekNo).padStart(2,"0")}`;
+      }
+      // default daily
+      return d.split("T")[0] || d;
+    };
+
+    const map = new Map();
+    rows.forEach(r => {
+      const key = fmt(r.saleDateISO);
+      const cur = map.get(key) || { revenue: 0, qty: 0, profit: 0 };
+      cur.revenue += r.revenue;
+      cur.qty += r.qty;
+      cur.profit += r.netProfit;
+      map.set(key, cur);
+    });
+
+    const keys = Array.from(map.keys()).sort((a, b) => a.localeCompare(b));
+    const revenue = keys.map(k => map.get(k).revenue);
+    const qty = keys.map(k => map.get(k).qty);
+    const profit = keys.map(k => map.get(k).profit);
+    return { keys, revenue, qty, profit };
+  }
+
+  function makeOverview(dates, revenue, qty, showRolling) {
+    const traces = [
+      { x: dates, y: revenue, type: "scatter", mode: "lines+markers", name: "Revenue", yaxis: "y1" },
+      { x: dates, y: qty, type: "bar", name: "Items sold", yaxis: "y2", opacity: 0.5 }
+    ];
+    if (showRolling) {
+      traces.push({ x: dates, y: rolling(revenue, 7), type: "scatter", mode: "lines", name: "Revenue rolling", yaxis: "y1" });
+      traces.push({ x: dates, y: rolling(qty, 7), type: "scatter", mode: "lines", name: "Items rolling", yaxis: "y2" });
+    }
+    const layout = {
+      title: "Revenue and items over time",
+      barmode: "overlay",
+      xaxis: { title: "Date" },
+      yaxis: { title: "Revenue", rangemode: "tozero" },
+      yaxis2: { title: "Items", rangemode: "tozero", overlaying: "y", side: "right" },
+      legend: { orientation: "h" },
+      margin: { t: 50, r: 40, l: 60, b: 60 }
+    };
+    Plotly.newPlot("chart", traces, layout, {responsive: true});
+  }
+
+  function makeProfitSpread(rows) {
+    const profits = rows.map(r => r.netProfit).filter(v => Number.isFinite(v));
+    const traces = [
+      { y: profits, type: "box", name: "Net profit per sale", boxpoints: "outliers", orientation: "v" },
+      { x: profits, type: "histogram", name: "Histogram", xbins: { size: 10 }, opacity: 0.6 }
+    ];
+    const layout = {
+      title: "Profit spread and histogram",
+      grid: { rows: 1, columns: 2, pattern: "independent" },
+      xaxis: { title: "Net profit" },
+      yaxis: { title: "Count" },
+      xaxis2: { title: "Net profit" },
+      yaxis2: { title: "Count" }
+    };
+    // Place box on left, histogram on right
+    traces[0].xaxis = "x";
+    traces[0].yaxis = "y";
+    traces[1].xaxis = "x2";
+    traces[1].yaxis = "y2";
+    Plotly.newPlot("chart", traces, layout, {responsive: true});
+  }
+
+  function makeComponents(rows) {
+    const sold = rows.reduce((s, r) => s + r.soldFor, 0);
+    const ship = rows.reduce((s, r) => s + r.shipping, 0);
+    const tax  = rows.reduce((s, r) => s + r.tax, 0);
+    const traces = [{ x: ["Sold For", "Shipping", "Tax"], y: [sold, ship, tax], type: "bar", name: "Totals" }];
+    const layout = { title: "Sold price vs shipping vs tax", yaxis: { rangemode: "tozero", title: "Total dollars" } };
+    Plotly.newPlot("chart", traces, layout, {responsive: true});
+  }
+
+  function makeScatter(rows) {
+    const x = rows.map(r => r.soldFor);
+    const y = rows.map(r => r.netProfit);
+    const text = rows.map(r => r.title);
+    const traces = [{ x, y, text, mode: "markers", type: "scatter", name: "Items", hovertemplate: "%{text}<br>Sold %{x:$,.2f}<br>Profit %{y:$,.2f}<extra></extra>" }];
+    const layout = { title: "Sold price vs net profit", xaxis: { title: "Sold price" }, yaxis: { title: "Net profit" } };
+    Plotly.newPlot("chart", traces, layout, {responsive: true});
+  }
+
+  // Load and render
+  fetch("{{ '/assets/data/cleaned_ebay_orders.json' | relative_url }}")
+    .then(r => r.json())
     .then(data => {
-      const salesOverTime = {};
-      const categoryTotals = {};
-      const priceCounts = [];
+      // Normalize rows
+      const rows = data
+        .filter(d => d["Sale Date"])
+        .map(d => ({
+          title: d["Item Title"] || "",
+          franchise: getFranchise(d["Item Title"] || ""),
+          saleDateISO: new Date(d["Sale Date"]).toISOString(),
+          revenue: num(d["Revenue"]),
+          netProfit: num(d["Net Profit"]),
+          soldFor: num(d["Sold For"]),
+          shipping: num(d["Shipping And Handling"]),
+          tax: num(d["eBay Collected Tax"]),
+          qty: num(d["Quantity"] || 1)
+        }));
 
-      data.forEach(item => {
-        const date = item["Order Date"]?.split("T")[0];
-        const category = item["Category"] || "Unknown";
-        const price = parseFloat(item["Sold For"] || 0);
-
-        if (date) {
-          salesOverTime[date] = (salesOverTime[date] || 0) + price;
-        }
-
-        categoryTotals[category] = (categoryTotals[category] || 0) + price;
-
-        if (!isNaN(price)) {
-          priceCounts.push(price);
-        }
+      // Populate franchise filter
+      const uniqueFranchises = Array.from(new Set(rows.map(r => r.franchise))).sort();
+      const sel = document.getElementById("franchise");
+      uniqueFranchises.forEach(f => {
+        const opt = document.createElement("option");
+        opt.value = f; opt.textContent = f;
+        sel.appendChild(opt);
       });
 
-      // 1. Line Chart: Sales Over Time
-      const trace1 = {
-        x: Object.keys(salesOverTime),
-        y: Object.values(salesOverTime),
-        type: 'scatter',
-        mode: 'lines+markers',
-        name: 'Sales',
-        line: { shape: 'spline' }
-      };
+      const grouping = document.getElementById("grouping");
+      const toggleRolling = document.getElementById("toggleRolling");
 
-      // 2. Bar Chart: Category Sales
-      const trace2 = {
-        x: Object.keys(categoryTotals),
-        y: Object.values(categoryTotals),
-        type: 'bar',
-        name: 'Category Sales',
-        marker: { color: '#009FFD' }
-      };
+      function filtered() {
+        const f = sel.value;
+        return f === "All" ? rows : rows.filter(r => r.franchise === f);
+      }
 
-      // 3. Histogram: Distribution of Sale Prices
-      const trace3 = {
-        x: priceCounts,
-        type: 'histogram',
-        xbins: {
-          size: 10
-        },
-        marker: { color: '#232528' },
-        name: 'Sale Price Distribution'
-      };
+      function renderOverview() {
+        const g = groupDates(filtered(), grouping.value);
+        makeOverview(g.keys, g.revenue, g.qty, toggleRolling.checked);
+      }
 
-      // Tabs & Containers
-      const tabs = [
-        { id: 'sales-chart', title: 'Sales Over Time', data: [trace1] },
-        { id: 'category-chart', title: 'Category Breakdown', data: [trace2] },
-        { id: 'histogram-chart', title: 'Sale Price Distribution', data: [trace3] }
-      ];
+      // Initial view
+      renderOverview();
 
-      // Inject tab UI
-      const container = document.querySelector('.data-viz .container');
-      const tabNav = document.createElement('div');
-      tabNav.style.textAlign = 'center';
-      tabNav.style.marginBottom = '20px';
+      // Controls behavior
+      sel.addEventListener("change", renderOverview);
+      grouping.addEventListener("change", renderOverview);
+      toggleRolling.addEventListener("change", renderOverview);
 
-      tabs.forEach((tab, i) => {
-        const btn = document.createElement('button');
-        btn.textContent = tab.title;
-        btn.style.margin = '0 10px';
-        btn.className = 'btn btn-default';
-        btn.onclick = () => {
-          tabs.forEach((t, j) => {
-            document.getElementById(t.id).style.display = j === i ? 'block' : 'none';
-          });
-        };
-        tabNav.appendChild(btn);
-      });
-
-      container.insertBefore(tabNav, container.children[1]);
-
-      // Create all chart containers
-      tabs.forEach((tab, i) => {
-        const div = document.createElement('div');
-        div.id = tab.id;
-        div.style.width = '100%';
-        div.style.maxWidth = '900px';
-        div.style.height = '500px';
-        div.style.margin = 'auto';
-        div.style.display = i === 0 ? 'block' : 'none';
-        container.appendChild(div);
-        Plotly.newPlot(tab.id, tab.data, { title: tab.title });
-      });
+      document.getElementById("btnOverview").addEventListener("click", renderOverview);
+      document.getElementById("btnProfitSpread").addEventListener("click", () => makeProfitSpread(filtered()));
+      document.getElementById("btnComponents").addEventListener("click", () => makeComponents(filtered()));
+      document.getElementById("btnScatter").addEventListener("click", () => makeScatter(filtered()));
     })
-    .catch(error => {
-      console.error('Error loading JSON:', error);
+    .catch(err => {
+      console.error("Error loading JSON", err);
+      const el = document.getElementById("chart");
+      el.innerHTML = "<p>Could not load data. Make sure cleaned_ebay_orders.json is in /assets/data/.</p>";
     });
 </script>
