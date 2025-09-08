@@ -6,12 +6,62 @@ header_image: /img/project1.jpg
 permalink: /project1/
 ---
 
-<section>
-  <div class="container">
-    <h2>About This Project</h2>
-    <p>This project tracks and analyzes sales of collectibles using barcode scanning, Sheets, APIs, and Python tools.</p>
+<section class="section-tight" id="project-journal">
+  <div class="container" style="max-width:900px;margin:0 auto">
+    <h2>Project Journal</h2>
+    <p style="font-size:1.05rem; line-height:1.7; margin:.5rem 0">
+      I’m funding college the unglamorous way—by turning a family collection into cash and lessons learned. 
+      Instead of real estate, stocks, or crypto, my dad spent years picking up collectibles—mostly Batman, with
+      a mix of other franchises. As his interest in storing a big collection faded, I took on the job of selling it
+      <em>and</em> treating it like a data project: scan barcodes on my phone, fetch UPC details, list items, and track every sale.
+    </p>
+
+    <h3>What I looked for</h3>
+    <p>
+      I wanted to understand: which franchises move best, how shipping & tax affect margins, and whether release era
+      matters (vintage vs. 90s vs. modern). To keep the data honest, I wrote a cleaner that fixes “bundle” listings:
+      header rows with blank titles and a quantity allocate their total price, shipping, tax, and profit across the next
+      N component items.
+    </p>
+
+    <h3>What the data says (so far)</h3>
+    <ul>
+      <li><strong>Franchise differences:</strong> Batman sells steadily with lots of mid-price items; other lines spike more but with fewer transactions. Brand strength shows up as consistency as much as peak price.</li>
+      <li><strong>Era matters:</strong> Older pieces tend to command higher prices and stronger margins; the late-1990s show a noticeable dip (oversupply + mass production), while some newer releases rebound with niche demand and better condition. The price pattern by release year looks more <em>U-shaped</em> than a bell curve.</li>
+      <li><strong>Price vs. profit isn’t linear:</strong> Higher sold price does not guarantee higher net profit—shipping, fees, and tax can flatten margins. Filtering outliers makes the typical relationship much clearer.</li>
+      <li><strong>Operational takeaway:</strong> For quick cash flow, list reliable mid-tier Batman items first; for margin, prioritize genuinely older pieces or modern niche runs in great condition. Avoid over-weight, low-margin items unless they’re bundled to reduce per-item shipping overhead.</li>
+    </ul>
+
+    <h3>Conclusion</h3>
+    <p>
+      Treating the collection like a small business beats guessing. A few practical rules emerged: 
+      (1) list steady sellers early to fund the rest, (2) favor older/vintage where margin persists, 
+      (3) watch shipping weight and fee drag, and (4) use bundles intelligently—but split the accounting so the data stays truthful.
+    </p>
+
+    <h3>Stack & tools</h3>
+    <ul>
+      <li><strong>Data entry & source:</strong> eBay exports, Google Sheets, phone barcode scans + UPC lookup</li>
+      <li><strong>Cleaning:</strong> Python (<code>pandas</code>) with a bundle allocator (header → components)</li>
+      <li><strong>Formats:</strong> JSON (for charts), CSV (for Sheets/download)</li>
+      <li><strong>Frontend:</strong> Plotly.js for interactive charts (line, bar, box, histogram, scatter)</li>
+      <li><strong>Site:</strong> GitHub Pages + Jekyll, optional GitHub Actions to auto-clean data</li>
+      <li><strong>Versioning:</strong> Git / GitHub</li>
+    </ul>
+
+    <p style="margin-top:.6rem; color:#666">
+      Last updated: {{ site.time | date: "%B %-d, %Y" }}
+    </p>
   </div>
 </section>
+
+<style>
+  .section-tight{ margin-block:16px; }
+  .section-tight .container{ padding-block:8px; }
+  #project-journal h2, #project-journal h3{ margin:0 0 .5rem; }
+  #project-journal p{ margin:.5rem 0; line-height:1.65; }
+</style>
+
 
 <!-- Plotly JS -->
 <section class="data-viz">
