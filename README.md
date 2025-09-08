@@ -1,14 +1,15 @@
-# Creative Theme for Jekyll
+# This is my website! sawyervalin.com
 
-A Jekyll implementation of the [Creative Theme](http://startbootstrap.com/template-overviews/creative/) template by [Start Bootstrap](http://startbootstrap.com).
+I used the Creative jekyll template for gitpages to lay the foundation, then made it my own.
 
-Creative is a one page Bootstrap theme for creatives, small businesses, and other multipurpose uses.
-The theme includes a number of rich features and plugins that you can use as a great boilerplate for your next Jekyll project! 
+This website is used for:
 
-See it live in action at <https://volny.github.io/creative-theme-jekyll/>
+* Creating a home for my projects
 
-## To use the Creative Theme template in your project
+* Creating a way people can easily contact me
 
-- Start by adding your info in `_config.yml`
-- In `_layouts/front.html` reorder or remove section as you prefer.
+* A place to host my updated resume
 
+* A place to work on my front-end HTML/CSS skills
+
+* FUN! 
