@@ -13,13 +13,76 @@ permalink: /project1/
   </div>
 </section>
 
+<!-- Plotly JS -->
+<script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+
 <section class="data-viz">
   <div class="container">
     <h2>Collectible Sales Overview</h2>
-    <!-- Chart container -->
-    <div id="sales-chart" style="width:100%; max-width:900px; height:500px; margin:auto;"></div>
+
+    <!-- Chart 1: Net Profit Over Time -->
+    <div id="net-profit-over-time" style="height: 500px;"></div>
+
+    <!-- Chart 2: Top 10 Items by Revenue -->
+    <div id="top-items" style="height: 500px;"></div>
+
+    <!-- Chart 3: Net Profit by Item -->
+    <div id="net-profit-items" style="height: 500px;"></div>
   </div>
 </section>
 
-<!-- Plotly JS (Step 1) -->
-<script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+<script>
+async function fetchData(file) {
+  const res = await fetch(`/data/${file}`);
+  return await res.json();
+}
+
+async function renderCharts() {
+  const timeLabels = await fetchData('net_profit_time.json');
+  const profitValues = await fetchData('net_profit_values.json');
+  const itemTitles = await fetchData('item_titles.json');
+  const itemProfits = await fetchData('net_profits.json');
+  const topTitles = await fetchData('top_titles.json');
+  const topRevenue = await fetchData('top_revenue.json');
+
+  // Chart 1: Net Profit Over Time
+  Plotly.newPlot('net-profit-over-time', [{
+    x: timeLabels,
+    y: profitValues,
+    type: 'scatter',
+    mode: 'lines+markers',
+    marker: { color: 'blue' }
+  }], {
+    title: 'Net Profit Over Time',
+    xaxis: { title: 'Week' },
+    yaxis: { title: 'Net Profit ($)' }
+  });
+
+  // Chart 2: Top 10 Items by Revenue
+  Plotly.newPlot('top-items', [{
+    x: topRevenue,
+    y: topTitles,
+    type: 'bar',
+    orientation: 'h',
+    marker: { color: 'orange' }
+  }], {
+    title: 'Top 10 Items by Revenue',
+    xaxis: { title: 'Revenue ($)' },
+    yaxis: { automargin: true }
+  });
+
+  // Chart 3: Net Profit by Item
+  Plotly.newPlot('net-profit-items', [{
+    x: itemTitles,
+    y: itemProfits,
+    type: 'bar',
+    marker: { color: 'green' }
+  }], {
+    title: 'Net Profit by Item',
+    xaxis: { title: 'Item', tickangle: -45, automargin: true },
+    yaxis: { title: 'Net Profit ($)' }
+  });
+}
+
+renderCharts();
+</script>
