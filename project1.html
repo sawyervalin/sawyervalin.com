@@ -402,3 +402,14 @@ permalink: /project1/
   });
 })();
 </script>
+
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+  const nav = document.getElementById('mainNav');
+  if (!nav) return;
+
+  const toggle = () => nav.classList.toggle('navbar-shrink', window.scrollY > 0);
+  toggle();                                   // set initial state on load
+  document.addEventListener('scroll', toggle, { passive: true });
+});
+</script>
