@@ -417,19 +417,23 @@ document.addEventListener('DOMContentLoaded', () => {
 <section class="viz-sheet">
   <div class="container" style="max-width:1100px;margin:24px auto">
     <h2>Live Google Sheet</h2>
-    <p style="margin:.5rem 0 1rem">
+    <p style="margin:.5rem 0 1rem; display:flex; gap:.5rem; flex-wrap:wrap">
+      <!-- View in Google Sheets (UI) -->
       <a class="btn" target="_blank" rel="noopener"
          href="https://docs.google.com/spreadsheets/d/1aB2IzxG7Vv5amtnuLUvg0qsrHw6Hu8sP1gwmYkh0gNE/view?gid=588000366">
         Open in Google Sheets
       </a>
-      <a class="btn" href="https://docs.google.com/spreadsheets/d/1aB2IzxG7Vv5amtnuLUvg0qsrHw6Hu8sP1gwmYkh0gNE/export?format=csv&gid=588000366">
+      <!-- Direct CSV for that tab -->
+      <a class="btn"
+         href="https://docs.google.com/spreadsheets/d/1aB2IzxG7Vv5amtnuLUvg0qsrHw6Hu8sP1gwmYkh0gNE/export?format=csv&gid=588000366">
         Download CSV
       </a>
     </p>
 
+    <!-- Responsive embed of the published sheet -->
     <div style="height:70vh;min-height:480px;border:1px solid rgba(0,0,0,.1);border-radius:10px;overflow:hidden">
       <iframe
-        src="https://docs.google.com/spreadsheets/d/1aB2IzxG7Vv5amtnuLUvg0qsrHw6Hu8sP1gwmYkh0gNE/pubhtml?gid=588000366&single=true&widget=true&headers=false"
+        src="https://docs.google.com/spreadsheets/d/e/2PACX-1vRObTST4WPTGlWE7ItZzqYU0AQyZIiiWIGVJkqSta4SKwW5VfU4-E9K-oYOUhkHx3NJEPzpx-wcvftw/pubhtml?gid=588000366&single=true&widget=true&headers=false"
         style="width:100%;height:100%;border:0"
         loading="lazy"
         referrerpolicy="no-referrer-when-downgrade">
