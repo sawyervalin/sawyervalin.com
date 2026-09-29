@@ -13,7 +13,7 @@
 <meta property="og:description" content="IT infrastructure, software, and consulting. Irvine, California.">
 <meta property="og:image" content="https://www.sawyervalin.com/img/og.jpg">
 <meta name="twitter:card" content="summary_large_image">
-<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%230B0D11'/%3E%3Crect x='14' y='14' width='36' height='36' rx='4' fill='none' stroke='%23FF8A3D' stroke-width='3'/%3E%3Cpath d='M14 22 L22 14' stroke='%23FF8A3D' stroke-width='3'/%3E%3Ctext x='32' y='39' font-family='monospace' font-size='15' font-weight='700' text-anchor='middle' fill='%23EEE9E1'%3ESV%3C/text%3E%3C/svg%3E">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%230B0D11'/%3E%3Crect x='14' y='14' width='36' height='36' rx='4' fill='none' stroke='%234F8DFF' stroke-width='3'/%3E%3Cpath d='M14 22 L22 14' stroke='%234F8DFF' stroke-width='3'/%3E%3Ctext x='32' y='39' font-family='monospace' font-size='15' font-weight='700' text-anchor='middle' fill='%23EEE9E1'%3ESV%3C/text%3E%3C/svg%3E">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
@@ -22,9 +22,9 @@
 {"@context":"https://schema.org","@type":"Person","name":"Sawyer Valin","url":"https://www.sawyervalin.com/","jobTitle":"Managed IT, Cloud & Infrastructure Consulting","worksFor":{"@type":"Organization","name":"RSM US LLP"},"alumniOf":[{"@type":"CollegeOrUniversity","name":"University of California, Irvine"},{"@type":"CollegeOrUniversity","name":"Citrus College"}],"address":{"@type":"PostalAddress","addressLocality":"Irvine","addressRegion":"CA"},"sameAs":["https://www.linkedin.com/in/sawyervalin/","https://github.com/sawyervalin","https://www.imdb.com/name/nm4825601/"]}
 </script>
 <style>
-/* Layout: a hardware datasheet. Framed poster hero, then labelled bays: a mono #anchor rail on the left, content on the right. One accent, taken from the sunset. */
+/* Layout: a hardware datasheet. Framed poster hero, then labelled bays with a mono #anchor rail. One accent: signal blue. */
 :root{
-  --ink:#0B0D11;       /* page ground, blue-black like the sea after sunset */
+  --ink:#0B0D11;       /* page ground, blue-black */
   --ink-2:#11141A;     /* raised bays */
   --ink-3:#171B23;     /* viewer stage */
   --line:#222733;
@@ -32,8 +32,8 @@
   --bone:#EEE9E1;      /* primary text */
   --mute:#99A1AE;      /* secondary text */
   --dim:#646C7A;       /* labels */
-  --sun:#FF8A3D;       /* accent: the horizon line */
-  --sun-soft:rgba(255,138,61,.14);
+  --sun:#4F8DFF;       /* accent: signal blue */
+  --sun-soft:rgba(79,141,255,.14);
   --gold:#F2B85B;      /* stage section */
   --f-display:"Archivo","Arial Narrow","Helvetica Neue",Arial,sans-serif;
   --f-body:"Geist","Helvetica Neue",Arial,sans-serif;
@@ -74,11 +74,10 @@ h1,h2,h3{text-wrap:balance}
 .hero{padding-top:calc(76px + env(safe-area-inset-top,0px))}
 .frame{position:relative;max-width:var(--wrap);margin-inline:auto;border:1px solid var(--line);border-radius:26px;overflow:hidden;min-height:min(820px,calc(100svh - 96px));isolation:isolate;
   background:
-    radial-gradient(120% 60% at 50% 64%,rgba(255,138,61,.30) 0%,rgba(255,138,61,.10) 28%,transparent 58%),
+    radial-gradient(120% 60% at 50% 64%,rgba(79,141,255,.30) 0%,rgba(79,141,255,.10) 28%,transparent 58%),
     linear-gradient(180deg,#0E1118 0%,#121622 48%,#1B1A1E 64%,#0C0E13 100%)}
-.frame::before{content:"";position:absolute;inset:0;z-index:0;background-image:var(--grain);opacity:.22;mix-blend-mode:overlay;pointer-events:none}
-.horizon{position:absolute;left:0;right:0;top:64%;height:1px;z-index:1;background:linear-gradient(90deg,transparent,rgba(255,138,61,.0) 6%,var(--sun) 30%,#FFD2A8 50%,var(--sun) 70%,transparent 94%);box-shadow:0 0 24px 2px rgba(255,138,61,.55)}
-.horizon::after{content:"";position:absolute;left:10%;right:10%;top:1px;height:140px;background:linear-gradient(180deg,rgba(255,138,61,.10),transparent);filter:blur(2px)}
+.horizon{position:absolute;left:0;right:0;top:64%;height:1px;z-index:1;background:linear-gradient(90deg,transparent,rgba(79,141,255,.0) 6%,var(--sun) 30%,#BFD6FF 50%,var(--sun) 70%,transparent 94%);box-shadow:0 0 24px 2px rgba(79,141,255,.55)}
+.horizon::after{content:"";position:absolute;left:10%;right:10%;top:1px;height:140px;background:linear-gradient(180deg,rgba(79,141,255,.10),transparent);filter:blur(2px)}
 .name{position:absolute;z-index:2;left:0;right:0;top:16.5%;text-align:center;font-family:var(--f-display);font-weight:800;font-stretch:78%;font-variation-settings:"wdth" 78;text-transform:uppercase;line-height:.82;letter-spacing:-.02em;font-size:clamp(3.6rem,15.4vw,12.4rem);white-space:nowrap;
   background:linear-gradient(180deg,var(--bone) 20%,#D8CFC4 62%,rgba(238,233,225,.55) 100%);-webkit-background-clip:text;background-clip:text;color:transparent;animation:rise 1.2s var(--ease) both}
 .name span{display:inline-block}
@@ -151,7 +150,7 @@ h1,h2,h3{text-wrap:balance}
 .viewer .v-top{position:absolute;z-index:3;top:14px;left:16px;right:16px;display:flex;justify-content:space-between;gap:10px;font-family:var(--f-mono);font-size:.75rem;color:var(--dim);pointer-events:none}
 .viewer .v-top b{color:var(--bone);font-weight:500}
 .badge{border:1px solid var(--line-2);border-radius:999px;padding:3px 10px;color:var(--mute);background:rgba(11,13,17,.6)}
-.badge.gpu{color:var(--sun);border-color:rgba(255,138,61,.45)}
+.badge.gpu{color:var(--sun);border-color:rgba(79,141,255,.45)}
 .v-bar{position:absolute;z-index:3;left:50%;bottom:14px;transform:translateX(-50%);display:flex;gap:4px;padding:4px;border:1px solid var(--line-2);border-radius:999px;background:rgba(11,13,17,.72);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);max-width:calc(100% - 24px)}
 .v-bar button{background:none;border:0;border-radius:999px;padding:7px 12px;font-family:var(--f-mono);font-size:.75rem;color:var(--mute);cursor:pointer;white-space:nowrap;transition:background .2s,color .2s}
 .v-bar button:hover{color:var(--bone);background:rgba(255,255,255,.06)}
@@ -186,11 +185,11 @@ h1,h2,h3{text-wrap:balance}
 .proof{margin-top:10px;font-size:.875rem;color:var(--mute);line-height:1.5}
 .spec.on .code,.spec-btn:hover .code{color:var(--sun)}
 .spec.on{background:linear-gradient(90deg,var(--sun-soft),transparent 70%)}
-.spec.on .tools span{border-color:rgba(255,138,61,.35)}
+.spec.on .tools span{border-color:rgba(79,141,255,.35)}
 
 /* ---------- experience ---------- */
 .jobs{list-style:none;border-top:1px solid var(--line)}
-.job{display:grid;grid-template-columns:11.5rem minmax(0,1fr) minmax(0,15rem);gap:clamp(14px,3vw,40px);padding:26px 0;border-bottom:1px solid var(--line)}
+.job{display:grid;grid-template-columns:11.5rem minmax(0,1fr);gap:clamp(14px,3vw,40px);padding:26px 0;border-bottom:1px solid var(--line)}
 .job .when{font-family:var(--f-mono);font-size:.8125rem;color:var(--mute);font-variant-numeric:tabular-nums;padding-top:4px}
 .job .when .live{color:var(--sun)}
 .job h3{font-family:var(--f-display);font-variation-settings:"wdth" 90;font-weight:700;font-size:1.4rem;line-height:1.15;letter-spacing:-.015em}
@@ -216,7 +215,7 @@ h1,h2,h3{text-wrap:balance}
 .btn{display:inline-flex;align-items:center;gap:8px;font-family:var(--f-mono);font-size:.8125rem;text-decoration:none;border:1px solid var(--line-2);border-radius:8px;padding:8px 13px;transition:border-color .2s,background .2s,color .2s;background:none;cursor:pointer}
 .btn:hover{border-color:var(--sun);color:var(--bone);background:var(--sun-soft)}
 .btn.solid{background:var(--sun);color:var(--ink);border-color:var(--sun);font-weight:600}
-.btn.solid:hover{background:#FF9D5C}
+.btn.solid:hover{background:#6FA2FF}
 .proj.feature{grid-column:1 / -1;display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr)}
 .proj.feature .stackline{grid-column:1 / -1}
 .proj.feature h3{font-size:clamp(2rem,3.6vw,2.8rem)}
@@ -323,7 +322,7 @@ footer{max-width:var(--wrap);margin-inline:auto;border-top:1px solid var(--line)
 <header class="nav" id="nav">
   <div class="nav-in">
     <a class="brand" href="#top" aria-label="Sawyer Valin, back to top">
-      <svg viewBox="0 0 26 26" aria-hidden="true"><rect x="1.5" y="1.5" width="23" height="23" rx="3" fill="none" stroke="#FF8A3D" stroke-width="1.5"/><path d="M1.5 7 L7 1.5" stroke="#FF8A3D" stroke-width="1.5"/><text x="13" y="17" font-family="ui-monospace,monospace" font-size="9" font-weight="700" text-anchor="middle" fill="#EEE9E1">SV</text></svg>
+      <svg viewBox="0 0 26 26" aria-hidden="true"><rect x="1.5" y="1.5" width="23" height="23" rx="3" fill="none" stroke="#4F8DFF" stroke-width="1.5"/><path d="M1.5 7 L7 1.5" stroke="#4F8DFF" stroke-width="1.5"/><text x="13" y="17" font-family="ui-monospace,monospace" font-size="9" font-weight="700" text-anchor="middle" fill="#EEE9E1">SV</text></svg>
       sawyervalin
     </a>
     <button class="menu-btn" id="menuBtn" aria-expanded="false" aria-controls="navList">menu</button>
@@ -357,7 +356,6 @@ footer{max-width:var(--wrap);margin-inline:auto;border-top:1px solid var(--line)
 
       <div class="hero-meta hm-tr" aria-label="Location">
         <span>Irvine, California</span>
-        <span>33.6846&deg; N, 117.8265&deg; W</span>
         <span class="clock" id="clock">PT --:--</span>
       </div>
 
@@ -378,7 +376,6 @@ footer{max-width:var(--wrap);margin-inline:auto;border-top:1px solid var(--line)
         </nav>
       </div>
 
-      <a class="scroll-cue" href="#now" aria-label="Scroll to content">SCROLL</a>
     </div>
   </section>
 
@@ -534,7 +531,6 @@ footer{max-width:var(--wrap);margin-inline:auto;border-top:1px solid var(--line)
             <li>Support Microsoft Copilot and Claude onboarding for enterprise clients.</li>
           </ul>
         </div>
-        <div class="meta"><span>Entra ID</span><span>Intune</span><span>PowerShell</span><span>AD</span></div>
       </li>
       <li class="job">
         <div class="when"><span class="live">Apr 2026 &rarr; now</span></div>
@@ -546,7 +542,6 @@ footer{max-width:var(--wrap);margin-inline:auto;border-top:1px solid var(--line)
             <li>Lead investor outreach, sourcing venture relationships from networking events and hackathons.</li>
           </ul>
         </div>
-        <div class="meta"><span>UI/UX</span><span>Positioning</span><span>Investor relations</span></div>
       </li>
       <li class="job">
         <div class="when"><span class="live">Dec 2025 &rarr; now</span></div>
@@ -558,7 +553,6 @@ footer{max-width:var(--wrap);margin-inline:auto;border-top:1px solid var(--line)
             <li>Diagnosed a QNAP NAS failure and coordinated replacement and data migration with the client's managed service provider.</li>
           </ul>
         </div>
-        <div class="meta"><span>Hardware</span><span>NAS</span><span>Scoping</span></div>
       </li>
       <li class="job">
         <div class="when"><span class="live">Sep 2025 &rarr; now</span></div>
@@ -569,7 +563,6 @@ footer{max-width:var(--wrap);margin-inline:auto;border-top:1px solid var(--line)
             <li>Identify and introduce partners aligned with Deimos-One's data science and space systems work; collaborate directly with the founders on BD strategy.</li>
           </ul>
         </div>
-        <div class="meta"><span>Partnerships</span><span>Startup ops</span></div>
       </li>
       <li class="job">
         <div class="when"><span class="live">Sep 2025 &rarr; now</span></div>
@@ -580,7 +573,6 @@ footer{max-width:var(--wrap);margin-inline:auto;border-top:1px solid var(--line)
             <li>Five to eight technical consultations an hour on laptops, desktops, networking, and peripherals.</li>
           </ul>
         </div>
-        <div class="meta"><span>Consultative sales</span></div>
       </li>
       <li class="job">
         <div class="when">Sep 2025 &rarr; Apr 2026</div>
@@ -591,7 +583,6 @@ footer{max-width:var(--wrap);margin-inline:auto;border-top:1px solid var(--line)
             <li>Front end, UI/UX design, and software architecture.</li>
           </ul>
         </div>
-        <div class="meta"><span>Front end</span><span>Architecture</span></div>
       </li>
       <li class="job">
         <div class="when">Mar 2025 &rarr; Jul 2025</div>
@@ -603,7 +594,6 @@ footer{max-width:var(--wrap);margin-inline:auto;border-top:1px solid var(--line)
             <li>Implemented Syncro MSP and ConnectWise PSA with tiered service offerings, cutting resolution time by about 40%.</li>
           </ul>
         </div>
-        <div class="meta"><span>Syncro</span><span>ConnectWise</span><span>M365</span></div>
       </li>
       <li class="job">
         <div class="when">Aug 2023 &rarr; Sep 2025</div>
@@ -615,7 +605,6 @@ footer{max-width:var(--wrap);margin-inline:auto;border-top:1px solid var(--line)
             <li>Cleaned 1,000+ rows of financial and medical data and standardized documentation for recurring issues.</li>
           </ul>
         </div>
-        <div class="meta"><span>Healthcare IT</span><span>Endpoints</span></div>
       </li>
     </ol>
   </section>
@@ -786,13 +775,6 @@ footer{max-width:var(--wrap);margin-inline:auto;border-top:1px solid var(--line)
   var reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
   document.getElementById('yr').textContent = new Date().getFullYear();
 
-  /* film grain for the hero frame, generated once */
-  try{
-    var g=document.createElement('canvas');g.width=g.height=160;var gx=g.getContext('2d');var id=gx.createImageData(160,160);
-    for(var i=0;i<id.data.length;i+=4){var v=Math.random()*255|0;id.data[i]=id.data[i+1]=id.data[i+2]=v;id.data[i+3]=255}
-    gx.putImageData(id,0,0);document.documentElement.style.setProperty('--grain','url('+g.toDataURL()+')');
-  }catch(e){}
-
   /* nav */
   var nav=document.getElementById('nav'),btn=document.getElementById('menuBtn'),list=document.getElementById('navList');
   function solid(){nav.classList.toggle('solid',scrollY>30)}
@@ -923,7 +905,7 @@ const camera = new THREE.PerspectiveCamera(32, 1, 0.1, 100);
 const HOME = { pos: new THREE.Vector3(5.6, 5.2, 7.4), target: new THREE.Vector3(0, 0.35, 0) };
 camera.position.copy(HOME.pos);
 
-const key = new THREE.DirectionalLight(0xFFB27A, 2.2); key.position.set(-4, 6, 3); scene.add(key);
+const key = new THREE.DirectionalLight(0xDDE8FF, 2.2); key.position.set(-4, 6, 3); scene.add(key);
 const rim = new THREE.DirectionalLight(0x9DB6FF, 1.1); rim.position.set(5, 3, -6); scene.add(rim);
 
 try { attach(await makeRenderer(false)); }
@@ -955,13 +937,13 @@ function drawDie(){
   for (let i=0;i<S;i+=8){ dg.beginPath(); dg.moveTo(i,0); dg.lineTo(i,S); dg.stroke(); }
   for (const b of blocks){
     const x=b.x*S, y=b.z*S, w=b.w*S, h=b.d*S, on = selected===b.id;
-    dg.fillStyle = on ? '#2A1B12' : '#141925'; dg.fillRect(x,y,w,h);
+    dg.fillStyle = on ? '#122039' : '#141925'; dg.fillRect(x,y,w,h);
     dg.save(); dg.beginPath(); dg.rect(x+6,y+6,w-12,h-12); dg.clip();
-    dg.strokeStyle = on ? 'rgba(255,160,100,.28)' : 'rgba(200,210,235,.10)';
+    dg.strokeStyle = on ? 'rgba(120,170,255,.28)' : 'rgba(200,210,235,.10)';
     const step = 5 + (b.code.length%3)*2;
     for (let k=-h;k<w;k+=step){ dg.beginPath(); dg.moveTo(x+k,y); dg.lineTo(x+k+h,y+h); dg.stroke(); }
     dg.restore();
-    dg.strokeStyle = on ? '#FF8A3D' : 'rgba(238,233,225,.28)'; dg.lineWidth = on ? 4 : 2; dg.strokeRect(x+1,y+1,w-2,h-2);
+    dg.strokeStyle = on ? '#4F8DFF' : 'rgba(238,233,225,.28)'; dg.lineWidth = on ? 4 : 2; dg.strokeRect(x+1,y+1,w-2,h-2);
   }
 }
 const [emC, eg] = canvas();
@@ -969,11 +951,11 @@ function drawEmissive(){
   eg.fillStyle = '#000'; eg.fillRect(0,0,S,S);
   for (const b of blocks){
     const x=b.x*S, y=b.z*S, w=b.w*S, h=b.d*S, on = selected===b.id;
-    eg.strokeStyle = on ? '#FF8A3D' : 'rgba(255,138,61,.22)'; eg.lineWidth = on ? 6 : 2; eg.strokeRect(x+2,y+2,w-4,h-4);
-    if (on){ eg.fillStyle = 'rgba(255,138,61,.30)'; eg.fillRect(x,y,w,h); }
+    eg.strokeStyle = on ? '#4F8DFF' : 'rgba(79,141,255,.22)'; eg.lineWidth = on ? 6 : 2; eg.strokeRect(x+2,y+2,w-4,h-4);
+    if (on){ eg.fillStyle = 'rgba(79,141,255,.30)'; eg.fillRect(x,y,w,h); }
   }
   // I/O ring pads
-  eg.fillStyle = 'rgba(255,190,120,.35)';
+  eg.fillStyle = 'rgba(140,180,255,.35)';
   for (let i=24;i<S-24;i+=28){ eg.fillRect(i,6,10,8); eg.fillRect(i,S-14,10,8); eg.fillRect(6,i,8,10); eg.fillRect(S-14,i,8,10); }
 }
 drawDie(); drawEmissive();
@@ -1034,7 +1016,7 @@ for (let side=0; side<4; side++) for (let k=0;k<12;k++){
 model.add(caps);
 
 // die: TSL emissive that pulses slowly across the surface like clock distribution
-const pulse = sin(time.mul(1.4).sub(uv().y.mul(7.0))).mul(0.18).add(0.92);
+const pulse = sin(time.mul(1.1).sub(uv().y.mul(6.0))).mul(0.1).add(0.95);
 const glow = uniform(1.0);
 const dieMat = new THREE.MeshPhysicalNodeMaterial({ map: dieTex, metalness: 0.55, roughness: 0.3,
   iridescence: 0.9, iridescenceIOR: 1.45, iridescenceThicknessRange: [180, 520], clearcoat: 1, clearcoatRoughness: 0.12 });
