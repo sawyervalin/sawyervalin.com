@@ -1,0 +1,298 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Selling Collectibles · Sawyer Valin</title>
+<meta name="description" content="Selling a family collectibles collection and treating it as a data project: a pandas bundle cleaner and interactive Plotly dashboards.">
+<meta name="theme-color" content="#060A13">
+<link rel="canonical" href="https://www.sawyervalin.com/project1/">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%23060A13'/%3E%3Crect x='14' y='14' width='36' height='36' rx='4' fill='none' stroke='%234F8DFF' stroke-width='3'/%3E%3Cpath d='M14 22 L22 14' stroke='%234F8DFF' stroke-width='3'/%3E%3Ctext x='32' y='39' font-family='monospace' font-size='15' font-weight='700' text-anchor='middle' fill='%23E3E9F3'%3ESV%3C/text%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wdth,wght@85..100,300..700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/assets/site.css">
+<style>
+.page{max-width:56rem;margin-inline:auto;padding-top:calc(120px + env(safe-area-inset-top,0px))}
+.back{font-family:var(--f-mono);font-size:.8125rem;color:var(--mute);text-decoration:none}
+.back:hover{color:var(--text)}
+.page h1{font-size:clamp(2.6rem,6vw,4.4rem);line-height:1;margin:18px 0 14px}
+.page .lede{color:var(--mute);font-size:1.125rem;max-width:40rem}
+.page section{margin-top:clamp(48px,7vw,80px)}
+.page h2{font-size:clamp(1.6rem,3vw,2.2rem);line-height:1.1;margin-bottom:14px}
+.page p,.page li{color:var(--mute)}
+.page p + p{margin-top:12px}
+.page ul{padding-left:20px;display:grid;gap:10px}
+.page li::marker{color:var(--accent)}
+.page strong{color:var(--text);font-weight:600}
+.page code{font-family:var(--f-mono);font-size:.875em;color:var(--text)}
+.wide{max-width:56rem;margin-inline:auto}
+.controls{display:flex;gap:10px 18px;flex-wrap:wrap;align-items:center;margin:18px 0;font-family:var(--f-mono);font-size:.8125rem;color:var(--mute)}
+.controls label{display:flex;gap:8px;align-items:center}
+.controls select{background:var(--ink-2);color:var(--text);border:1px solid var(--line-2);border-radius:6px;padding:5px 8px;font:inherit}
+.controls input{accent-color:var(--accent)}
+.views{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:14px}
+.views .btn[aria-pressed="true"]{border-color:var(--accent);background:var(--accent-soft);color:var(--text)}
+.chart{width:100%;height:520px;border:1px solid var(--line);border-radius:var(--r);background:var(--ink-2);overflow:hidden}
+.status{font-family:var(--f-mono);font-size:.8125rem;color:var(--mute);min-height:1.2em}
+.sheet{height:70vh;min-height:480px;border:1px solid var(--line);border-radius:var(--r);overflow:hidden;margin-top:16px}
+.sheet iframe{width:100%;height:100%;border:0;background:#fff}
+.row{display:flex;gap:10px;flex-wrap:wrap}
+footer{margin-top:clamp(72px,10vw,120px)}
+</style>
+</head>
+<body>
+
+<header class="nav" id="nav">
+  <div class="nav-in">
+    <a class="brand" href="/" aria-label="Sawyer Valin, home">
+      <svg viewBox="0 0 26 26" aria-hidden="true"><rect x="1.5" y="1.5" width="23" height="23" rx="3" fill="none" stroke="#4F8DFF" stroke-width="1.5"/><path d="M1.5 7 L7 1.5" stroke="#4F8DFF" stroke-width="1.5"/><text x="13" y="17" font-family="ui-monospace,monospace" font-size="9" font-weight="700" text-anchor="middle" fill="#E3E9F3">SV</text></svg>
+      sawyervalin
+    </a>
+  </div>
+</header>
+
+<main>
+  <article class="page">
+    <a class="back" href="/#projects">&larr; projects</a>
+    <h1>Selling Collectibles</h1>
+    <p class="lede">Funding college by turning a family collection into cash, and treating every sale as data.</p>
+
+    <section>
+      <h2>Project journal</h2>
+      <p>Instead of real estate, stocks, or crypto, my dad spent years picking up collectibles: mostly Batman, with a mix of other franchises. As his interest in storing a big collection faded, I took on selling it and treating it like a data project: scan barcodes on my phone, fetch UPC details, list items, and track every sale.</p>
+      <p>I wanted to know which franchises move best, how shipping and tax affect margins, and whether release era matters. To keep the data honest, I wrote a cleaner that fixes bundle listings: header rows with a blank title and a quantity allocate their total price, shipping, tax, and profit across the next N items.</p>
+    </section>
+
+    <section>
+      <h2>What the data says so far</h2>
+      <ul>
+        <li><strong>Franchise differences.</strong> Batman sells steadily with lots of mid-price items; other lines spike more but with fewer sales. Brand strength shows up as consistency as much as peak price.</li>
+        <li><strong>Era matters.</strong> Older pieces command higher prices and stronger margins, the late 1990s dip from oversupply, and some newer niche releases rebound. Price by release year looks U-shaped.</li>
+        <li><strong>Price and profit aren't linear.</strong> Shipping, fees, and tax flatten margins on higher-priced sales. Filtering outliers makes the typical relationship much clearer.</li>
+        <li><strong>Operational takeaway.</strong> List reliable mid-tier Batman items first for cash flow; prioritize genuinely older pieces or niche modern runs for margin; bundle heavy, low-margin items.</li>
+      </ul>
+      <p style="margin-top:16px">With over 70 more listings ready to go, the project continues.</p>
+    </section>
+  </article>
+
+  <section class="wide" style="margin-top:clamp(48px,7vw,80px)">
+    <div class="page" style="padding-top:0"><h2>Interactive dashboard</h2></div>
+    <div class="controls">
+      <label>franchise <select id="franchise"><option value="All">All</option></select></label>
+      <label>group by <select id="grouping"><option value="day">day</option><option value="week">week</option><option value="month">month</option></select></label>
+      <label>rows <select id="bundleView"><option value="All">all</option><option value="Components">bundle components</option><option value="Singles">singles</option></select></label>
+      <label><input type="checkbox" id="toggleRolling" checked> 7-period average</label>
+      <label><input type="checkbox" id="excludeOutliers"> exclude outliers above
+        <select id="outlierPct"><option value="0.95">p95</option><option value="0.98" selected>p98</option><option value="0.99">p99</option></select></label>
+    </div>
+    <div class="views" role="group" aria-label="Chart view">
+      <button class="btn" type="button" data-view="overview" aria-pressed="true">revenue &amp; items</button>
+      <button class="btn" type="button" data-view="spread" aria-pressed="false">profit spread</button>
+      <button class="btn" type="button" data-view="components" aria-pressed="false">sold vs ship vs tax</button>
+      <button class="btn" type="button" data-view="scatter" aria-pressed="false">price vs profit</button>
+    </div>
+    <div class="chart" id="chart"></div>
+    <p class="status" id="viz-status"></p>
+  </section>
+
+  <section class="wide" style="margin-top:clamp(48px,7vw,80px)">
+    <div class="page" style="padding-top:0">
+      <h2>Live sheet</h2>
+      <div class="row">
+        <a class="btn" target="_blank" rel="noopener" href="https://docs.google.com/spreadsheets/d/1aB2IzxG7Vv5amtnuLUvg0qsrHw6Hu8sP1gwmYkh0gNE/view?gid=588000366">open in Google Sheets &nearr;</a>
+        <a class="btn" href="https://docs.google.com/spreadsheets/d/1aB2IzxG7Vv5amtnuLUvg0qsrHw6Hu8sP1gwmYkh0gNE/export?format=csv&amp;gid=588000366">download CSV &darr;</a>
+      </div>
+    </div>
+    <div class="sheet">
+      <iframe title="Collectibles sales sheet" src="https://docs.google.com/spreadsheets/d/e/2PACX-1vRObTST4WPTGlWE7ItZzqYU0AQyZIiiWIGVJkqSta4SKwW5VfU4-E9K-oYOUhkHx3NJEPzpx-wcvftw/pubhtml?gid=588000366&amp;single=true&amp;widget=true&amp;headers=false" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
+    </div>
+  </section>
+
+  <section class="page" style="padding-top:0;margin-top:clamp(48px,7vw,80px)">
+    <h2>Stack</h2>
+    <ul>
+      <li><strong>Source.</strong> eBay exports, Google Sheets, phone barcode scans and UPC lookup</li>
+      <li><strong>Cleaning.</strong> Python and <code>pandas</code> with a bundle allocator (header to components)</li>
+      <li><strong>Charts.</strong> Plotly.js, fed by a cleaned JSON export</li>
+    </ul>
+  </section>
+</main>
+
+<footer>
+  <span>&copy; <span id="yr">2026</span> Sawyer Valin &middot; Irvine, CA</span>
+  <a href="/">sawyervalin.com</a>
+</footer>
+
+<script src="https://cdn.plot.ly/plotly-2.35.2.min.js"></script>
+<script>
+(() => {
+  document.getElementById('yr').textContent = new Date().getFullYear();
+  const nav = document.getElementById('nav');
+  const solid = () => nav.classList.toggle('solid', scrollY > 30);
+  solid(); addEventListener('scroll', solid, { passive: true });
+
+  const DATA_URL = '/assets/data/cleaned_ebay_orders.json';
+  const STATUS = document.getElementById('viz-status');
+  const say = m => { STATUS.textContent = m || ''; };
+  const num = v => { const x = parseFloat(v); return Number.isFinite(x) ? x : 0; };
+
+  // dark theme shared by every chart
+  const css = getComputedStyle(document.documentElement);
+  const C = { text: css.getPropertyValue('--mute').trim(), grid: css.getPropertyValue('--line').trim(), accent: '#4F8DFF', hi: '#8DB6FF', warm: '#F2C46B' };
+  const base = (extra) => Object.assign({
+    paper_bgcolor: 'rgba(0,0,0,0)', plot_bgcolor: 'rgba(0,0,0,0)',
+    font: { family: 'IBM Plex Mono, monospace', size: 12, color: C.text },
+    colorway: [C.accent, C.hi, C.warm, '#5BE3A0'],
+    legend: { orientation: 'h', y: -0.18 },
+    margin: { t: 30, r: 50, l: 60, b: 60 }
+  }, extra);
+  const axis = (title, more) => Object.assign({ title, gridcolor: C.grid, zerolinecolor: C.grid, linecolor: C.grid }, more);
+  const plot = (traces, layout) => Plotly.newPlot('chart', traces, base(layout), { responsive: true, displaylogo: false });
+
+  function getFranchise(title) {
+    const t = (title || '').toLowerCase();
+    if (!t) return 'Unknown';
+    for (const [k, v] of [['batman','Batman'],['peanuts','Peanuts'],['star trek','Star Trek'],['star wars','Star Wars'],['x-men','X-Men'],['superman','Superman'],['buffy','Buffy']]) if (t.includes(k)) return v;
+    return 'Other';
+  }
+  function percentile(arr, p){
+    const a = arr.filter(Number.isFinite).sort((x,y)=>x-y);
+    if (!a.length) return Infinity;
+    const idx = (a.length - 1) * p, lo = Math.floor(idx), hi = Math.ceil(idx);
+    return lo === hi ? a[lo] : a[lo]*(1-(idx-lo)) + a[hi]*(idx-lo);
+  }
+  function rolling(arr, win = 7){
+    const out = []; let s = 0;
+    for (let i = 0; i < arr.length; i++) { s += arr[i]; if (i >= win) s -= arr[i - win]; out.push(i >= win - 1 ? s / win : s / (i + 1)); }
+    return out;
+  }
+
+  // bundle guard: a header row (blank title, qty >= 2) allocates its totals to the next N rows
+  function resolveBundles(rows){
+    const out = []; let i = 0, bundleId = 1;
+    while (i < rows.length) {
+      const r = rows[i], qty = parseInt(r['Quantity'] || 1, 10);
+      if ((!r['Item Title'] || String(r['Item Title']).trim() === '') && qty >= 2) {
+        const comps = rows.slice(i + 1, i + 1 + qty);
+        const soldSum = comps.reduce((s,c) => s + num(c['Sold For']), 0);
+        const w = comps.map(c => soldSum > 0 ? num(c['Sold For']) / soldSum : 1 / Math.max(1, comps.length));
+        comps.forEach((c, k) => {
+          const copy = { ...c, Quantity: 1 };
+          ['Shipping And Handling','eBay Collected Tax','Total Price','Revenue','Gross Profit','Net Profit'].forEach(col => {
+            if (!num(copy[col]) && num(r[col])) copy[col] = num(r[col]) * w[k];
+          });
+          if (!num(copy['Sold For']) && num(r['Sold For'])) copy['Sold For'] = num(r['Sold For']) * w[k];
+          if (!copy['Sale Date'] && r['Sale Date']) copy['Sale Date'] = r['Sale Date'];
+          copy['Bundle Flag'] = copy['Bundle Flag'] || 'FromHeader';
+          copy['Bundle ID'] = copy['Bundle ID'] || `B${bundleId}`;
+          out.push(copy);
+        });
+        i += 1 + comps.length; bundleId++;
+      } else {
+        out.push({ ...r, 'Bundle Flag': r['Bundle Flag'] || 'SingleOrOriginal' }); i++;
+      }
+    }
+    return out;
+  }
+  const normalize = d => ({
+    title: d['Item Title'] || '', franchise: getFranchise(d['Item Title']),
+    saleDateISO: new Date(d['Sale Date']).toISOString(),
+    revenue: num(d['Revenue']), netProfit: num(d['Net Profit']), soldFor: num(d['Sold For']),
+    shipping: num(d['Shipping And Handling']), tax: num(d['eBay Collected Tax']),
+    qty: num(d['Quantity'] || 1), bundleFlag: d['Bundle Flag'] || null
+  });
+
+  function groupDates(rows, mode){
+    const key = d => {
+      const dt = new Date(d);
+      if (mode === 'month') return `${dt.getFullYear()}-${String(dt.getMonth()+1).padStart(2,'0')}`;
+      if (mode === 'week'){
+        const t = new Date(Date.UTC(dt.getFullYear(), dt.getMonth(), dt.getDate()));
+        t.setUTCDate(t.getUTCDate() + 4 - (t.getUTCDay() || 7));
+        const week = Math.ceil((((t - new Date(Date.UTC(t.getUTCFullYear(),0,1)))/86400000) + 1)/7);
+        return `${t.getUTCFullYear()}-W${String(week).padStart(2,'0')}`;
+      }
+      return dt.toISOString().slice(0,10);
+    };
+    const m = new Map();
+    rows.forEach(r => { const k = key(r.saleDateISO), c = m.get(k) || { rev:0, qty:0 }; c.rev += r.revenue; c.qty += r.qty; m.set(k, c); });
+    const keys = [...m.keys()].sort();
+    return { keys, revenue: keys.map(k => m.get(k).rev), qty: keys.map(k => m.get(k).qty) };
+  }
+
+  const views = {
+    overview(rows){
+      const g = groupDates(rows, document.getElementById('grouping').value);
+      const t = [
+        { x:g.keys, y:g.revenue, type:'scatter', mode:'lines+markers', name:'revenue', yaxis:'y' },
+        { x:g.keys, y:g.qty, type:'bar', name:'items', yaxis:'y2', opacity:0.35 }
+      ];
+      if (document.getElementById('toggleRolling').checked) {
+        t.push({ x:g.keys, y:rolling(g.revenue), type:'scatter', mode:'lines', name:'revenue avg', line:{ dash:'dot' } });
+        t.push({ x:g.keys, y:rolling(g.qty), type:'scatter', mode:'lines', name:'items avg', yaxis:'y2', line:{ dash:'dot' } });
+      }
+      plot(t, { barmode:'overlay', xaxis:axis(''), yaxis:axis('revenue', { rangemode:'tozero' }), yaxis2:axis('items', { rangemode:'tozero', overlaying:'y', side:'right', showgrid:false }) });
+    },
+    spread(rows){
+      const p = rows.map(r => r.netProfit).filter(Number.isFinite);
+      plot([
+        { y:p, type:'box', name:'net profit', boxpoints:'outliers' },
+        { x:p, type:'histogram', name:'histogram', xbins:{ size:10 }, opacity:0.7, xaxis:'x2', yaxis:'y2' }
+      ], { grid:{ rows:1, columns:2, pattern:'independent' }, showlegend:false,
+           xaxis:axis(''), yaxis:axis('net profit'), xaxis2:axis('net profit'), yaxis2:axis('count') });
+    },
+    components(rows){
+      const sum = k => rows.reduce((s,r) => s + r[k], 0);
+      plot([{ x:['sold for','shipping','tax'], y:[sum('soldFor'), sum('shipping'), sum('tax')], type:'bar', marker:{ color:[C.accent, C.hi, C.warm] } }],
+           { xaxis:axis(''), yaxis:axis('total dollars', { rangemode:'tozero' }) });
+    },
+    scatter(rows){
+      plot([{ x:rows.map(r=>r.soldFor), y:rows.map(r=>r.netProfit), text:rows.map(r=>r.title), mode:'markers', type:'scatter', marker:{ size:8, opacity:.8 },
+              hovertemplate:'%{text}<br>sold %{x:$,.2f}<br>profit %{y:$,.2f}<extra></extra>' }],
+           { xaxis:axis('sold price'), yaxis:axis('net profit') });
+    }
+  };
+
+  function filtered(base){
+    const f = document.getElementById('franchise').value, b = document.getElementById('bundleView').value;
+    let rows = base.filter(r => {
+      const isComp = r.bundleFlag === 'FromHeader', isSingle = !r.bundleFlag || r.bundleFlag === 'SingleOrOriginal';
+      return (f === 'All' || r.franchise === f) && (b === 'All' || (b === 'Components' ? isComp : isSingle));
+    });
+    if (document.getElementById('excludeOutliers').checked && rows.length){
+      const pct = parseFloat(document.getElementById('outlierPct').value);
+      const priceCut = percentile(rows.map(r => r.soldFor), pct), profitCut = percentile(rows.map(r => r.netProfit), pct);
+      rows = rows.filter(r => r.soldFor <= priceCut && r.netProfit <= profitCut);
+    }
+    return rows;
+  }
+
+  (async () => {
+    try {
+      say('loading data…');
+      const res = await fetch(DATA_URL, { cache: 'no-store' });
+      if (!res.ok) throw new Error(`HTTP ${res.status}`);
+      const rows = resolveBundles(await res.json()).filter(d => d['Sale Date']).map(normalize);
+
+      const sel = document.getElementById('franchise');
+      [...new Set(rows.map(r => r.franchise))].sort().forEach(f => sel.add(new Option(f, f)));
+
+      let view = 'overview';
+      const render = () => { const r = filtered(rows); views[view](r); say(`${r.length} sales shown`); };
+      document.querySelectorAll('.views .btn').forEach(b => b.addEventListener('click', () => {
+        view = b.dataset.view;
+        document.querySelectorAll('.views .btn').forEach(x => x.setAttribute('aria-pressed', x === b));
+        render();
+      }));
+      document.querySelectorAll('.controls select, .controls input').forEach(el => el.addEventListener('change', render));
+      render();
+    } catch (err) {
+      console.error(err);
+      say('Could not load the data.');
+    }
+  })();
+})();
+</script>
+</body>
+</html>

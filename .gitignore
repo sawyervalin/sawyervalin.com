@@ -1,2 +1,2 @@
-_site/
-.sass-cache/
+.vercel
+.DS_Store

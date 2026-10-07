@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Sawyer Valin</title>
 <meta name="description" content="Sawyer Valin: IT infrastructure consulting at RSM, founder of CircuitPoint, software developer, and UC Irvine Informatics student. SAG-AFTRA performer since 2011.">
-<meta name="theme-color" content="#0B0D11">
+<meta name="theme-color" content="#060A13">
 <link rel="canonical" href="https://www.sawyervalin.com/">
 <meta property="og:type" content="website">
 <meta property="og:url" content="https://www.sawyervalin.com/">
@@ -13,335 +13,194 @@
 <meta property="og:description" content="IT infrastructure, software, and consulting. Irvine, California.">
 <meta property="og:image" content="https://www.sawyervalin.com/img/og.jpg">
 <meta name="twitter:card" content="summary_large_image">
-<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%230B0D11'/%3E%3Crect x='14' y='14' width='36' height='36' rx='4' fill='none' stroke='%234F8DFF' stroke-width='3'/%3E%3Cpath d='M14 22 L22 14' stroke='%234F8DFF' stroke-width='3'/%3E%3Ctext x='32' y='39' font-family='monospace' font-size='15' font-weight='700' text-anchor='middle' fill='%23EEE9E1'%3ESV%3C/text%3E%3C/svg%3E">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%23060A13'/%3E%3Crect x='14' y='14' width='36' height='36' rx='4' fill='none' stroke='%234F8DFF' stroke-width='3'/%3E%3Cpath d='M14 22 L22 14' stroke='%234F8DFF' stroke-width='3'/%3E%3Ctext x='32' y='39' font-family='monospace' font-size='15' font-weight='700' text-anchor='middle' fill='%23E3E9F3'%3ESV%3C/text%3E%3C/svg%3E">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,300..900&family=Geist:wght@300..700&family=Geist+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wdth,wght@85..100,300..700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/assets/site.css">
 <script type="application/ld+json">
 {"@context":"https://schema.org","@type":"Person","name":"Sawyer Valin","url":"https://www.sawyervalin.com/","jobTitle":"Managed IT, Cloud & Infrastructure Consulting","worksFor":{"@type":"Organization","name":"RSM US LLP"},"alumniOf":[{"@type":"CollegeOrUniversity","name":"University of California, Irvine"},{"@type":"CollegeOrUniversity","name":"Citrus College"}],"address":{"@type":"PostalAddress","addressLocality":"Irvine","addressRegion":"CA"},"sameAs":["https://www.linkedin.com/in/sawyervalin/","https://github.com/sawyervalin","https://www.imdb.com/name/nm4825601/"]}
 </script>
 <style>
-/* Layout: a hardware datasheet. Framed poster hero, then labelled bays with a mono #anchor rail. One accent: signal blue. */
-:root{
-  --ink:#0B0D11;       /* page ground, blue-black */
-  --ink-2:#11141A;     /* raised bays */
-  --ink-3:#171B23;     /* viewer stage */
-  --line:#222733;
-  --line-2:#303745;
-  --bone:#EEE9E1;      /* primary text */
-  --mute:#99A1AE;      /* secondary text */
-  --dim:#646C7A;       /* labels */
-  --sun:#4F8DFF;       /* accent: signal blue */
-  --sun-soft:rgba(79,141,255,.14);
-  --gold:#F2B85B;      /* stage section */
-  --f-display:"Archivo","Arial Narrow","Helvetica Neue",Arial,sans-serif;
-  --f-body:"Geist","Helvetica Neue",Arial,sans-serif;
-  --f-mono:"Geist Mono",ui-monospace,"SF Mono",Menlo,Consolas,monospace;
-  --gutter:clamp(16px,3.4vw,80px);
-  --wrap:96rem;        /* ~1530px at 16px root, ~1920px at 20px root */
-  --r:18px;
-  --ease:cubic-bezier(.2,.8,.2,1);
-  color-scheme:dark;
-}
-*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
-html{scroll-behavior:smooth;scroll-padding-top:84px;-webkit-text-size-adjust:100%;font-size:100%}
-@media (min-width:1280px){html{font-size:clamp(16px,.42vw + 10.6px,21px)}}  /* 16px at 1280, ~18.6 at 1920, 21 at 2560+ */
-body{background:var(--ink);color:var(--bone);font-family:var(--f-body);font-size:1rem;line-height:1.6;-webkit-font-smoothing:antialiased;overflow-x:hidden;padding-inline:var(--gutter)}
-img{max-width:100%;display:block}
-a{color:inherit}
-button{font:inherit;color:inherit}
-:focus-visible{outline:2px solid var(--sun);outline-offset:3px;border-radius:6px}
-::selection{background:var(--sun);color:var(--ink)}
-h1,h2,h3{text-wrap:balance}
-.mono{font-family:var(--f-mono);font-size:.8125rem;letter-spacing:.01em}
-.wrap{max-width:var(--wrap);margin-inline:auto}
-
-/* ---------- nav ---------- */
-.nav{position:fixed;top:0;left:0;right:0;z-index:50;padding-top:env(safe-area-inset-top,0px);transition:background .3s,border-color .3s;border-bottom:1px solid transparent}
-.nav.solid{background:rgba(11,13,17,.78);backdrop-filter:blur(14px) saturate(1.2);-webkit-backdrop-filter:blur(14px) saturate(1.2);border-bottom-color:var(--line)}
-.nav-in{max-width:calc(var(--wrap) + 2*var(--gutter));margin-inline:auto;padding:14px var(--gutter);display:flex;align-items:center;gap:24px}
-.brand{display:flex;align-items:center;gap:10px;text-decoration:none;font-family:var(--f-mono);font-weight:600;font-size:.875rem}
-.brand svg{width:26px;height:26px}
-.nav ul{list-style:none;display:flex;gap:22px;margin-left:auto}
-.nav ul a{font-family:var(--f-mono);font-size:.8125rem;color:var(--mute);text-decoration:none;transition:color .2s}
-.nav ul a span{color:var(--sun)}
-.nav ul a:hover,.nav ul a[aria-current="true"]{color:var(--bone)}
-.nav .resume{font-family:var(--f-mono);font-size:.8125rem;text-decoration:none;border:1px solid var(--line-2);border-radius:999px;padding:7px 14px;transition:border-color .2s,background .2s}
-.nav .resume:hover{border-color:var(--sun);background:var(--sun-soft)}
-.menu-btn{display:none;margin-left:auto;background:none;border:1px solid var(--line-2);border-radius:999px;padding:6px 14px;font-family:var(--f-mono);font-size:.8125rem;cursor:pointer}
-
-/* ---------- hero ---------- */
+/* hero */
 .hero{padding-top:calc(76px + env(safe-area-inset-top,0px))}
-.frame{position:relative;max-width:var(--wrap);margin-inline:auto;border:1px solid var(--line);border-radius:26px;overflow:hidden;min-height:max(40rem,calc(100svh - 6rem));isolation:isolate;
+.frame{position:relative;max-width:var(--wrap);margin-inline:auto;border:1px solid var(--line);border-radius:24px;overflow:hidden;min-height:max(40rem,calc(100svh - 6rem));isolation:isolate;
   background:
-    radial-gradient(120% 60% at 50% 64%,rgba(79,141,255,.30) 0%,rgba(79,141,255,.10) 28%,transparent 58%),
-    linear-gradient(180deg,#0E1118 0%,#121622 48%,#1B1A1E 64%,#0C0E13 100%)}
-.horizon{position:absolute;left:0;right:0;top:64%;height:1px;z-index:1;background:linear-gradient(90deg,transparent,rgba(79,141,255,.0) 6%,var(--sun) 30%,#BFD6FF 50%,var(--sun) 70%,transparent 94%);box-shadow:0 0 24px 2px rgba(79,141,255,.55)}
+    radial-gradient(120% 60% at 50% 64%,rgba(79,141,255,.32) 0%,rgba(79,141,255,.10) 28%,transparent 58%),
+    linear-gradient(180deg,#08101F 0%,#0C1830 48%,#0D1A33 64%,#070C17 100%)}
+.horizon{position:absolute;left:0;right:0;top:64%;height:1px;z-index:1;background:linear-gradient(90deg,transparent 6%,var(--accent) 30%,#CFE0FF 50%,var(--accent) 70%,transparent 94%);box-shadow:0 0 24px 2px rgba(79,141,255,.55)}
 .horizon::after{content:"";position:absolute;left:10%;right:10%;top:1px;height:140px;background:linear-gradient(180deg,rgba(79,141,255,.10),transparent);filter:blur(2px)}
-.name{position:absolute;z-index:2;left:0;right:0;top:16.5%;padding-inline:1.2rem;text-align:center;font-family:var(--f-display);font-weight:800;font-stretch:78%;font-variation-settings:"wdth" 78;text-transform:uppercase;line-height:.82;letter-spacing:-.02em;font-size:min(14.6vw,calc((min(100vw,var(--wrap)) - 2*var(--gutter)) * .158));white-space:nowrap;
-  background:linear-gradient(180deg,var(--bone) 20%,#D8CFC4 62%,rgba(238,233,225,.55) 100%);-webkit-background-clip:text;background-clip:text;color:transparent;animation:rise 1.2s var(--ease) both}
+.name{position:absolute;z-index:2;left:0;right:0;top:16%;padding-inline:1.2rem;text-align:center;font-weight:700;font-stretch:85%;text-transform:uppercase;line-height:.84;letter-spacing:-.025em;font-size:min(12.8vw,calc((min(100vw,var(--wrap)) - 2*var(--gutter)) * .138));white-space:nowrap;
+  background:linear-gradient(180deg,#F2F6FC 20%,#C3D2EA 62%,rgba(195,210,234,.5) 100%);-webkit-background-clip:text;background-clip:text;color:transparent;animation:rise 1.2s var(--ease) both}
 .name span{display:inline-block}
 .portrait{position:absolute;z-index:3;left:50%;bottom:0;transform:translateX(-50%);height:79%;width:auto;max-width:none;filter:drop-shadow(0 30px 40px rgba(0,0,0,.45));animation:portrait 1.4s .1s var(--ease) both;pointer-events:none;user-select:none}
-.hero-meta{position:absolute;z-index:4;font-family:var(--f-mono);font-size:.8125rem;color:var(--mute);animation:fade 1s .5s both}
-.hm-tl{top:1.6rem;left:1.7rem;display:grid;gap:4px}
-.hm-tl b{color:var(--bone);font-weight:500}
-.hm-tl .arrow{color:var(--sun)}
-.hm-tr{top:1.6rem;right:1.7rem;text-align:right;display:grid;gap:4px}
-.hm-tr .clock{color:var(--bone)}
-.hm-bl{left:1.7rem;bottom:1.7rem;max-width:22rem;display:grid;gap:14px}
-.status{display:inline-flex;align-items:center;gap:9px;width:max-content;max-width:100%;border:1px solid var(--line-2);background:rgba(11,13,17,.55);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);border-radius:999px;padding:6px 13px 6px 11px;color:var(--bone)}
-.dot{width:7px;height:7px;border-radius:50%;background:#5BE38F;box-shadow:0 0 0 0 rgba(91,227,143,.6);animation:ping 2.4s infinite}
-.hm-bl p{font-family:var(--f-body);font-size:.975rem;line-height:1.55;color:#D5D0C8}
-.hm-br{right:1.7rem;bottom:1.7rem;max-width:18rem;display:grid;gap:14px;justify-items:end;text-align:right}
-.working{border:1px solid var(--line-2);background:rgba(11,13,17,.55);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);padding:10px 14px;border-radius:10px;text-align:left;color:var(--mute);display:grid;gap:2px}
-.working b{color:var(--bone);font-weight:500}
-.working i{font-style:normal;color:var(--sun)}
-.socials{display:flex;gap:16px;flex-wrap:wrap;justify-content:flex-end}
-.socials a{text-decoration:none;color:var(--bone);transition:color .2s}
-.socials a:hover{color:var(--sun)}
-.scroll-cue{position:absolute;z-index:4;right:26px;top:50%;transform:translateY(-50%);writing-mode:vertical-rl;font-family:var(--f-mono);font-size:.6875rem;letter-spacing:.3em;color:var(--dim);display:flex;align-items:center;gap:12px;text-decoration:none}
-.scroll-cue::after{content:"";width:1px;height:54px;background:linear-gradient(var(--dim),transparent)}
+.hero-meta{position:absolute;z-index:4;animation:fade 1s .5s both}
+.intro{left:1.8rem;bottom:1.8rem;max-width:21rem;font-size:1rem;line-height:1.6;color:#C9D3E3}
+.socials{right:1.8rem;bottom:1.8rem;display:flex;gap:18px}
+.socials a{text-decoration:none;color:var(--text);transition:color .2s}
+.socials a:hover{color:var(--accent)}
 @keyframes rise{from{opacity:0;transform:translateY(28px)}to{opacity:1;transform:none}}
 @keyframes portrait{from{opacity:0;transform:translate(-50%,24px)}to{opacity:1;transform:translate(-50%,0)}}
 @keyframes fade{from{opacity:0}to{opacity:1}}
-@keyframes ping{0%{box-shadow:0 0 0 0 rgba(91,227,143,.55)}70%{box-shadow:0 0 0 8px rgba(91,227,143,0)}100%{box-shadow:0 0 0 0 rgba(91,227,143,0)}}
 
-/* ---------- bays ---------- */
+/* sections */
 .bay{max-width:var(--wrap);margin-inline:auto;padding-block:clamp(72px,10vw,128px) 0}
-.bay-head{display:grid;grid-template-columns:minmax(0,1fr);gap:18px;margin-bottom:clamp(32px,4vw,52px)}
-.tag{display:flex;align-items:center;gap:14px;font-family:var(--f-mono);font-size:.875rem;color:var(--bone)}
-.tag span{color:var(--sun)}
-.tag::after{content:"";flex:1;height:1px;background:linear-gradient(90deg,var(--line-2),transparent 70%)}
-.bay-head .row{display:grid;grid-template-columns:minmax(0,1.1fr) minmax(0,1fr);gap:clamp(20px,4vw,64px);align-items:end}
-.bay-head h2{font-family:var(--f-display);font-weight:700;font-variation-settings:"wdth" 88;font-size:clamp(2.1rem,4.6vw,3.6rem);line-height:.98;letter-spacing:-.025em}
+.bay-head{display:grid;grid-template-columns:minmax(0,1.1fr) minmax(0,1fr);gap:clamp(16px,4vw,64px);align-items:end;margin-bottom:clamp(32px,4vw,52px)}
+.bay-head h2{font-size:clamp(2rem,4.4vw,3.4rem);line-height:1.02}
 .bay-head p{color:var(--mute);max-width:36rem;font-size:1.0625rem}
 
-/* ---------- now ---------- */
-.quote{position:relative;border:1px solid var(--line-2);padding:26px 30px 22px;max-width:44rem;margin:0 auto clamp(40px,6vw,72px);font-family:var(--f-mono);font-size:clamp(.95rem,1.4vw,1.075rem);line-height:1.65;color:var(--bone)}
-.quote::before,.quote::after{content:"\201C";position:absolute;font-family:var(--f-display);font-size:3rem;line-height:1;color:var(--sun);background:var(--ink);padding:0 8px}
-.quote::before{top:-18px;left:18px}
-.quote::after{content:"\201D";bottom:-34px;right:18px}
-.quote cite{display:block;margin-top:14px;font-style:normal;color:var(--mute);font-size:.8125rem}
+/* now */
 .now-grid{display:grid;grid-template-columns:minmax(0,1.45fr) minmax(0,1fr);gap:clamp(18px,1.4vw,32px)}
 .panel{background:var(--ink-2);border:1px solid var(--line);border-radius:var(--r);padding:clamp(22px,3vw,34px)}
-.lead .org{font-family:var(--f-mono);font-size:.8125rem;color:var(--sun);display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap}
-.lead .org span{color:var(--dim)}
-.lead h3{font-family:var(--f-display);font-variation-settings:"wdth" 90;font-weight:700;font-size:clamp(1.5rem,2.6vw,2rem);line-height:1.08;letter-spacing:-.015em;margin:14px 0 12px}
+.lead .org{font-family:var(--f-mono);font-size:.8125rem;color:var(--mute)}
+.lead h3{font-size:clamp(1.5rem,2.6vw,2rem);line-height:1.1;margin:12px 0}
 .lead p{color:var(--mute);max-width:40rem}
-.stats{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:1px;margin-top:26px;background:var(--line);border:1px solid var(--line);border-radius:12px;overflow:hidden}
-.stats div{background:var(--ink-2);padding:16px 16px 14px}
-.stats b{display:block;font-family:var(--f-display);font-variation-settings:"wdth" 80;font-weight:700;font-size:clamp(1.9rem,3.4vw,2.6rem);line-height:1;letter-spacing:-.02em;font-variant-numeric:tabular-nums}
-.stats small{display:block;margin-top:8px;color:var(--mute);font-size:.8125rem;line-height:1.4}
-.next{margin-top:18px;font-family:var(--f-mono);font-size:.8125rem;color:var(--dim)}
-.also h3{font-family:var(--f-mono);font-size:.8125rem;font-weight:500;color:var(--dim);margin-bottom:14px}
+.stats{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:24px;margin-top:28px;padding-top:24px;border-top:1px solid var(--line)}
+.stats b{display:block;font-weight:600;font-stretch:85%;font-size:clamp(2rem,3.4vw,2.7rem);line-height:1;letter-spacing:-.02em;color:var(--accent-hi);font-variant-numeric:tabular-nums}
+.stats small{display:block;margin-top:8px;color:var(--mute);font-size:.875rem;line-height:1.45}
 .also ul{list-style:none;display:grid}
-.also li{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:4px 12px;padding:13px 0;border-top:1px solid var(--line)}
+.also li{padding:14px 0;border-top:1px solid var(--line)}
 .also li:first-child{border-top:0;padding-top:0}
-.also strong{font-weight:600}
-.also li > span{font-family:var(--f-mono);font-size:.75rem;color:var(--dim);align-self:center;white-space:nowrap}
-.also em{grid-column:1 / -1;font-style:normal;color:var(--mute);font-size:.9375rem;line-height:1.45}
+.also li:last-child{padding-bottom:0}
+.also strong{font-weight:600;display:block}
+.also span{color:var(--mute);font-size:.9375rem;line-height:1.5}
 .also a{text-underline-offset:3px;text-decoration-color:var(--line-2)}
-.also a:hover{text-decoration-color:var(--sun)}
+.also a:hover{text-decoration-color:var(--accent)}
 
-/* ---------- stack: model viewer ---------- */
+/* stack: model viewer */
 .stack-grid{display:grid;grid-template-columns:minmax(0,1.2fr) minmax(0,1fr);gap:clamp(18px,1.6vw,36px);align-items:start}
-.viewer{position:sticky;top:84px;border:1px solid var(--line);border-radius:var(--r);background:var(--ink-3);overflow:hidden;aspect-ratio:1/1;max-height:calc(100svh - 110px);width:100%;max-width:100%}
+.viewer{position:sticky;top:84px;border:1px solid var(--line);border-radius:var(--r);background:var(--ink-3);overflow:hidden;aspect-ratio:1/1;max-height:calc(100svh - 110px);width:100%}
 .viewer canvas{position:absolute;inset:0;width:100%;height:100%;display:block;outline:none}
-.viewer .v-top{position:absolute;z-index:3;top:14px;left:16px;right:16px;display:flex;justify-content:space-between;gap:10px;font-family:var(--f-mono);font-size:.75rem;color:var(--dim);pointer-events:none}
-.viewer .v-top b{color:var(--bone);font-weight:500}
-.badge{border:1px solid var(--line-2);border-radius:999px;padding:3px 10px;color:var(--mute);background:rgba(11,13,17,.6)}
-.badge.gpu{color:var(--sun);border-color:rgba(79,141,255,.45)}
-.v-bar{position:absolute;z-index:3;left:50%;bottom:14px;transform:translateX(-50%);display:flex;gap:4px;padding:4px;border:1px solid var(--line-2);border-radius:999px;background:rgba(11,13,17,.72);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);max-width:calc(100% - 24px)}
-.v-bar button{background:none;border:0;border-radius:999px;padding:7px 12px;font-family:var(--f-mono);font-size:.75rem;color:var(--mute);cursor:pointer;white-space:nowrap;transition:background .2s,color .2s}
-.v-bar button:hover{color:var(--bone);background:rgba(255,255,255,.06)}
-.v-bar button[aria-pressed="true"]{color:var(--ink);background:var(--sun)}
-.v-hint{position:absolute;z-index:3;left:16px;bottom:62px;font-family:var(--f-mono);font-size:.6875rem;color:var(--dim);pointer-events:none;transition:opacity .4s}
+.v-bar{position:absolute;z-index:3;left:50%;bottom:14px;transform:translateX(-50%);display:flex;gap:4px;padding:4px;border:1px solid var(--line-2);border-radius:10px;background:rgba(6,10,19,.75);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);max-width:calc(100% - 24px)}
+.v-bar button{background:none;border:0;border-radius:7px;padding:7px 12px;font-family:var(--f-mono);font-size:.75rem;color:var(--mute);cursor:pointer;white-space:nowrap;transition:background .2s,color .2s}
+.v-bar button:hover{color:var(--text);background:rgba(255,255,255,.06)}
+.v-bar button[aria-pressed="true"]{color:#fff;background:var(--accent)}
+.v-hint{position:absolute;z-index:3;left:16px;top:14px;font-family:var(--f-mono);font-size:.6875rem;color:var(--dim);pointer-events:none;transition:opacity .4s}
 .hotspots{position:absolute;inset:0;z-index:2;pointer-events:none}
-.hs{position:absolute;left:0;top:0;pointer-events:auto;transform:translate(-50%,-50%);display:flex;align-items:center;gap:6px;border:1px solid rgba(238,233,225,.35);background:rgba(11,13,17,.72);color:var(--bone);border-radius:999px;padding:3px 9px 3px 5px;font-family:var(--f-mono);font-size:.6875rem;cursor:pointer;opacity:0;transition:opacity .35s,background .2s,border-color .2s;will-change:transform}
-.hs::before{content:"";width:7px;height:7px;border-radius:50%;background:var(--sun)}
+.hs{position:absolute;left:0;top:0;pointer-events:auto;transform:translate(-50%,-50%);display:flex;align-items:center;gap:6px;border:1px solid rgba(227,233,243,.3);background:rgba(6,10,19,.75);color:var(--text);border-radius:6px;padding:3px 8px 3px 6px;font-family:var(--f-mono);font-size:.6875rem;cursor:pointer;opacity:0;transition:opacity .35s,background .2s,border-color .2s;will-change:transform}
+.hs::before{content:"";width:6px;height:6px;border-radius:50%;background:var(--accent)}
 .hs.show{opacity:1}
-.hs:hover,.hs.on{background:var(--sun);color:var(--ink);border-color:var(--sun)}
-.hs.on::before,.hs:hover::before{background:var(--ink)}
+.hs:hover,.hs.on{background:var(--accent);color:#fff;border-color:var(--accent)}
+.hs.on::before,.hs:hover::before{background:#fff}
 .v-fallback{position:absolute;inset:0;display:grid;place-items:center;padding:24px;text-align:center;color:var(--mute);font-family:var(--f-mono);font-size:.8125rem}
-.viewer.is-expanded{position:fixed;inset:0;top:0;z-index:100;border-radius:0;border:0;aspect-ratio:auto;max-height:none;height:100%}
+.viewer.is-expanded{position:fixed;inset:0;z-index:100;border-radius:0;border:0;aspect-ratio:auto;max-height:none;height:100%}
 .v-close{display:none}
 .viewer.is-expanded .v-close{display:inline-block}
-.viewer.is-expanded .v-top{top:calc(14px + env(safe-area-inset-top,0px))}
+.viewer.is-expanded .v-hint{top:calc(14px + env(safe-area-inset-top,0px))}
 .viewer.is-expanded .v-bar{bottom:calc(14px + env(safe-area-inset-bottom,0px))}
-.v-detail{position:absolute;z-index:3;right:16px;top:48px;width:min(320px,calc(100% - 32px));border:1px solid var(--line-2);border-radius:14px;background:rgba(11,13,17,.82);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);padding:14px 16px;display:none}
+.v-detail{position:absolute;z-index:3;right:16px;top:16px;width:min(320px,calc(100% - 32px));border:1px solid var(--line-2);border-radius:12px;background:rgba(6,10,19,.85);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);padding:14px 16px;display:none}
 .viewer.is-expanded .v-detail.has{display:block}
-.v-detail h4{font-family:var(--f-display);font-variation-settings:"wdth" 90;font-size:1.125rem;letter-spacing:-.01em;margin:2px 0 8px}
+.v-detail h4{font-size:1.125rem;font-weight:600;margin-bottom:6px}
 .v-detail p{color:var(--mute);font-size:.875rem;line-height:1.5}
 
-.specs{list-style:none;display:grid;gap:0;border-top:1px solid var(--line)}
+.specs{list-style:none;border-top:1px solid var(--line)}
 .spec{border-bottom:1px solid var(--line)}
-.spec-btn{width:100%;display:grid;grid-template-columns:3.4rem minmax(0,1fr) auto;align-items:baseline;gap:12px;text-align:left;background:none;border:0;padding:16px 4px 6px;cursor:pointer}
+.spec-btn{width:100%;display:grid;grid-template-columns:3.4rem minmax(0,1fr);align-items:baseline;gap:12px;text-align:left;background:none;border:0;padding:16px 4px;cursor:pointer}
+.spec.on .spec-btn,.spec.open .spec-btn{padding-bottom:6px}
 .spec .code{font-family:var(--f-mono);font-size:.75rem;color:var(--dim);transition:color .2s}
-.spec .nm{font-family:var(--f-display);font-variation-settings:"wdth" 92;font-weight:650;font-size:1.1875rem;letter-spacing:-.01em;line-height:1.2}
-.spec .where{font-family:var(--f-mono);font-size:.6875rem;color:var(--dim);white-space:nowrap}
-.spec .body{padding:0 4px 16px calc(3.4rem + 16px)}
-.tools{display:flex;flex-wrap:wrap;gap:6px}
-.tools span{font-size:.8125rem;line-height:1.3;border:1px solid var(--line-2);border-radius:6px;padding:3px 8px;color:#D9D4CC}
-.proof{margin-top:10px;font-size:.875rem;color:var(--mute);line-height:1.5}
-.spec.on .code,.spec-btn:hover .code{color:var(--sun)}
-.spec.on{background:linear-gradient(90deg,var(--sun-soft),transparent 70%)}
-.spec.on .tools span{border-color:rgba(79,141,255,.35)}
+.spec .nm{font-weight:600;font-stretch:92%;font-size:1.1875rem;letter-spacing:-.01em;line-height:1.25}
+.spec .body{display:none;padding:0 4px 16px calc(3.4rem + 16px);font-size:.9375rem;line-height:1.55}
+.spec.on .body,.spec.open .body{display:block}
+.tools{color:var(--text);opacity:.85}
+.proof{margin-top:6px;color:var(--mute)}
+.spec.on .code,.spec-btn:hover .code{color:var(--accent)}
+.spec.on{background:linear-gradient(90deg,var(--accent-soft),transparent 70%)}
 
-/* ---------- experience ---------- */
-.jobs{list-style:none;border-top:1px solid var(--line)}
-.job{display:grid;grid-template-columns:11.5rem minmax(0,1fr);gap:clamp(14px,3vw,40px);padding:26px 0;border-bottom:1px solid var(--line)}
-.job .when{font-family:var(--f-mono);font-size:.8125rem;color:var(--mute);font-variant-numeric:tabular-nums;padding-top:4px}
-.job .when .live{color:var(--sun)}
-.job h3{font-family:var(--f-display);font-variation-settings:"wdth" 90;font-weight:700;font-size:1.4rem;line-height:1.15;letter-spacing:-.015em}
-.job h3 a{text-decoration:none}
-.job h3 a:hover{color:var(--sun)}
-.job .role{color:var(--bone);opacity:.85;margin:2px 0 10px;font-size:.9875rem}
-.job ul{padding-left:18px;color:var(--mute);display:grid;gap:6px;font-size:.9688rem}
-.job li::marker{color:var(--dim)}
-.job .meta{display:flex;flex-wrap:wrap;gap:6px;align-content:start;justify-content:flex-end}
-.job .meta span{font-family:var(--f-mono);font-size:.6875rem;color:var(--mute);border:1px solid var(--line);border-radius:5px;padding:2px 7px}
-.job .loc{font-family:var(--f-mono);font-size:.75rem;color:var(--dim);margin-top:4px}
-
-/* ---------- projects ---------- */
-.p-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:clamp(18px,1.4vw,32px)}
-.proj{border:1px solid var(--line);border-radius:var(--r);background:var(--ink-2);display:flex;flex-direction:column;overflow:hidden;transition:border-color .25s,transform .25s var(--ease)}
-.proj:hover{border-color:var(--line-2);transform:translateY(-3px)}
-.proj .stackline{font-family:var(--f-mono);font-size:.75rem;color:var(--mute);padding:11px 20px;border-bottom:1px solid var(--line);display:flex;flex-wrap:wrap;gap:4px 14px}
-.proj .inner{padding:20px 22px 22px;display:flex;flex-direction:column;gap:10px;flex:1}
-.proj .kind{font-family:var(--f-mono);font-size:.75rem;color:var(--sun)}
-.proj h3{font-family:var(--f-display);font-variation-settings:"wdth" 88;font-weight:700;font-size:1.75rem;line-height:1.02;letter-spacing:-.02em}
-.proj p{color:var(--mute);font-size:.9688rem}
-.proj .links{margin-top:auto;padding-top:8px;display:flex;gap:10px;flex-wrap:wrap}
-.btn{display:inline-flex;align-items:center;gap:8px;font-family:var(--f-mono);font-size:.8125rem;text-decoration:none;border:1px solid var(--line-2);border-radius:8px;padding:8px 13px;transition:border-color .2s,background .2s,color .2s;background:none;cursor:pointer}
-.btn:hover{border-color:var(--sun);color:var(--bone);background:var(--sun-soft)}
-.btn.solid{background:var(--sun);color:var(--ink);border-color:var(--sun);font-weight:600}
-.btn.solid:hover{background:#6FA2FF}
-.proj.feature{grid-column:1 / -1;display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr)}
-.proj.feature .stackline{grid-column:1 / -1}
-.proj.feature h3{font-size:clamp(2rem,3.6vw,2.8rem)}
-.term{margin:18px;border:1px solid var(--line);border-radius:12px;background:#07080B;font-family:var(--f-mono);font-size:.78rem;line-height:1.75;padding:14px 16px;color:var(--mute);min-height:15.5rem;overflow:hidden;min-width:0}
-.term .t-head{display:flex;justify-content:space-between;color:var(--dim);border-bottom:1px solid var(--line);padding-bottom:8px;margin-bottom:8px}
-.term .ok{color:#5BE38F}.term .warn{color:var(--gold)}.term .bad{color:#FF6B5B}.term .hi{color:var(--bone)}
-.term .ln{white-space:pre-wrap;overflow-wrap:anywhere}
-.term .score{margin-top:8px;padding-top:8px;border-top:1px solid var(--line);display:flex;justify-content:space-between;gap:10px;color:var(--bone)}
-.term .meter{flex:1;height:8px;align-self:center;border-radius:4px;background:#1b1f27;overflow:hidden}
-.term .meter i{display:block;height:100%;width:0;background:linear-gradient(90deg,var(--gold),#FF6B5B);transition:width 1s var(--ease)}
-.award{display:inline-flex;align-items:center;gap:8px;width:max-content;max-width:100%;font-family:var(--f-mono);font-size:.75rem;color:var(--ink);background:var(--bone);border-radius:6px;padding:3px 9px}
-
-/* ---------- stage ---------- */
-.stage{--sun:var(--gold);--sun-soft:rgba(242,184,91,.12)}
-.stage-wrap{border:1px solid rgba(242,184,91,.22);border-radius:26px;padding:clamp(24px,4vw,52px);background:radial-gradient(70% 90% at 50% 0%,rgba(242,184,91,.12),transparent 70%),var(--ink-2)}
-.stage .bay-head h2{color:var(--gold)}
-.credits{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:clamp(18px,3vw,36px)}
-.credit{border-top:1px solid rgba(242,184,91,.5);padding-top:16px}
-.credit .yr{font-family:var(--f-mono);font-size:.75rem;color:var(--gold)}
-.credit h3{font-family:var(--f-display);font-variation-settings:"wdth" 90;font-weight:700;font-size:1.3rem;line-height:1.15;margin:6px 0 6px}
-.credit p{color:var(--mute);font-size:.9375rem}
-.stage-foot{margin-top:clamp(28px,4vw,44px);display:grid;grid-template-columns:minmax(0,1.2fr) minmax(0,1fr);gap:clamp(18px,4vw,56px);align-items:end}
-.stage-foot blockquote{font-family:var(--f-display);font-variation-settings:"wdth" 88;font-weight:600;font-size:clamp(1.4rem,2.6vw,2rem);line-height:1.2;letter-spacing:-.015em}
-.stage-foot p{color:var(--mute)}
-.stage-foot .links{display:flex;gap:10px;flex-wrap:wrap;margin-top:14px}
-
-/* ---------- record ---------- */
-.rec-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:clamp(18px,1.4vw,32px)}
-.rec h3{font-family:var(--f-display);font-variation-settings:"wdth" 90;font-weight:700;font-size:1.3rem;line-height:1.15;letter-spacing:-.01em}
-.rec .sub{font-family:var(--f-mono);font-size:.75rem;color:var(--sun);margin:6px 0 12px}
-.rec p,.rec li{color:var(--mute);font-size:.9375rem}
-.rec ul{list-style:none;display:grid;gap:8px}
-.rec li b{color:var(--bone);font-weight:500}
-.courses{display:flex;flex-wrap:wrap;gap:6px;margin-top:12px}
-.courses span{font-family:var(--f-mono);font-size:.6875rem;color:var(--mute);border:1px solid var(--line-2);border-radius:5px;padding:2px 7px}
-
-/* ---------- contact ---------- */
-.contact{max-width:var(--wrap);margin-inline:auto;padding-block:clamp(88px,12vw,150px) clamp(48px,7vw,80px)}
-.contact h2{font-family:var(--f-display);font-weight:800;font-variation-settings:"wdth" 80;text-transform:uppercase;font-size:clamp(3rem,10vw,8.4rem);line-height:.86;letter-spacing:-.025em}
-.contact h2 span{color:var(--sun)}
-.contact-row{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:clamp(20px,4vw,60px);margin-top:clamp(28px,4vw,44px);align-items:end}
-.contact p{color:var(--mute);max-width:32rem;font-size:1.0625rem}
-.mail{display:flex;flex-wrap:wrap;align-items:center;gap:10px}
-.mail code{font-family:var(--f-mono);font-size:clamp(.95rem,1.8vw,1.2rem);color:var(--bone);user-select:all;overflow-wrap:anywhere}
-.c-links{display:flex;flex-wrap:wrap;gap:10px;margin-top:16px}
-footer{max-width:var(--wrap);margin-inline:auto;border-top:1px solid var(--line);padding-block:22px calc(22px + env(safe-area-inset-bottom,0px));display:flex;justify-content:space-between;gap:10px 20px;flex-wrap:wrap;font-family:var(--f-mono);font-size:.75rem;color:var(--dim)}
-.sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
-
-
-/* ---------- die map: the phone and tablet stand-in for the 3D viewer ---------- */
+/* die map: the phone and tablet stand-in for the 3D viewer */
 .diemap,.diemap-cap{display:none}
 @media (max-width:860px){
   .viewer,.desk-only{display:none}
   .diemap{display:block;position:relative;aspect-ratio:1/1;width:100%;max-width:30rem;margin:0 auto 22px;border:1px solid var(--line-2);border-radius:14px;padding:10px;
-    background:repeating-linear-gradient(90deg,rgba(160,180,220,.05) 0 1px,transparent 1px 8px),linear-gradient(145deg,#141a26,#0d1118)}
-  .diemap::before{content:"";position:absolute;inset:4px;border:1px dashed rgba(140,180,255,.25);border-radius:10px;pointer-events:none}
+    background:repeating-linear-gradient(90deg,rgba(150,180,235,.05) 0 1px,transparent 1px 8px),linear-gradient(145deg,#0F1A2E,#090F1B)}
+  .diemap::before{content:"";position:absolute;inset:4px;border:1px dashed rgba(120,170,255,.25);border-radius:10px;pointer-events:none}
   .diemap .die-in{position:relative;width:100%;height:100%}
-  .tile{position:absolute;display:flex;align-items:flex-start;justify-content:flex-start;padding:7px 8px;border:1px solid rgba(238,233,225,.22);border-radius:4px;background:rgba(20,25,37,.9);font-family:var(--f-mono);font-size:.72rem;color:var(--mute);cursor:pointer;text-align:left;transition:background .2s,border-color .2s,color .2s;overflow:hidden}
-  .tile::after{content:"";position:absolute;inset:0;background:repeating-linear-gradient(135deg,rgba(200,210,235,.06) 0 1px,transparent 1px 6px);pointer-events:none}
-  .tile b{font-weight:600;color:var(--bone);position:relative;z-index:1}
-  .tile.on{background:rgba(79,141,255,.22);border-color:var(--sun);color:var(--bone)}
-  .tile.on b{color:#BFD6FF}
+  .tile{position:absolute;display:flex;align-items:flex-start;padding:7px 8px;border:1px solid rgba(227,233,243,.2);border-radius:4px;background:rgba(14,22,38,.9);font-family:var(--f-mono);font-size:.72rem;color:var(--mute);cursor:pointer;text-align:left;transition:background .2s,border-color .2s,color .2s;overflow:hidden}
+  .tile::after{content:"";position:absolute;inset:0;background:repeating-linear-gradient(135deg,rgba(190,210,245,.06) 0 1px,transparent 1px 6px);pointer-events:none}
+  .tile b{font-weight:500;color:var(--text);position:relative;z-index:1}
+  .tile.on{background:rgba(79,141,255,.22);border-color:var(--accent);color:var(--text)}
+  .tile.on b{color:var(--accent-hi)}
   .diemap-cap{display:block;font-family:var(--f-mono);font-size:.72rem;color:var(--dim);text-align:center;margin:-12px 0 18px}
-  .spec .body{display:none}
-  .spec.open .body{display:block}
   .spec{position:relative}
   .spec-btn{padding-right:30px}
   .spec-btn::after{content:"+";position:absolute;right:6px;top:15px;font-family:var(--f-mono);font-size:1rem;color:var(--dim)}
   .spec.open .spec-btn::after{content:"\2212"}
 }
 
-/* ---------- responsive ---------- */
-@media (min-width:1700px){
-  .p-grid{grid-template-columns:repeat(3,minmax(0,1fr))}
-  .proj.feature{grid-column:1 / -1}
-}
+/* work */
+.jobs{list-style:none;border-top:1px solid var(--line)}
+.job{display:grid;grid-template-columns:11.5rem minmax(0,1fr);gap:clamp(14px,3vw,40px);padding:24px 0;border-bottom:1px solid var(--line)}
+.job .when{font-family:var(--f-mono);font-size:.8125rem;color:var(--dim);font-variant-numeric:tabular-nums;padding-top:5px}
+.job .when.live{color:var(--accent)}
+.job h3{font-size:1.375rem;line-height:1.2}
+.job h3 a{text-decoration:none}
+.job h3 a:hover{color:var(--accent)}
+.job .role{color:var(--text);opacity:.8;margin:2px 0 6px}
+.job p{color:var(--mute);font-size:.9688rem;max-width:48rem}
+
+/* projects */
+.p-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:clamp(18px,1.4vw,32px)}
+.proj{border:1px solid var(--line);border-radius:var(--r);background:var(--ink-2);padding:24px;display:flex;flex-direction:column;gap:10px;transition:border-color .25s,transform .25s var(--ease)}
+.proj:hover{border-color:var(--line-2);transform:translateY(-3px)}
+.proj h3{font-size:1.75rem;line-height:1.05}
+.proj p{color:var(--mute);font-size:.9688rem}
+.proj .links{margin-top:auto;padding-top:8px;display:flex;gap:10px;flex-wrap:wrap}
+.proj.feature{grid-column:1 / -1;display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:28px;align-items:center}
+.proj.feature .inner{display:flex;flex-direction:column;gap:10px;height:100%}
+.proj.feature h3{font-size:clamp(2rem,3.6vw,2.8rem)}
+.term{border:1px solid var(--line);border-radius:12px;background:#04070D;font-family:var(--f-mono);font-size:.78rem;line-height:1.75;padding:14px 16px;color:var(--mute);min-height:15.5rem;overflow:hidden;min-width:0}
+.term .t-head{display:flex;justify-content:space-between;color:var(--dim);border-bottom:1px solid var(--line);padding-bottom:8px;margin-bottom:8px}
+.term .ok{color:#5BE3A0}.term .warn{color:#F2C46B}.term .bad{color:#FF6B6B}.term .hi{color:var(--text)}
+.term .ln{white-space:pre-wrap;overflow-wrap:anywhere}
+.term .score{margin-top:8px;padding-top:8px;border-top:1px solid var(--line);display:flex;justify-content:space-between;gap:10px;color:var(--text)}
+.term .meter{flex:1;height:8px;align-self:center;border-radius:4px;background:#121A2A;overflow:hidden}
+.term .meter i{display:block;height:100%;width:0;background:linear-gradient(90deg,#F2C46B,#FF6B6B);transition:width 1s var(--ease)}
+
+/* stage + education: simple ruled columns */
+.cols{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:clamp(18px,3vw,40px)}
+.col{border-top:1px solid var(--accent);padding-top:16px}
+.col h3{font-size:1.3rem;line-height:1.2;margin-bottom:6px}
+.col p{color:var(--mute);font-size:.9375rem}
+.col .sub{color:var(--text);opacity:.8;margin-bottom:6px}
+.after{margin-top:clamp(24px,3vw,36px)}
+
+/* contact */
+.contact{max-width:var(--wrap);margin-inline:auto;padding-block:clamp(96px,12vw,160px) clamp(48px,7vw,80px)}
+.contact h2{font-weight:700;font-stretch:85%;font-size:clamp(3rem,9vw,7.6rem);line-height:.9;letter-spacing:-.03em}
+.contact h2 span{color:var(--accent)}
+.contact-row{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:clamp(20px,4vw,60px);margin-top:clamp(28px,4vw,44px);align-items:end}
+.contact p{color:var(--mute);max-width:32rem;font-size:1.0625rem}
+.mail{display:flex;flex-wrap:wrap;align-items:center;gap:10px}
+.mail code{font-family:var(--f-mono);font-size:clamp(.95rem,1.8vw,1.2rem);user-select:all;overflow-wrap:anywhere}
+.c-links{display:flex;flex-wrap:wrap;gap:10px;margin-top:16px}
+
+/* responsive */
+@media (min-width:1700px){.p-grid{grid-template-columns:repeat(3,minmax(0,1fr))}}
 @media (max-width:1020px){
   .portrait{height:72%}
-  .hm-bl{max-width:17rem}
-  .hm-br{max-width:14rem}
+  .intro{max-width:17rem}
   .stack-grid{grid-template-columns:minmax(0,1fr)}
   .viewer{position:relative;top:0;max-height:none;aspect-ratio:4/3}
   .job{grid-template-columns:9.5rem minmax(0,1fr)}
-  .job .meta{grid-column:2;justify-content:flex-start}
-  .rec-grid,.credits{grid-template-columns:minmax(0,1fr) minmax(0,1fr)}
 }
 @media (max-width:860px){
-  .nav ul{display:none;position:absolute;top:100%;left:0;right:0;flex-direction:column;gap:0;background:rgba(11,13,17,.97);border-bottom:1px solid var(--line);padding:8px var(--gutter) 16px}
-  .nav ul.open{display:flex}
-  .nav ul a{display:block;padding:11px 0;font-size:.9375rem}
-  .menu-btn{display:block}
-  .nav .resume{display:none}
-  .now-grid,.bay-head .row,.proj.feature,.contact-row,.stage-foot{grid-template-columns:minmax(0,1fr)}
+  .now-grid,.bay-head,.proj.feature,.contact-row,.cols{grid-template-columns:minmax(0,1fr)}
   .p-grid{grid-template-columns:minmax(0,1fr)}
-  .frame{min-height:0}
-  .frame{padding:18px 18px 0;display:flex;flex-direction:column}
-  .hero-meta{position:static;animation:none;inset:auto}
-  .hm-tr{display:none}
-  .hm-tl{order:1}
-  .name{position:relative;top:auto;order:2;margin-top:22px;white-space:normal;font-size:clamp(3.6rem,22.5vw,8.4rem);text-align:left;line-height:.82}
+  .frame{min-height:0;padding:28px 18px 0;display:flex;flex-direction:column}
+  .hero-meta{position:static;inset:auto;animation:none}
+  .name{position:relative;top:auto;padding-inline:0;white-space:normal;font-size:clamp(3.4rem,20vw,8rem);text-align:left;line-height:.84}
   .name span{display:block}
-  .portrait{position:relative;left:auto;transform:none;order:3;height:auto;width:min(84%,380px);margin:clamp(-70px,-9vw,-30px) auto 0;animation:fade 1.2s .1s both}
+  .portrait{position:relative;left:auto;transform:none;height:auto;width:min(84%,380px);margin:clamp(-70px,-9vw,-30px) auto 0;animation:fade 1.2s .1s both}
   .horizon{top:auto;bottom:22%}
-  .hm-bl{order:4;max-width:none;margin:-10px -18px 0;padding:18px;background:linear-gradient(180deg,rgba(11,13,17,0),rgba(11,13,17,.9) 22%);position:relative;z-index:4}
-  .hm-br{order:5;justify-items:start;text-align:left;max-width:none;padding:0 0 22px;position:relative;z-index:4}
-  .socials{justify-content:flex-start}
-  .scroll-cue{display:none}
+  .intro{max-width:none;margin:-10px -18px 0;padding:18px 18px 10px;background:linear-gradient(180deg,rgba(6,10,19,0),rgba(6,10,19,.9) 22%);position:relative;z-index:4}
+  .socials{padding:0 0 22px;position:relative;z-index:4}
 }
 @media (max-width:640px){
-  .stats{grid-template-columns:minmax(0,1fr)}
-  .stats div{display:grid;grid-template-columns:5.5rem minmax(0,1fr);gap:12px;align-items:center}
-  .stats small{margin-top:0}
-  .job{grid-template-columns:minmax(0,1fr);gap:8px}
-  .job .meta{grid-column:auto}
-  .rec-grid,.credits{grid-template-columns:minmax(0,1fr)}
+  .job{grid-template-columns:minmax(0,1fr);gap:6px}
+  .stats{gap:16px}
   .spec .body{padding-left:4px}
   .spec-btn{grid-template-columns:2.9rem minmax(0,1fr)}
-  .spec .where{grid-column:2}
-  .viewer{aspect-ratio:1/1}
   .v-bar button{padding:7px 9px}
-  .quote{padding:22px 20px 18px}
-}
-@media (prefers-reduced-motion:reduce){
-  *,*::before,*::after{animation-duration:.01ms!important;animation-delay:0s!important;transition-duration:.01ms!important}
-  html{scroll-behavior:auto}
 }
 </style>
 </head>
@@ -350,19 +209,18 @@ footer{max-width:var(--wrap);margin-inline:auto;border-top:1px solid var(--line)
 <header class="nav" id="nav">
   <div class="nav-in">
     <a class="brand" href="#top" aria-label="Sawyer Valin, back to top">
-      <svg viewBox="0 0 26 26" aria-hidden="true"><rect x="1.5" y="1.5" width="23" height="23" rx="3" fill="none" stroke="#4F8DFF" stroke-width="1.5"/><path d="M1.5 7 L7 1.5" stroke="#4F8DFF" stroke-width="1.5"/><text x="13" y="17" font-family="ui-monospace,monospace" font-size="9" font-weight="700" text-anchor="middle" fill="#EEE9E1">SV</text></svg>
+      <svg viewBox="0 0 26 26" aria-hidden="true"><rect x="1.5" y="1.5" width="23" height="23" rx="3" fill="none" stroke="#4F8DFF" stroke-width="1.5"/><path d="M1.5 7 L7 1.5" stroke="#4F8DFF" stroke-width="1.5"/><text x="13" y="17" font-family="ui-monospace,monospace" font-size="9" font-weight="700" text-anchor="middle" fill="#E3E9F3">SV</text></svg>
       sawyervalin
     </a>
     <button class="menu-btn" id="menuBtn" aria-expanded="false" aria-controls="navList">menu</button>
     <ul id="navList">
-      <li><a href="#now"><span>#</span>now</a></li>
-      <li><a href="#stack"><span>#</span>stack</a></li>
-      <li><a href="#work"><span>#</span>work</a></li>
-      <li><a href="#projects"><span>#</span>projects</a></li>
-      <li><a href="#stage"><span>#</span>stage</a></li>
-      <li><a href="#contact"><span>#</span>contact</a></li>
+      <li><a href="#now">now</a></li>
+      <li><a href="#stack">stack</a></li>
+      <li><a href="#work">work</a></li>
+      <li><a href="#projects">projects</a></li>
+      <li><a href="#contact">contact</a></li>
     </ul>
-    <a class="resume" href="https://drive.google.com/uc?export=download&amp;id=1e08NJlLH1oW_Aw1eYtnDV6aqylyOwbiq" target="_blank" rel="noopener">resume.pdf &darr;</a>
+    <a class="resume" href="https://drive.google.com/uc?export=download&amp;id=1e08NJlLH1oW_Aw1eYtnDV6aqylyOwbiq" target="_blank" rel="noopener">resume &darr;</a>
   </div>
 </header>
 
@@ -374,70 +232,34 @@ footer{max-width:var(--wrap);margin-inline:auto;border-top:1px solid var(--line)
       <div class="horizon" aria-hidden="true"></div>
       <h1 class="name"><span>Sawyer</span> <span>Valin</span></h1>
       <img class="portrait" src="img/sawyer-cutout.webp" alt="Sawyer Valin in a cream quarter-zip sweater, smiling" width="712" height="1317" fetchpriority="high">
-
-      <div class="hero-meta hm-tl">
-        <b>Hi, I'm Sawyer.</b>
-        <span><span class="arrow">=&gt;</span> IT infrastructure</span>
-        <span><span class="arrow">=&gt;</span> Software engineering</span>
-        <span><span class="arrow">=&gt;</span> Client consulting</span>
-      </div>
-
-      <div class="hero-meta hm-tr" aria-label="Location">
-        <span>Irvine, California</span>
-        <span class="clock" id="clock">PT --:--</span>
-      </div>
-
-      <div class="hero-meta hm-bl">
-        <span class="status"><span class="dot" aria-hidden="true"></span>On-site with RSM clients</span>
-        <p>I run infrastructure deployments for enterprise clients at RSM, build software on my own time, and have been performing on camera since I was five.</p>
-      </div>
-
-      <div class="hero-meta hm-br">
-        <div class="working">
-          <span>Currently working on</span>
-          <b><i>455</i>-endpoint rollout for an RSM client</b>
-        </div>
-        <nav class="socials mono" aria-label="Profiles">
-          <a href="https://www.linkedin.com/in/sawyervalin/" target="_blank" rel="noopener">/LinkedIn</a>
-          <a href="https://github.com/sawyervalin" target="_blank" rel="noopener">/GitHub</a>
-          <a href="https://www.imdb.com/name/nm4825601/" target="_blank" rel="noopener">/IMDb</a>
-        </nav>
-      </div>
-
+      <p class="hero-meta intro">I run infrastructure deployments for enterprise clients at RSM, build software on my own time, and have been performing on camera since I was five.</p>
+      <nav class="hero-meta socials mono" aria-label="Profiles">
+        <a href="https://www.linkedin.com/in/sawyervalin/" target="_blank" rel="noopener">LinkedIn</a>
+        <a href="https://github.com/sawyervalin" target="_blank" rel="noopener">GitHub</a>
+        <a href="https://www.imdb.com/name/nm4825601/" target="_blank" rel="noopener">IMDb</a>
+      </nav>
     </div>
   </section>
 
   <!-- NOW -->
   <section class="bay" id="now">
-    <div class="bay-head">
-      <div class="tag"><span>#</span>now</div>
-    </div>
-
-    <blockquote class="quote">
-      Effectiveness isn't about doing more. It's about doing the right things, in the right order, for the right reason.
-      <cite>Sawyer Valin, on LinkedIn</cite>
-    </blockquote>
-
+    <div class="bay-head"><h2>What I'm doing now.</h2></div>
     <div class="now-grid">
       <article class="panel lead">
-        <div class="org">RSM US LLP <span>Jun 2026 to present</span></div>
+        <div class="org">RSM US LLP &middot; Jun 2026 to present</div>
         <h3>Managed IT, Cloud &amp; Infrastructure Consulting</h3>
-        <p>I joined the MCI team as an intern and was extended on performance. I support the combined Southeast, West &amp; Great Lakes Service Engagement Team (SEWGL SET) at Tier 1 and 2 across Microsoft 365, Entra ID, Intune, and Defender for Endpoint, own client communication on my deployments, and write the PowerShell install scripts our leads and directors sign off on.</p>
+        <p>I joined the MCI team as an intern and was extended on performance. I support enterprise clients at Tier 1 and 2 across Microsoft 365, Entra ID, Intune, and Defender, own client communication on my deployments, and write the PowerShell install scripts our leads sign off on. I return as an Associate after graduation.</p>
         <div class="stats">
-          <div><b>455</b><small>endpoints imaged and deployed on-site for one client: 400 laptops, 55 desktops</small></div>
-          <div><b>50+</b><small>medium and large client organizations supported through the SEWGL SET</small></div>
-          <div><b>T1/T2</b><small>service desk across M365, Entra ID, Intune, Defender, and AD</small></div>
+          <div><b>455</b><small>endpoints imaged and deployed on-site for one client</small></div>
+          <div><b>50+</b><small>client organizations supported through the SEWGL team</small></div>
         </div>
-        <p class="next">Returning to RSM as an Associate after graduation.</p>
       </article>
-
       <aside class="panel also" aria-label="Also current">
-        <h3>// also current</h3>
         <ul>
-          <li><strong><a href="https://sawyervalin.github.io/circuitpoint/" target="_blank" rel="noopener">CircuitPoint</a></strong><span>founder</span><em>My IT consulting practice for small and mid-sized businesses: workstation builds, endpoints, and recovery.</em></li>
-          <li><strong><a href="https://sibylsays.com" target="_blank" rel="noopener">SIBYL</a></strong><span>UI/UX, BD</span><em>LLM arbitration that cross-examines frontier model outputs to cut hallucinations. I design the product surfaces and run investor outreach.</em></li>
-          <li><strong>Deimos-One</strong><span>BD associate</span><em>Partnerships for a Las Vegas space systems and data science startup.</em></li>
-          <li><strong>UC Irvine</strong><span>class of 2027</span><em>B.S. Informatics, Donald Bren School of ICS.</em></li>
+          <li><strong><a href="https://sawyervalin.github.io/circuitpoint/" target="_blank" rel="noopener">CircuitPoint</a></strong><span>Founder. IT consulting for small and mid-sized businesses: workstation builds, endpoints, and recovery.</span></li>
+          <li><strong><a href="https://sibylsays.com" target="_blank" rel="noopener">SIBYL</a></strong><span>UI/UX and business development for an LLM-arbitration platform that cuts hallucinations.</span></li>
+          <li><strong>Deimos-One</strong><span>Partnerships for a Las Vegas space systems and data science startup.</span></li>
+          <li><strong>UC Irvine</strong><span>B.S. Informatics, class of 2027.</span></li>
         </ul>
       </aside>
     </div>
@@ -446,16 +268,12 @@ footer{max-width:var(--wrap);margin-inline:auto;border-top:1px solid var(--line)
   <!-- STACK / MODEL VIEWER -->
   <section class="bay" id="stack">
     <div class="bay-head">
-      <div class="tag"><span>#</span>stack</div>
-      <div class="row">
-        <h2>Technical expertise, laid out like a die shot.</h2>
-        <p>Every block on the chip is a domain I work in. Select one to see the exact tools and where I've used them in production.<span class="desk-only"> Drag to orbit.</span></p>
-      </div>
+      <h2>Technical expertise, laid out like a die shot.</h2>
+      <p>Every block on the chip is a domain I work in. Select one to see the tools and where I've used them.<span class="desk-only"> Drag to orbit.</span></p>
     </div>
 
     <div class="stack-grid">
       <div class="viewer" id="viewer">
-        <div class="v-top"><span><b>SV-1</b> &middot; package view</span><span class="badge" id="gpuBadge">loading</span></div>
         <div class="hotspots" id="hotspots" aria-hidden="true"></div>
         <div class="v-detail" id="vDetail" aria-live="polite"></div>
         <div class="v-hint" id="vHint">drag to orbit</div>
@@ -466,7 +284,7 @@ footer{max-width:var(--wrap);margin-inline:auto;border-top:1px solid var(--line)
           <button type="button" id="bExpand">expand</button>
           <button type="button" id="bClose" class="v-close">close</button>
         </div>
-        <noscript><div class="v-fallback">The 3D viewer needs JavaScript. The full spec list is alongside.</div></noscript>
+        <noscript><div class="v-fallback">The 3D viewer needs JavaScript. The full list is alongside.</div></noscript>
       </div>
 
       <div>
@@ -474,65 +292,65 @@ footer{max-width:var(--wrap);margin-inline:auto;border-top:1px solid var(--line)
       <p class="diemap-cap">tap a block to open it</p>
       <ol class="specs" id="specs">
         <li class="spec" data-id="iam" data-rect=".04,.04,.27,.30">
-          <button class="spec-btn" type="button"><span class="code">IAM</span><span class="nm">Identity &amp; access</span><span class="where">RSM</span></button>
+          <button class="spec-btn" type="button"><span class="code">IAM</span><span class="nm">Identity &amp; access</span></button>
           <div class="body">
-            <div class="tools"><span>Microsoft Entra ID</span><span>Active Directory</span><span>MFA / Duo enrollment</span><span>User provisioning</span><span>Permissions</span></div>
-            <p class="proof">Provisioning, permissions, and MFA enrollment for 50+ client organizations on RSM's SEWGL Service Engagement Team.</p>
+            <p class="tools">Entra ID, Active Directory, MFA / Duo, user provisioning</p>
+            <p class="proof">Provisioning, permissions, and MFA enrollment for 50+ client organizations at RSM.</p>
           </div>
         </li>
         <li class="spec" data-id="epm" data-rect=".33,.04,.30,.30">
-          <button class="spec-btn" type="button"><span class="code">EPM</span><span class="nm">Endpoint management</span><span class="where">RSM, CircuitPoint</span></button>
+          <button class="spec-btn" type="button"><span class="code">EPM</span><span class="nm">Endpoint management</span></button>
           <div class="body">
-            <div class="tools"><span>Microsoft Intune</span><span>Defender for Endpoint</span><span>Windows 10/11 imaging</span><span>macOS</span><span>Hardware diagnostics</span><span>Custom PC builds</span></div>
-            <p class="proof">Imaged and deployed 455 endpoints on-site for one client. Built a Ryzen 9 9950X workstation and recovered a failed QNAP NAS with a client's MSP.</p>
+            <p class="tools">Intune, Defender for Endpoint, Windows imaging, macOS, custom PC builds</p>
+            <p class="proof">Imaged and deployed 455 endpoints on-site for one client. Recovered a failed QNAP NAS with a client's MSP.</p>
           </div>
         </li>
         <li class="spec" data-id="m365" data-rect=".65,.04,.31,.19">
-          <button class="spec-btn" type="button"><span class="code">M365</span><span class="nm">Microsoft 365</span><span class="where">RSM</span></button>
+          <button class="spec-btn" type="button"><span class="code">M365</span><span class="nm">Microsoft 365</span></button>
           <div class="body">
-            <div class="tools"><span>M365 administration</span><span>Exchange Online</span><span>Teams</span><span>SharePoint</span><span>OneDrive</span></div>
-            <p class="proof">Tier 1 and 2 tenant support for enterprise clients, plus M365 deployments for small businesses at The Supreme Tech.</p>
+            <p class="tools">Tenant administration, Exchange Online, Teams, SharePoint, OneDrive</p>
+            <p class="proof">Tier 1 and 2 tenant support for enterprise clients and M365 rollouts for small businesses.</p>
           </div>
         </li>
         <li class="spec" data-id="net" data-rect=".65,.25,.31,.09">
-          <button class="spec-btn" type="button"><span class="code">NET</span><span class="nm">Networking &amp; scripting</span><span class="where">RSM, Constryke</span></button>
+          <button class="spec-btn" type="button"><span class="code">NET</span><span class="nm">Networking &amp; scripting</span></button>
           <div class="body">
-            <div class="tools"><span>PowerShell</span><span>TCP/IP</span><span>DNS / WHOIS</span><span>SPF &amp; DMARC</span><span>Wi-Fi troubleshooting</span><span>Linux (Ubuntu) CLI</span></div>
-            <p class="proof">Write the PowerShell install scripts for RSM client deployments. Built DNS, WHOIS, SPF, and DMARC checks into Constryke.</p>
+            <p class="tools">PowerShell, TCP/IP, DNS, SPF &amp; DMARC, Linux CLI</p>
+            <p class="proof">Write the PowerShell install scripts for RSM deployments. Built DNS, WHOIS, SPF, and DMARC checks into Constryke.</p>
           </div>
         </li>
         <li class="spec" data-id="ops" data-rect=".04,.36,.27,.30">
-          <button class="spec-btn" type="button"><span class="code">OPS</span><span class="nm">Service desk &amp; MSP tooling</span><span class="where">RSM, Supreme Tech</span></button>
+          <button class="spec-btn" type="button"><span class="code">OPS</span><span class="nm">Service desk &amp; MSP tooling</span></button>
           <div class="body">
-            <div class="tools"><span>Ticketing &amp; incident mgmt</span><span>Root-cause analysis</span><span>Barracuda RMM</span><span>ConnectWise PSA</span><span>Syncro MSP</span><span>SOP &amp; KB authoring</span></div>
-            <p class="proof">Stood up Syncro and ConnectWise at The Supreme Tech and cut ticket resolution time by about 40%.</p>
+            <p class="tools">Incident management, root-cause analysis, ConnectWise PSA, Syncro MSP, Barracuda RMM</p>
+            <p class="proof">Stood up Syncro and ConnectWise at The Supreme Tech and cut resolution time by about 40%.</p>
           </div>
         </li>
         <li class="spec" data-id="ai" data-rect=".33,.36,.34,.34">
-          <button class="spec-btn" type="button"><span class="code">AI</span><span class="nm">Applied AI</span><span class="where">SIBYL, RSM, LifeLens</span></button>
+          <button class="spec-btn" type="button"><span class="code">AI</span><span class="nm">Applied AI</span></button>
           <div class="body">
-            <div class="tools"><span>Google Gemini API</span><span>Llama 3.1 8B (local)</span><span>Claude &amp; Copilot enablement</span><span>Tool / function calling</span><span>Hallucination detection</span></div>
-            <p class="proof">Ran Llama 3.1 8B on a Raspberry Pi 5 with no cloud round trip. Support Claude and Copilot onboarding for enterprise clients.</p>
+            <p class="tools">Gemini API, local Llama 3.1, tool calling, Claude &amp; Copilot enablement</p>
+            <p class="proof">Ran Llama 3.1 8B on a Raspberry Pi 5 with no cloud round trip. Support Claude and Copilot onboarding for clients.</p>
           </div>
         </li>
         <li class="spec" data-id="sw" data-rect=".69,.36,.27,.34">
-          <button class="spec-btn" type="button"><span class="code">SW</span><span class="nm">Software</span><span class="where">Constryke, Accquainted</span></button>
+          <button class="spec-btn" type="button"><span class="code">SW</span><span class="nm">Software</span></button>
           <div class="body">
-            <div class="tools"><span>Python</span><span>FastAPI</span><span>TypeScript</span><span>React</span><span>Next.js</span><span>Node.js</span><span>React Native</span><span>Java</span><span>C++</span><span>Git</span></div>
-            <p class="proof">Shipped a FastAPI + Next.js Chrome extension in 36 hours at IrvineHacks 2026, and front-end architecture for a stealth startup.</p>
+            <p class="tools">Python, FastAPI, TypeScript, React, Next.js, Node.js, React Native, Java, C++</p>
+            <p class="proof">Shipped a FastAPI + Next.js Chrome extension in 36 hours at IrvineHacks 2026.</p>
           </div>
         </li>
         <li class="spec" data-id="data" data-rect=".04,.68,.27,.28">
-          <button class="spec-btn" type="button"><span class="code">DATA</span><span class="nm">Data &amp; databases</span><span class="where">Collectibles, CS 122A</span></button>
+          <button class="spec-btn" type="button"><span class="code">DATA</span><span class="nm">Data &amp; databases</span></button>
           <div class="body">
-            <div class="tools"><span>SQL</span><span>PostgreSQL</span><span>Supabase</span><span>MySQL</span><span>pandas</span><span>ER modeling</span><span>Plotly</span></div>
-            <p class="proof">Wrote a pandas bundle-allocation cleaner that splits multi-item eBay sales into accurate per-item price, shipping, and tax.</p>
+            <p class="tools">SQL, PostgreSQL, Supabase, MySQL, pandas, Plotly</p>
+            <p class="proof">Wrote a pandas cleaner that splits multi-item eBay sales into accurate per-item numbers.</p>
           </div>
         </li>
         <li class="spec" data-id="io" data-rect=".33,.72,.63,.24">
-          <button class="spec-btn" type="button"><span class="code">I/O</span><span class="nm">Client interface</span><span class="where">every role</span></button>
+          <button class="spec-btn" type="button"><span class="code">I/O</span><span class="nm">Client interface</span></button>
           <div class="body">
-            <div class="tools"><span>Client communication</span><span>Project scoping</span><span>Technical documentation</span><span>UI/UX design</span><span>Pitching &amp; investor relations</span></div>
+            <p class="tools">Client communication, scoping, documentation, UI/UX, pitching</p>
             <p class="proof">Fifteen years on camera made this the easy part. I own client comms at RSM and run investor outreach for SIBYL.</p>
           </div>
         </li>
@@ -544,66 +362,48 @@ footer{max-width:var(--wrap);margin-inline:auto;border-top:1px solid var(--line)
   <!-- EXPERIENCE -->
   <section class="bay" id="work">
     <div class="bay-head">
-      <div class="tag"><span>#</span>work</div>
-      <div class="row">
-        <h2>From a medical office help desk to enterprise consulting.</h2>
-        <p>Three years of support, operations, and building, most of it while studying full time.</p>
-      </div>
+      <h2>From a medical office help desk to enterprise consulting.</h2>
+      <p>Three years of support, operations, and building, most of it while studying full time.</p>
     </div>
     <ol class="jobs">
       <li class="job">
-        <div class="when"><span class="live">Jun 2026 &rarr; now</span></div>
+        <div class="when live">Jun 2026 &rarr; now</div>
         <div>
           <h3>RSM US LLP</h3>
-          <div class="role">Managed IT, Cloud &amp; Infrastructure Consulting Intern, extended on performance</div>
-          <ul>
-            <li>Tier 1/2 support across Microsoft 365, Entra ID, Intune, Defender for Endpoint, and Windows for 50+ medium and large clients on the SEWGL Service Engagement Team.</li>
-            <li>User provisioning, permissions, and MFA/Duo enrollment; on-site imaging and deployment of 400 laptops and 55 desktops for one engagement.</li>
-            <li>Own client communication and draft installation scripts, approved by project leads and directors.</li>
-            <li>Support Microsoft Copilot and Claude onboarding for enterprise clients.</li>
-          </ul>
+          <div class="role">Managed IT, Cloud &amp; Infrastructure Consulting</div>
+          <p>Tier 1/2 support for 50+ clients, on-site imaging of 455 endpoints, and Copilot and Claude onboarding.</p>
         </div>
       </li>
       <li class="job">
-        <div class="when"><span class="live">Apr 2026 &rarr; now</span></div>
+        <div class="when live">Apr 2026 &rarr; now</div>
         <div>
           <h3><a href="https://sibylsays.com" target="_blank" rel="noopener">SIBYL &nearr;</a></h3>
           <div class="role">UI/UX &amp; Business Development</div>
-          <ul>
-            <li>Designed the product and marketing surfaces for an LLM-arbitration platform, including a competitive comparison landing page.</li>
-            <li>Lead investor outreach, sourcing venture relationships from networking events and hackathons.</li>
-          </ul>
+          <p>Designed the product and marketing surfaces and lead investor outreach.</p>
         </div>
       </li>
       <li class="job">
-        <div class="when"><span class="live">Dec 2025 &rarr; now</span></div>
+        <div class="when live">Dec 2025 &rarr; now</div>
         <div>
           <h3><a href="https://sawyervalin.github.io/circuitpoint/" target="_blank" rel="noopener">CircuitPoint &nearr;</a></h3>
           <div class="role">Founder, Technical Consultant</div>
-          <ul>
-            <li>End-to-end IT for small and mid-sized businesses: workstation builds, configuration, diagnostics, and endpoint deployment.</li>
-            <li>Diagnosed a QNAP NAS failure and coordinated replacement and data migration with the client's managed service provider.</li>
-          </ul>
+          <p>End-to-end IT for small businesses, from workstation builds to NAS recovery.</p>
         </div>
       </li>
       <li class="job">
-        <div class="when"><span class="live">Sep 2025 &rarr; now</span></div>
+        <div class="when live">Sep 2025 &rarr; now</div>
         <div>
           <h3>Deimos-One</h3>
-          <div class="role">Business Development Associate, remote</div>
-          <ul>
-            <li>Identify and introduce partners aligned with Deimos-One's data science and space systems work; collaborate directly with the founders on BD strategy.</li>
-          </ul>
+          <div class="role">Business Development Associate</div>
+          <p>Source partners for space systems and data science work, alongside the founders.</p>
         </div>
       </li>
       <li class="job">
-        <div class="when"><span class="live">Sep 2025 &rarr; now</span></div>
+        <div class="when live">Sep 2025 &rarr; now</div>
         <div>
           <h3>Best Buy</h3>
-          <div class="role">Core Sales Advisor, Computing (part-time)</div>
-          <ul>
-            <li>Five to eight technical consultations an hour on laptops, desktops, networking, and peripherals.</li>
-          </ul>
+          <div class="role">Core Sales Advisor, Computing</div>
+          <p>Technical consultations on laptops, desktops, networking, and peripherals.</p>
         </div>
       </li>
       <li class="job">
@@ -611,9 +411,7 @@ footer{max-width:var(--wrap);margin-inline:auto;border-top:1px solid var(--line)
         <div>
           <h3>Stealth startup</h3>
           <div class="role">Software Developer</div>
-          <ul>
-            <li>Front end, UI/UX design, and software architecture.</li>
-          </ul>
+          <p>Front end, UI/UX design, and software architecture.</p>
         </div>
       </li>
       <li class="job">
@@ -621,10 +419,7 @@ footer{max-width:var(--wrap);margin-inline:auto;border-top:1px solid var(--line)
         <div>
           <h3>The Supreme Tech</h3>
           <div class="role">IT Systems &amp; Operations Lead</div>
-          <ul>
-            <li>Launched MSP operations from scratch: 5 business clients in 3 months and 30+ resolutions across OS recovery, imaging, and M365 deployments.</li>
-            <li>Implemented Syncro MSP and ConnectWise PSA with tiered service offerings, cutting resolution time by about 40%.</li>
-          </ul>
+          <p>Launched MSP operations from scratch: 5 clients in 3 months and about 40% faster resolutions.</p>
         </div>
       </li>
       <li class="job">
@@ -632,10 +427,7 @@ footer{max-width:var(--wrap);margin-inline:auto;border-top:1px solid var(--line)
         <div>
           <h3>Caring Family Medicine</h3>
           <div class="role">Technical Support Specialist</div>
-          <ul>
-            <li>Kept 7 workstations, 3 printers, and 2 wireless networks running for a clinic serving 600+ patients.</li>
-            <li>Cleaned 1,000+ rows of financial and medical data and standardized documentation for recurring issues.</li>
-          </ul>
+          <p>Kept the workstations, printers, and networks running for a clinic serving 600+ patients.</p>
         </div>
       </li>
     </ol>
@@ -644,19 +436,14 @@ footer{max-width:var(--wrap);margin-inline:auto;border-top:1px solid var(--line)
   <!-- PROJECTS -->
   <section class="bay" id="projects">
     <div class="bay-head">
-      <div class="tag"><span>#</span>projects</div>
-      <div class="row">
-        <h2>Things I've built.</h2>
-        <p>Hackathons, coursework, and the side projects I keep coming back to.</p>
-      </div>
+      <h2>Things I've built.</h2>
+      <p>Hackathons, coursework, and the side projects I keep coming back to.</p>
     </div>
     <div class="p-grid">
       <article class="proj feature">
-        <div class="stackline"><span>Python</span><span>FastAPI</span><span>Next.js</span><span>Google Gemini</span><span>Chrome Extensions</span><span>Safe Browsing API</span></div>
         <div class="inner">
-          <span class="kind">IrvineHacks 2026 &middot; 36 hours &middot; team of 2</span>
           <h3>Constryke</h3>
-          <p>Wire fraud detection for home buyers. Paste an email, upload a PDF, or connect Gmail, and Constryke checks the wire instructions: routing numbers against the ABA checksum, typosquatted and homoglyph domains, DNS, WHOIS age, SPF and DMARC, Google Safe Browsing, and pressure language. You get a risk score with plain-English reasons.</p>
+          <p>Wire fraud detection for home buyers, built in 36 hours at IrvineHacks 2026. Paste an email, upload a PDF, or connect Gmail, and Constryke checks the routing number, lookalike domains, DNS and WHOIS age, SPF and DMARC, Safe Browsing, and pressure language, then returns a risk score with plain-English reasons.</p>
           <div class="links"><a class="btn" href="https://github.com/sawyervalin/irvinehacks2026" target="_blank" rel="noopener">view code &nearr;</a></div>
         </div>
         <div class="term" id="term" aria-label="Example Constryke scan output">
@@ -674,113 +461,76 @@ footer{max-width:var(--wrap);margin-inline:auto;border-top:1px solid var(--line)
       </article>
 
       <article class="proj">
-        <div class="stackline"><span>Raspberry Pi 5</span><span>Llama 3.1 8B</span><span>Python</span><span>Linux</span></div>
-        <div class="inner">
-          <span class="kind">IoT &amp; local AI &middot; UCI</span>
-          <h3>LifeLens</h3>
-          <p>An environmental monitor that runs Llama 3.1 8B entirely on a Raspberry Pi 5. Sensor readings are interpreted on-device with no cloud round trip.</p>
-        </div>
+        <h3>LifeLens</h3>
+        <p>An environmental monitor that runs Llama 3.1 8B entirely on a Raspberry Pi 5. Sensor readings are interpreted on-device with no cloud round trip.</p>
       </article>
 
       <article class="proj">
-        <div class="stackline"><span>Python</span><span>pandas</span><span>Plotly.js</span><span>Colab</span></div>
-        <div class="inner">
-          <span class="kind">Data engineering &middot; ongoing</span>
-          <h3>Selling Collectibles</h3>
-          <p>I'm selling my dad's collection to help fund college and treating it as a data project. A pandas cleaner splits bundle listings into per-item numbers, and dashboards show which franchises, eras, and price points actually make money.</p>
-          <div class="links"><a class="btn" href="/project1/">project journal &rarr;</a></div>
-        </div>
+        <h3>Selling Collectibles</h3>
+        <p>I'm selling my dad's collection to help fund college and treating it as a data project, with a pandas cleaner and dashboards that show what actually makes money.</p>
+        <div class="links"><a class="btn" href="/project1/">project journal &rarr;</a></div>
       </article>
 
       <article class="proj">
-        <div class="stackline"><span>Predictive modeling</span><span>Data intelligence</span></div>
-        <div class="inner">
-          <span class="award">2nd overall &middot; Investors' Pick</span>
-          <h3>Team MoonRock</h3>
-          <p>AI problem-solving hackathon with Sunstone Management, October 2025. We built predictive modeling for a real startup and placed 2nd overall and 2nd in creativity, applicability, and judge's choice.</p>
-        </div>
+        <h3>Team MoonRock</h3>
+        <p>Predictive modeling for a real startup at Sunstone Management's AI hackathon, October 2025. Placed 2nd overall and took Investors' Pick.</p>
       </article>
 
       <article class="proj">
-        <div class="stackline"><span>Jekyll</span><span>Waitlist</span><span>Auth design</span></div>
-        <div class="inner">
-          <span class="kind">Full-stack app</span>
-          <h3>Accquainted</h3>
-          <p>A campus-first social app for UCI's ACC community: verified UCI sign-up, matching on shared interests and club tags, simple chat, and event listings.</p>
-          <div class="links"><a class="btn" href="https://accquainted.com" target="_blank" rel="noopener">site &nearr;</a><a class="btn" href="https://github.com/sawyervalin/accquainted" target="_blank" rel="noopener">code &nearr;</a></div>
-        </div>
+        <h3>Accquainted</h3>
+        <p>A campus-first social app for UCI's ACC community: verified UCI sign-up, matching on shared interests and clubs, chat, and events.</p>
+        <div class="links"><a class="btn" href="https://accquainted.com" target="_blank" rel="noopener">site &nearr;</a><a class="btn" href="https://github.com/sawyervalin/accquainted" target="_blank" rel="noopener">code &nearr;</a></div>
       </article>
     </div>
   </section>
 
   <!-- STAGE -->
-  <section class="bay stage" id="stage">
-    <div class="stage-wrap">
-      <div class="bay-head">
-        <div class="tag"><span>#</span>stage</div>
-        <div class="row">
-          <h2>On stage and on camera.</h2>
-          <p>A working actor since age five and a SAG-AFTRA member since 2011. Performing taught me to read a room, stay calm under pressure, and explain things clearly. That turns out to be most of consulting.</p>
-        </div>
+  <section class="bay" id="stage">
+    <div class="bay-head">
+      <h2>On stage and on camera.</h2>
+      <p>A working actor since age five and SAG-AFTRA member since 2011. Performing taught me to read a room and explain things clearly, which turns out to be most of consulting. These days I mostly perform music: guitar, piano, bass, and voice.</p>
+    </div>
+    <div class="cols">
+      <div class="col">
+        <h3>Television</h3>
+        <p>Guest roles on Instant Mom, Unusual Suspects, and Magic for Humans, plus national commercials.</p>
       </div>
-      <div class="credits">
-        <div class="credit">
-          <span class="yr">Television</span>
-          <h3>Instant Mom, Unusual Suspects, Magic for Humans</h3>
-          <p>Guest roles in scripted and unscripted television, plus national commercials.</p>
-        </div>
-        <div class="credit">
-          <span class="yr">Series regular &middot; finalist</span>
-          <h3>Wayne Brady's Comedy IQ</h3>
-          <p>Appeared in every episode of the improv competition's single season and made the finals. Later trained at The Groundlings (2022 to 2023).</p>
-        </div>
-        <div class="credit">
-          <span class="yr">Digital</span>
-          <h3>Shots Studios</h3>
-          <p>Recurring sketch roles alongside Lele Pons, Hannah Stocking, and Rudy Mancuso, seen by hundreds of millions on YouTube.</p>
-        </div>
+      <div class="col">
+        <h3>Wayne Brady's Comedy IQ</h3>
+        <p>Series regular and finalist on the improv competition. Later trained at The Groundlings.</p>
       </div>
-      <div class="stage-foot">
-        <blockquote>Guitar, piano, bass, voice, and songwriting in a duo.</blockquote>
-        <div>
-          <p>Music is where I still perform most. I also taught guitar, piano, and voice at Rockstars of Tomorrow and built their Triple-Threat program for singing, acting, and dance.</p>
-          <div class="links"><a class="btn" href="https://www.imdb.com/name/nm4825601/" target="_blank" rel="noopener">IMDb credits &nearr;</a></div>
-        </div>
+      <div class="col">
+        <h3>Shots Studios</h3>
+        <p>Recurring sketch roles alongside Lele Pons, Hannah Stocking, and Rudy Mancuso, seen by hundreds of millions.</p>
       </div>
     </div>
+    <div class="after"><a class="btn" href="https://www.imdb.com/name/nm4825601/" target="_blank" rel="noopener">IMDb credits &nearr;</a></div>
   </section>
 
-  <!-- RECORD -->
+  <!-- EDUCATION -->
   <section class="bay" id="record">
-    <div class="bay-head">
-      <div class="tag"><span>#</span>record</div>
-    </div>
-    <div class="rec-grid">
-      <article class="panel rec">
-        <h3>University of California, Irvine</h3>
-        <div class="sub">B.S. Informatics &middot; expected Jun 2027</div>
+    <div class="bay-head"><h2>Education.</h2></div>
+    <div class="cols">
+      <div class="col">
+        <h3>UC Irvine</h3>
+        <p class="sub">B.S. Informatics, expected Jun 2027</p>
         <p>Donald Bren School of Information and Computer Sciences. Regents' Scholar.</p>
-        <div class="courses"><span>CS 122A Databases</span><span>INF 121 Software Design</span><span>INF 151 Project Mgmt</span><span>INF 153 CSCW</span></div>
-      </article>
-      <article class="panel rec">
+      </div>
+      <div class="col">
         <h3>Citrus College</h3>
-        <div class="sub">A.A. Film, Television &amp; Electronic Media &middot; 2025</div>
-        <p>Dual-enrolled from ninth grade with a 3.9 to 4.0 GPA. Dean's List every year from 2019 to 2025. National Honor Society, 2023.</p>
-      </article>
-      <article class="panel rec">
+        <p class="sub">A.A. Film, Television &amp; Electronic Media, 2025</p>
+        <p>Dual-enrolled from ninth grade. Dean's List every year from 2019 to 2025.</p>
+      </div>
+      <div class="col">
         <h3>Certifications</h3>
-        <div class="sub">verified credentials</div>
-        <ul>
-          <li><b>CompTIA A+</b> Core 1 (220-1101)</li>
-          <li><b>LinkedIn Learning</b>, Jul 2026: Prompt Engineering, Delivering Results Effectively, Executive Presence, Cross-Functional Teams, and 6 more</li>
-        </ul>
-      </article>
+        <p class="sub">CompTIA A+ Core 1 (220-1101)</p>
+        <p>Plus 10 LinkedIn Learning courses in 2026, including Prompt Engineering and Executive Presence.</p>
+      </div>
     </div>
   </section>
 
   <!-- CONTACT -->
   <section class="contact" id="contact">
-    <div class="tag" style="margin-bottom:28px"><span>#</span>contact</div>
     <h2>Let's build<br>something<span>.</span></h2>
     <div class="contact-row">
       <p>Hiring for IT or consulting, need help with your business's technology, or building a startup? Send me a note.</p>
@@ -819,11 +569,6 @@ footer{max-width:var(--wrap);margin-inline:auto;border-top:1px solid var(--line)
     Object.keys(links).forEach(function(k){var s=document.getElementById(k);if(s)so.observe(s)});
   }
 
-  /* Pacific time clock */
-  var clock=document.getElementById('clock');
-  function tick(){try{clock.textContent='PT '+new Intl.DateTimeFormat('en-US',{timeZone:'America/Los_Angeles',hour:'2-digit',minute:'2-digit',hour12:false}).format(new Date())}catch(e){}}
-  tick();setInterval(tick,15000);
-
   /* copy email */
   var cb=document.getElementById('copyBtn'),em=document.getElementById('email');
   cb.addEventListener('click',function(){
@@ -835,7 +580,6 @@ footer{max-width:var(--wrap);margin-inline:auto;border-top:1px solid var(--line)
   /* Constryke scan: replays when the card scrolls into view */
   var lines=document.querySelectorAll('#termLines .ln'),meter=document.getElementById('meter'),sv=document.getElementById('scoreVal');
   function play(){
-    if(reduce) return;
     lines.forEach(function(l){l.style.opacity=0});meter.style.width='0%';sv.textContent='--/100';
     lines.forEach(function(l,i){setTimeout(function(){l.style.transition='opacity .35s';l.style.opacity=1},300+i*420)});
     setTimeout(function(){meter.style.width='86%';sv.textContent='86/100'},300+lines.length*420);
@@ -858,7 +602,6 @@ footer{max-width:var(--wrap);margin-inline:auto;border-top:1px solid var(--line)
 /* SV-1: a procedural CPU package rendered with three.js WebGPURenderer (automatic WebGL 2 fallback),
    TSL node materials, a PMREM room environment, and a bloom render pipeline. Every die block maps to a spec row. */
 const viewer = document.getElementById('viewer');
-const badge = document.getElementById('gpuBadge');
 const specsEl = document.getElementById('specs');
 const hsWrap = document.getElementById('hotspots');
 const detail = document.getElementById('vDetail');
@@ -875,7 +618,6 @@ const blocks = [...specsEl.querySelectorAll('.spec')].map(li => {
 let selected = null;
 
 function fail(msg){
-  badge.textContent = 'static';
   const f = document.createElement('div'); f.className = 'v-fallback'; f.textContent = msg; viewer.appendChild(f);
   hint.style.opacity = 0;
 }
@@ -932,7 +674,7 @@ const { texture, uv, time, sin, float, vec3, uniform, pass, mix } = TSL;
 
 /* ---------- renderer: WebGPU first, WebGL 2 fallback, and a rebuild if the GPU device is lost ---------- */
 const scene = new THREE.Scene();
-scene.background = new THREE.Color(0x171B23);
+scene.background = new THREE.Color(0x0F1726);
 scene.environmentIntensity = 0.7;
 let renderer = null, pipeline = null, controls = null;
 
@@ -951,8 +693,6 @@ function attach(r){
   r.domElement.setAttribute('role', 'img');
   r.domElement.setAttribute('aria-label', 'Interactive 3D model of a processor whose die blocks represent skill areas');
   const gpu = !!r.backend.isWebGPUBackend;
-  badge.textContent = gpu ? 'WebGPU' : 'WebGL 2';
-  badge.classList.toggle('gpu', gpu);
   document.getElementById('builtWith').textContent = 'hand-built · three.js r184 · ' + (gpu ? 'WebGPU' : 'WebGL 2');
   const pmrem = new THREE.PMREMGenerator(r);
   scene.environment = pmrem.fromScene(new RoomEnvironment(), 0.04).texture;
@@ -1002,18 +742,18 @@ await document.fonts.ready.catch(()=>{});
 // die surface: SRAM hatching, routing channels, block labels
 const [dieC, dg] = canvas();
 function drawDie(){
-  dg.fillStyle = '#0C0F15'; dg.fillRect(0,0,S,S);
+  dg.fillStyle = '#0A111E'; dg.fillRect(0,0,S,S);
   dg.strokeStyle = 'rgba(160,180,220,.06)'; dg.lineWidth = 1;
   for (let i=0;i<S;i+=8){ dg.beginPath(); dg.moveTo(i,0); dg.lineTo(i,S); dg.stroke(); }
   for (const b of blocks){
     const x=b.x*S, y=b.z*S, w=b.w*S, h=b.d*S, on = selected===b.id;
-    dg.fillStyle = on ? '#122039' : '#141925'; dg.fillRect(x,y,w,h);
+    dg.fillStyle = on ? '#12244A' : '#111A2B'; dg.fillRect(x,y,w,h);
     dg.save(); dg.beginPath(); dg.rect(x+6,y+6,w-12,h-12); dg.clip();
     dg.strokeStyle = on ? 'rgba(120,170,255,.28)' : 'rgba(200,210,235,.10)';
     const step = 5 + (b.code.length%3)*2;
     for (let k=-h;k<w;k+=step){ dg.beginPath(); dg.moveTo(x+k,y); dg.lineTo(x+k+h,y+h); dg.stroke(); }
     dg.restore();
-    dg.strokeStyle = on ? '#4F8DFF' : 'rgba(238,233,225,.28)'; dg.lineWidth = on ? 4 : 2; dg.strokeRect(x+1,y+1,w-2,h-2);
+    dg.strokeStyle = on ? '#4F8DFF' : 'rgba(227,233,243,.28)'; dg.lineWidth = on ? 4 : 2; dg.strokeRect(x+1,y+1,w-2,h-2);
   }
 }
 const [emC, eg] = canvas();
@@ -1034,7 +774,7 @@ const emTex = new THREE.CanvasTexture(emC); emTex.colorSpace = THREE.SRGBColorSp
 
 // substrate: traces fanning out from the die to the edge, pin-1 triangle
 const [subC, sg] = canvas();
-sg.fillStyle = '#0F1419'; sg.fillRect(0,0,S,S);
+sg.fillStyle = '#0C1320'; sg.fillRect(0,0,S,S);
 sg.strokeStyle = 'rgba(242,184,91,.28)'; sg.lineWidth = 1.4;
 for (let i=0;i<180;i++){
   const a = (i/180)*Math.PI*2, r0 = 250, r1 = 470 + Math.random()*30;
@@ -1044,7 +784,7 @@ for (let i=0;i<180;i++){
   sg.lineTo(mx,my); sg.lineTo(S/2 + Math.cos(a)*r1, S/2 + Math.sin(a)*r1); sg.stroke();
 }
 sg.fillStyle = '#F2B85B'; sg.beginPath(); sg.moveTo(40,40); sg.lineTo(110,40); sg.lineTo(40,110); sg.closePath(); sg.fill();
-sg.fillStyle = 'rgba(238,233,225,.55)'; sg.font = `500 22px ${monoFont}`; sg.fillText('SV-1  LGA-1027', 60, S-44);
+sg.fillStyle = 'rgba(227,233,243,.55)'; sg.font = `500 22px ${monoFont}`; sg.fillText('SV-1  LGA-1027', 60, S-44);
 const subTex = new THREE.CanvasTexture(subC); subTex.colorSpace = THREE.SRGBColorSpace; subTex.anisotropy = 8;
 
 // laser etch on the heat spreader
@@ -1062,7 +802,7 @@ const model = new THREE.Group(); scene.add(model);
 const SUB = 4.0, SUB_H = 0.14, DIE = 2.0, DIE_H = 0.07, LID = 3.3, LID_H = 0.26;
 
 const subMat = new THREE.MeshPhysicalNodeMaterial({ map: subTex, roughness: 0.55, metalness: 0.25, clearcoat: 0.6, clearcoatRoughness: 0.35 });
-const edgeMat = new THREE.MeshStandardNodeMaterial({ color: 0x1B2230, roughness: 0.6 });
+const edgeMat = new THREE.MeshStandardNodeMaterial({ color: 0x182238, roughness: 0.6 });
 const substrate = new THREE.Mesh(new THREE.BoxGeometry(SUB, SUB_H, SUB), [edgeMat, edgeMat, subMat, edgeMat, edgeMat, edgeMat]);
 substrate.position.y = SUB_H/2; model.add(substrate);
 

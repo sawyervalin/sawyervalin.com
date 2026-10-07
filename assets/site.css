@@ -1,0 +1,68 @@
+/* Shared base for every page: tokens, type, nav, buttons, footer. Page-specific styles live inline. */
+:root{
+  --ink:#060A13;       /* page ground, deep navy */
+  --ink-2:#0B111D;     /* raised surfaces */
+  --ink-3:#0F1726;     /* viewer stage */
+  --line:#18223A;
+  --line-2:#26334F;
+  --text:#E3E9F3;      /* primary text, cool white */
+  --mute:#8F9BB3;      /* secondary text */
+  --dim:#5D6A85;       /* labels */
+  --accent:#4F8DFF;    /* signal blue */
+  --accent-hi:#8DB6FF;
+  --accent-soft:rgba(79,141,255,.13);
+  --f-sans:"IBM Plex Sans",system-ui,-apple-system,"Segoe UI",sans-serif;
+  --f-mono:"IBM Plex Mono",ui-monospace,"SF Mono",Menlo,Consolas,monospace;
+  --gutter:clamp(16px,3.4vw,80px);
+  --wrap:96rem;
+  --r:16px;
+  --ease:cubic-bezier(.2,.8,.2,1);
+  color-scheme:dark;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth;scroll-padding-top:84px;-webkit-text-size-adjust:100%;font-size:100%}
+@media (min-width:1280px){html{font-size:clamp(16px,.42vw + 10.6px,21px)}}
+body{background:var(--ink);color:var(--text);font-family:var(--f-sans);font-size:1rem;line-height:1.65;-webkit-font-smoothing:antialiased;overflow-x:hidden;padding-inline:var(--gutter)}
+img{max-width:100%;display:block}
+a{color:inherit}
+button{font:inherit;color:inherit}
+:focus-visible{outline:2px solid var(--accent);outline-offset:3px;border-radius:6px}
+::selection{background:var(--accent);color:var(--ink)}
+h1,h2,h3{text-wrap:balance;font-weight:600;font-stretch:88%;letter-spacing:-.02em}
+.mono{font-family:var(--f-mono);font-size:.8125rem}
+.sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+
+/* nav */
+.nav{position:fixed;top:0;left:0;right:0;z-index:50;padding-top:env(safe-area-inset-top,0px);transition:background .3s,border-color .3s;border-bottom:1px solid transparent}
+.nav.solid{background:rgba(6,10,19,.8);backdrop-filter:blur(14px) saturate(1.2);-webkit-backdrop-filter:blur(14px) saturate(1.2);border-bottom-color:var(--line)}
+.nav-in{max-width:calc(var(--wrap) + 2*var(--gutter));margin-inline:auto;padding:16px var(--gutter);display:flex;align-items:center;gap:28px}
+.brand{display:flex;align-items:center;gap:10px;text-decoration:none;font-family:var(--f-mono);font-weight:500;font-size:.875rem}
+.brand svg{width:24px;height:24px}
+.nav ul{list-style:none;display:flex;gap:26px;margin-left:auto}
+.nav ul a,.nav .resume{font-family:var(--f-mono);font-size:.8125rem;color:var(--mute);text-decoration:none;transition:color .2s}
+.nav ul a:hover,.nav ul a[aria-current="true"]{color:var(--text)}
+.nav .resume{color:var(--accent)}
+.nav .resume:hover{color:var(--accent-hi)}
+.menu-btn{display:none;margin-left:auto;background:none;border:0;font-family:var(--f-mono);font-size:.8125rem;color:var(--mute);cursor:pointer;padding:6px 0}
+
+/* buttons */
+.btn{display:inline-flex;align-items:center;gap:8px;font-family:var(--f-mono);font-size:.8125rem;text-decoration:none;border:1px solid var(--line-2);border-radius:8px;padding:8px 14px;transition:border-color .2s,background .2s,color .2s;background:none;cursor:pointer}
+.btn:hover{border-color:var(--accent);background:var(--accent-soft)}
+.btn.solid{background:var(--accent);color:#fff;border-color:var(--accent);font-weight:500}
+.btn.solid:hover{background:#3F7EF5}
+
+footer{max-width:var(--wrap);margin-inline:auto;border-top:1px solid var(--line);padding-block:22px calc(22px + env(safe-area-inset-bottom,0px));display:flex;justify-content:space-between;gap:10px 20px;flex-wrap:wrap;font-family:var(--f-mono);font-size:.75rem;color:var(--dim)}
+footer a{text-decoration:none}
+footer a:hover{color:var(--text)}
+
+@media (max-width:860px){
+  .nav ul{display:none;position:absolute;top:100%;left:0;right:0;flex-direction:column;gap:0;background:rgba(6,10,19,.97);border-bottom:1px solid var(--line);padding:8px var(--gutter) 16px}
+  .nav ul.open{display:flex}
+  .nav ul a{display:block;padding:11px 0;font-size:.9375rem}
+  .menu-btn{display:block}
+  .nav .resume{display:none}
+}
+@media (prefers-reduced-motion:reduce){
+  *,*::before,*::after{animation-duration:.01ms!important;animation-delay:0s!important;transition-duration:.01ms!important}
+  html{scroll-behavior:auto}
+}
