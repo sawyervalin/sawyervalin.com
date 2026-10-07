@@ -20,7 +20,7 @@
 <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wdth,wght@85..100,300..700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="/assets/site.css">
 <script type="application/ld+json">
-{"@context":"https://schema.org","@type":"Person","name":"Sawyer Valin","url":"https://www.sawyervalin.com/","jobTitle":"Managed IT, Cloud & Infrastructure Consulting","worksFor":{"@type":"Organization","name":"RSM US LLP"},"alumniOf":[{"@type":"CollegeOrUniversity","name":"University of California, Irvine"},{"@type":"CollegeOrUniversity","name":"Citrus College"}],"address":{"@type":"PostalAddress","addressLocality":"Irvine","addressRegion":"CA"},"sameAs":["https://www.linkedin.com/in/sawyervalin/","https://github.com/sawyervalin","https://www.imdb.com/name/nm4825601/"]}
+{"@context":"https://schema.org","@type":"Person","name":"Sawyer Valin","url":"https://www.sawyervalin.com/","jobTitle":"Technology Consulting Intern, Managed IT, Cloud & Infrastructure","worksFor":{"@type":"Organization","name":"RSM US LLP"},"alumniOf":[{"@type":"CollegeOrUniversity","name":"University of California, Irvine"},{"@type":"CollegeOrUniversity","name":"Citrus College"}],"address":{"@type":"PostalAddress","addressLocality":"Irvine","addressRegion":"CA"},"sameAs":["https://www.linkedin.com/in/sawyervalin/","https://github.com/sawyervalin","https://www.imdb.com/name/nm4825601/"]}
 </script>
 <style>
 /* hero */
@@ -175,6 +175,8 @@
 .c-links{display:flex;flex-wrap:wrap;gap:10px;margin-top:16px}
 
 /* responsive */
+/* an odd card out in the two-column grid spans the row */
+@media (min-width:861px) and (max-width:1699px){.proj:not(.feature):last-child:nth-child(even){grid-column:1 / -1}}
 @media (min-width:1700px){.p-grid{grid-template-columns:repeat(3,minmax(0,1fr))}}
 @media (max-width:1020px){
   .portrait{height:72%}
@@ -232,7 +234,7 @@
       <div class="horizon" aria-hidden="true"></div>
       <h1 class="name"><span>Sawyer</span> <span>Valin</span></h1>
       <img class="portrait" src="img/sawyer-cutout.webp" alt="Sawyer Valin in a cream quarter-zip sweater, smiling" width="712" height="1317" fetchpriority="high">
-      <p class="hero-meta intro">I run infrastructure deployments for enterprise clients at RSM, build software on my own time, and have been performing on camera since I was five.</p>
+      <p class="hero-meta intro">I support enterprise clients in RSM's technology consulting practice, build software on my own time, and have been performing on camera since I was five.</p>
       <nav class="hero-meta socials mono" aria-label="Profiles">
         <a href="https://www.linkedin.com/in/sawyervalin/" target="_blank" rel="noopener">LinkedIn</a>
         <a href="https://github.com/sawyervalin" target="_blank" rel="noopener">GitHub</a>
@@ -247,11 +249,11 @@
     <div class="now-grid">
       <article class="panel lead">
         <div class="org">RSM US LLP &middot; Jun 2026 to present</div>
-        <h3>Managed IT, Cloud &amp; Infrastructure Consulting</h3>
-        <p>I joined the MCI team as an intern and was extended on performance. I support enterprise clients at Tier 1 and 2 across Microsoft 365, Entra ID, Intune, and Defender, own client communication on my deployments, and write the PowerShell install scripts our leads sign off on. I return as an Associate after graduation.</p>
+        <h3>Technology Consulting Intern, Managed IT, Cloud &amp; Infrastructure</h3>
+        <p>After my summer internship I was extended as the primary on-site field resource for a client engagement, leading day-to-day project operations and picking up Client Service Desk work. I've now moved to a new Service Engagement Team supporting a specialized, compliance-driven client base. I return as an Associate after graduation.</p>
         <div class="stats">
+          <div><b>3</b><small>roles at RSM in five months, each extension earned on performance</small></div>
           <div><b>455</b><small>endpoints imaged and deployed on-site for one client</small></div>
-          <div><b>50+</b><small>client organizations supported through the SEWGL team</small></div>
         </div>
       </article>
       <aside class="panel also" aria-label="Also current">
@@ -370,8 +372,8 @@
         <div class="when live">Jun 2026 &rarr; now</div>
         <div>
           <h3>RSM US LLP</h3>
-          <div class="role">Managed IT, Cloud &amp; Infrastructure Consulting</div>
-          <p>Tier 1/2 support for 50+ clients, on-site imaging of 455 endpoints, and Copilot and Claude onboarding.</p>
+          <div class="role">Technology Consulting Intern, MCI</div>
+          <p>Summer intern on the Managed IT, Cloud &amp; Infrastructure team (Jun to Aug), then extended as the on-site field resource for a client engagement (Aug to Oct). Now on a new Service Engagement Team for a compliance-driven client base.</p>
         </div>
       </li>
       <li class="job">
@@ -399,7 +401,7 @@
         </div>
       </li>
       <li class="job">
-        <div class="when live">Sep 2025 &rarr; now</div>
+        <div class="when">Sep 2025 &rarr; Oct 2026</div>
         <div>
           <h3>Best Buy</h3>
           <div class="role">Core Sales Advisor, Computing</div>
@@ -458,6 +460,12 @@
           </div>
           <div class="score"><span>risk</span><span class="meter"><i id="meter" style="width:86%"></i></span><span id="scoreVal">86/100</span></div>
         </div>
+      </article>
+
+      <article class="proj">
+        <h3>Paradez</h3>
+        <p>Career-fair prep for UC Irvine students, co-founded with Seth Flucas. It matches students to the employers at a fair, maps a route between booths, and coaches the 30-second pitch with Claude. Built on Next.js and Postgres.</p>
+        <div class="links"><a class="btn" href="https://paradez.net" target="_blank" rel="noopener">site &nearr;</a></div>
       </article>
 
       <article class="proj">
