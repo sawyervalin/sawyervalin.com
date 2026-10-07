@@ -1,0 +1,275 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>LifeLens · Sawyer Valin</title>
+<meta name="description" content="LifeLens: an IoT system design that tracks sleep, focus, and driving across home, body, and car, with a local Llama 3.1 coach on a Raspberry Pi 5.">
+<meta name="theme-color" content="#060A13">
+<link rel="canonical" href="https://www.sawyervalin.com/lifelens/">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%23060A13'/%3E%3Crect x='14' y='14' width='36' height='36' rx='4' fill='none' stroke='%234F8DFF' stroke-width='3'/%3E%3Cpath d='M14 22 L22 14' stroke='%234F8DFF' stroke-width='3'/%3E%3Ctext x='32' y='39' font-family='monospace' font-size='15' font-weight='700' text-anchor='middle' fill='%23E3E9F3'%3ESV%3C/text%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wdth,wght@85..100,300..700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/assets/site.css">
+<style>
+.page{max-width:60rem;margin-inline:auto;padding-top:calc(120px + env(safe-area-inset-top,0px))}
+.back{font-family:var(--f-mono);font-size:.8125rem;color:var(--mute);text-decoration:none}
+.back:hover{color:var(--text)}
+.page h1{font-size:clamp(2.8rem,7vw,4.8rem);line-height:1;margin:18px 0 14px}
+.lede{color:var(--mute);font-size:1.1875rem;max-width:44rem}
+.meta{font-family:var(--f-mono);font-size:.8125rem;color:var(--dim);margin-top:16px}
+section{margin-top:clamp(56px,8vw,96px)}
+h2{font-size:clamp(1.6rem,3vw,2.2rem);line-height:1.1;margin-bottom:14px}
+h3{font-size:1.125rem;font-stretch:92%;margin-bottom:4px}
+p,li,td{color:var(--mute)}
+p + p{margin-top:12px}
+strong{color:var(--text);font-weight:600}
+code{font-family:var(--f-mono);font-size:.86em;color:var(--text)}
+.intro{max-width:44rem}
+
+/* architecture: four layers */
+.arch{display:grid;gap:10px;margin-top:22px}
+.layer{display:grid;grid-template-columns:8.5rem minmax(0,1fr);gap:16px;align-items:stretch}
+.layer > span{font-family:var(--f-mono);font-size:.75rem;color:var(--dim);padding-top:14px}
+.nodes{display:grid;grid-template-columns:repeat(auto-fit,minmax(10.5rem,1fr));gap:10px}
+.node{border:1px solid var(--line-2);border-radius:10px;background:var(--ink-2);padding:12px 14px}
+.node b{display:block;color:var(--text);font-weight:600;font-size:.9375rem}
+.node small{display:block;font-family:var(--f-mono);font-size:.72rem;color:var(--mute);margin-top:2px;line-height:1.45}
+.layer.hub .node{border-color:var(--accent);background:linear-gradient(180deg,rgba(79,141,255,.12),var(--ink-2))}
+.flow{display:grid;grid-template-columns:8.5rem minmax(0,1fr);gap:16px}
+.flow i{font-style:normal;font-family:var(--f-mono);font-size:.72rem;color:var(--accent);padding-left:14px;border-left:1px dashed var(--line-2);margin-left:14px}
+
+/* sensors */
+.cards{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px;margin-top:22px}
+.card{border:1px solid var(--line);border-radius:var(--r);background:var(--ink-2);padding:20px 22px}
+.card p{font-size:.9375rem;margin-top:6px}
+.card .spec{font-family:var(--f-mono);font-size:.75rem;color:var(--accent);margin-top:10px}
+
+/* tables */
+.tbl{width:100%;border-collapse:collapse;margin-top:18px;font-size:.9375rem}
+.tbl th{font-family:var(--f-mono);font-size:.75rem;font-weight:500;color:var(--dim);text-align:left;padding:8px 12px 8px 0;border-bottom:1px solid var(--line-2)}
+.tbl td{padding:10px 12px 10px 0;border-bottom:1px solid var(--line);vertical-align:top}
+.tbl td:first-child{color:var(--text);white-space:nowrap}
+.tbl .yes{color:var(--accent-hi)}
+.tbl tr.us td{color:var(--text);background:var(--accent-soft)}
+.tbl tr.us td:first-child{padding-left:10px}
+.scroll{overflow-x:auto}
+.note{font-size:.875rem;color:var(--dim);margin-top:10px}
+
+/* snapshot */
+.term{border:1px solid var(--line);border-radius:12px;background:#04070D;font-family:var(--f-mono);font-size:.8rem;line-height:1.75;padding:16px 18px;color:var(--mute);margin-top:18px;overflow-x:auto}
+.term .k{color:var(--dim)}.term .v{color:var(--text)}.term .ok{color:#5BE3A0}
+.quote{margin-top:16px;border-left:2px solid var(--accent);padding:4px 0 4px 18px;color:var(--text);font-size:1.0625rem;line-height:1.6;max-width:46rem}
+.quote small{display:block;margin-top:8px;font-family:var(--f-mono);font-size:.75rem;color:var(--dim)}
+
+/* figures from the paper (light backgrounds, so they sit on a card) */
+figure{margin-top:22px}
+figure img{width:100%;height:auto;border-radius:12px;background:#fff;border:1px solid var(--line)}
+figcaption{font-family:var(--f-mono);font-size:.75rem;color:var(--dim);margin-top:8px}
+figcaption a{color:var(--accent);text-decoration:none}
+
+.weights{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:1px;margin-top:18px;background:var(--line);border:1px solid var(--line);border-radius:12px;overflow:hidden}
+.weights div{background:var(--ink-2);padding:14px 16px}
+.weights b{display:block;font-weight:600;font-stretch:85%;font-size:1.9rem;line-height:1;color:var(--accent-hi)}
+.weights small{display:block;margin-top:6px;color:var(--mute);font-size:.8125rem}
+ul.plain{padding-left:20px;display:grid;gap:8px;margin-top:14px}
+ul.plain li::marker{color:var(--accent)}
+footer{margin-top:clamp(72px,10vw,120px)}
+
+@media (max-width:760px){
+  .layer,.flow{grid-template-columns:minmax(0,1fr);gap:6px}
+  .layer > span{padding-top:0}
+  .flow{display:none}
+  .cards{grid-template-columns:minmax(0,1fr)}
+  .weights{grid-template-columns:repeat(2,minmax(0,1fr))}
+}
+</style>
+</head>
+<body>
+
+<header class="nav" id="nav">
+  <div class="nav-in">
+    <a class="brand" href="/" aria-label="Sawyer Valin, home">
+      <svg viewBox="0 0 26 26" aria-hidden="true"><rect x="1.5" y="1.5" width="23" height="23" rx="3" fill="none" stroke="#4F8DFF" stroke-width="1.5"/><path d="M1.5 7 L7 1.5" stroke="#4F8DFF" stroke-width="1.5"/><text x="13" y="17" font-family="ui-monospace,monospace" font-size="9" font-weight="700" text-anchor="middle" fill="#E3E9F3">SV</text></svg>
+      sawyervalin
+    </a>
+  </div>
+</header>
+
+<main class="page">
+  <a class="back" href="/#projects">&larr; projects</a>
+  <h1>LifeLens</h1>
+  <p class="lede">An IoT system that watches how you actually spend your time across home, body, and car, then coaches you with a language model that never leaves the house.</p>
+  <p class="meta">System design &middot; INF 148, Internet of Things &middot; UC Irvine &middot; March 2026 &middot; individual project</p>
+
+  <section>
+    <h2>The problem</h2>
+    <div class="intro">
+      <p>Most people have no objective way to compare how they spend their time with how they think they spend it. More than a third of American adults regularly sleep less than 7 hours, poor sleep degrades focus, and lost focus feeds more distraction. It's a loop that's hard to see from the inside.</p>
+      <p>LifeLens passively measures three environments: <strong>the home</strong> (a Blink camera), <strong>the body</strong> (Apple Watch health data), and <strong>the car</strong> (dashcam, OBD-II, and GPS). Everything lands on a Raspberry Pi 5, where a local LLM looks for patterns and tells you when to sleep, flags wasted time, and suggests what to do next. No data leaves the local network.</p>
+    </div>
+    <div class="scroll">
+      <table class="tbl">
+        <thead><tr><th>Product</th><th>Sleep</th><th>Productivity</th><th>Driving</th><th>AI coach</th><th>Privacy</th></tr></thead>
+        <tbody>
+          <tr><td>Apple Health</td><td class="yes">yes</td><td>no</td><td>no</td><td>no</td><td>good</td></tr>
+          <tr><td>Oura Ring</td><td class="yes">yes</td><td>partial</td><td>no</td><td>basic</td><td>cloud</td></tr>
+          <tr><td>RescueTime</td><td>no</td><td class="yes">yes</td><td>no</td><td>no</td><td>cloud</td></tr>
+          <tr><td>Whoop 4.0</td><td class="yes">yes</td><td>no</td><td>no</td><td>basic</td><td>cloud</td></tr>
+          <tr class="us"><td>LifeLens</td><td>yes</td><td>yes</td><td>yes</td><td>full LLM</td><td>100% local</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p class="note">No existing product covers all three domains with a local model.</p>
+  </section>
+
+  <section>
+    <h2>How it works</h2>
+    <p class="intro">Four layers, each talking over a standard protocol (MQTT, I2C, I2S, USB, UART) so any piece can be swapped out.</p>
+    <div class="arch" role="img" aria-label="Architecture: sensors feed a Raspberry Pi 5 hub, which feeds a local LLM and databases, which feed the dashboard, OLED display, and notifications.">
+      <div class="layer"><span>01 sensors</span><div class="nodes">
+        <div class="node"><b>Blink Mini 2</b><small>1080p, IR night vision &middot; Wi-Fi</small></div>
+        <div class="node"><b>Apple Watch</b><small>HealthKit &rarr; iPhone &rarr; MQTT</small></div>
+        <div class="node"><b>Dashcam + OBD-II + GPS</b><small>USB, Bluetooth, NMEA serial</small></div>
+        <div class="node"><b>INMP441 mic + BME280</b><small>I2S voice activity &middot; I2C climate</small></div>
+      </div></div>
+      <div class="flow"><span></span><i>&darr; raw events</i></div>
+      <div class="layer hub"><span>02 hub</span><div class="nodes">
+        <div class="node"><b>Raspberry Pi 5, 8 GB</b><small>Python orchestrator &middot; Mosquitto MQTT broker &middot; edge inference</small></div>
+        <div class="node"><b>InfluxDB + SQLite</b><small>500 GB NVMe &middot; LUKS2 AES-256</small></div>
+      </div></div>
+      <div class="flow"><span></span><i>&darr; prompt + context every 30 min</i></div>
+      <div class="layer"><span>03 intelligence</span><div class="nodes">
+        <div class="node"><b>Llama 3.1 8B via Ollama</b><small>4-bit quantized, runs on the Pi</small></div>
+        <div class="node"><b>YOLOv8-nano</b><small>INT8 TFLite activity classifier, ~180 ms/frame</small></div>
+        <div class="node"><b>Claude API fallback</b><small>optional, off by default</small></div>
+      </div></div>
+      <div class="flow"><span></span><i>&darr; insights</i></div>
+      <div class="layer"><span>04 output</span><div class="nodes">
+        <div class="node"><b>Next.js PWA</b><small>lifelens.local:3000 &middot; LAN only</small></div>
+        <div class="node"><b>OLED + buttons</b><small>on-device status</small></div>
+        <div class="node"><b>ntfy notifications</b><small>self-hosted push</small></div>
+      </div></div>
+    </div>
+  </section>
+
+  <section>
+    <h2>The sensors</h2>
+    <div class="cards">
+      <div class="card">
+        <h3>Blink camera: where you are</h3>
+        <p>Every 60 seconds the Pi grabs a thumbnail through the <code>blinkpy</code> API and runs it through YOLOv8-nano, fine-tuned on ~500 labeled images to tell four states apart: at desk, in bed, on phone, absent. The frame is discarded right after; only the label, confidence, and timestamp are kept.</p>
+        <p class="spec">confidence &ge; 0.75 &middot; 3.4 MB model &middot; IR works in the dark</p>
+      </div>
+      <div class="card">
+        <h3>Apple Watch: how you slept</h3>
+        <p>HealthKit is sandboxed to iOS, so a small Swift companion app queries it every 5 minutes with <code>HKAnchoredObjectQuery</code>, pulling only new samples, and publishes them to the Pi's MQTT broker. That covers sleep stages, heart rate, steps, and active calories.</p>
+        <p class="spec">topic lifelens/health/# &middot; REM, Core, Deep</p>
+      </div>
+      <div class="card">
+        <h3>Car: how long you drove</h3>
+        <p>An ELM327 OBD-II adapter reports speed, RPM, and engine load over Bluetooth. A NEO-6M GPS module logs trip coordinates and duration, and a 70mai A810 dashcam handles video.</p>
+        <p class="spec">NMEA 0183 at 9600 baud &middot; USB serial</p>
+      </div>
+      <div class="card">
+        <h3>Mic and room sensor: are you focused</h3>
+        <p>An INMP441 I2S microphone runs voice activity detection to tell a phone call from focused work. Audio is never recorded, only a speaking/not-speaking flag. A BME280 tracks temperature, humidity, and pressure.</p>
+        <p class="spec">VAD threshold 0.02 RMS &middot; 16 kHz</p>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <h2>One night, 11:47 PM</h2>
+    <p class="intro">A simulated snapshot from the design: what each sensor reports, what the hub turns it into, and what the model says.</p>
+    <div class="term">
+      <div><span class="k">blink   </span> person_in_bed 0.91 <span class="ok">&rarr; activity "in bed"</span></div>
+      <div><span class="k">watch   </span> sleep stage 3, 58 bpm <span class="ok">&rarr; core sleep, onset 23:32</span></div>
+      <div><span class="k">mic     </span> RMS 0.0014 &lt; 0.02 <span class="ok">&rarr; silent, no conversation</span></div>
+      <div><span class="k">bme280  </span> 21.4&deg;C, 48.2% RH <span class="ok">&rarr; comfortable for sleep</span></div>
+      <div><span class="k">obd-ii  </span> vehicle off <span class="ok">&rarr; 34 min driven today, 2 trips</span></div>
+      <div><span class="k">gps     </span> last fix 18:22 <span class="ok">&rarr; home (geofenced)</span></div>
+    </div>
+    <blockquote class="quote">
+      &ldquo;You're in bed about 30 minutes later than your 11 PM target. The good news: your heart rate is already dropping and your room temperature is ideal for sleep. Tomorrow, try setting a wind-down alarm at 10:30 PM. Tonight you were on your phone until 11:18, which pushed back your sleep onset.&rdquo;
+      <small>example output from Llama 3.1 8B, given the user's goal of 7+ hours and lights out by 11</small>
+    </blockquote>
+  </section>
+
+  <section>
+    <h2>The hub</h2>
+    <p class="intro">A 3D-printed enclosure, 120 &times; 85 &times; 45 mm, with a 128&times;64 OLED, four status LEDs, the mic behind an acoustic port, and Mode/Select/Reset buttons. The Pi 5 sits on brass standoffs under an aluminum heat sink and 30 mm fan.</p>
+    <figure>
+      <img src="device.webp" width="1600" height="617" alt="Front, side, and top views of the LifeLens hub enclosure, showing the OLED, status LEDs, mic, buttons, side ports, and Pi 5 layout." loading="lazy">
+      <figcaption>Front, side, and top views of the enclosure. <a href="wiring.webp" target="_blank" rel="noopener">Full wiring diagram &nearr;</a></figcaption>
+    </figure>
+    <div class="scroll">
+      <table class="tbl">
+        <thead><tr><th>Bus</th><th>Pins</th><th>Devices</th></tr></thead>
+        <tbody>
+          <tr><td>I2C</td><td>GPIO 2, 3</td><td>SSD1306 OLED (0x3C), BME280 (0x76), 4.7 k&Omega; pull-ups</td></tr>
+          <tr><td>I2S</td><td>GPIO 18, 19, 21</td><td>INMP441 mic, left channel mono</td></tr>
+          <tr><td>UART</td><td>GPIO 14, 15</td><td>ESP32-S3 BLE bridge at 115200 baud</td></tr>
+          <tr><td>USB 3.0</td><td>ports 1, 2</td><td>NVMe SSD, dashcam; GPS on its own USB serial</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <section>
+    <h2>The dashboard</h2>
+    <p class="intro">A Next.js progressive web app served on the local network, installable on phone and desktop. It leads with a daily score and lets you ask the model questions about your own data, like &ldquo;how much time did I waste this week?&rdquo;</p>
+    <div class="weights">
+      <div><b>30%</b><small>sleep quality</small></div>
+      <div><b>30%</b><small>focus time</small></div>
+      <div><b>20%</b><small>activity</small></div>
+      <div><b>20%</b><small>driving efficiency</small></div>
+    </div>
+    <figure>
+      <img src="dashboard.webp" width="1600" height="1021" alt="LifeLens mobile dashboard with score and metric cards, and desktop dashboard with weekly sleep chart, focus timeline, and AI assistant." loading="lazy">
+      <figcaption>Mobile and desktop dashboard mockups.</figcaption>
+    </figure>
+  </section>
+
+  <section>
+    <h2>Privacy by design</h2>
+    <p class="intro">The rule that shaped everything else: <strong>raw video and audio are never stored.</strong> Camera frames are classified in real time and thrown away; mic audio becomes a yes/no flag and is discarded. Nothing is sent outside the local network.</p>
+    <ul class="plain">
+      <li><strong>Authentication:</strong> mutual TLS with a self-signed CA, a client certificate per device, plus a bcrypt-hashed local password.</li>
+      <li><strong>Network:</strong> all inbound WAN traffic dropped by iptables, dashboard on the LAN only, key-only SSH.</li>
+      <li><strong>Storage:</strong> LUKS2 full-disk encryption (AES-256-XTS) on the NVMe drive.</li>
+    </ul>
+    <div class="scroll">
+      <table class="tbl">
+        <thead><tr><th>Data</th><th>Kept as</th><th>Retention</th></tr></thead>
+        <tbody>
+          <tr><td>Camera</td><td>activity labels only</td><td>30 days</td></tr>
+          <tr><td>Audio</td><td>speaking flags only</td><td>7 days</td></tr>
+          <tr><td>Sleep and heart rate</td><td>time series</td><td>1 year</td></tr>
+          <tr><td>Vehicle</td><td>trip summaries</td><td>1 year</td></tr>
+          <tr><td>Room climate</td><td>temperature and humidity</td><td>1 year</td></tr>
+          <tr><td>LLM chat</td><td>encrypted SQLite</td><td>until deleted</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p class="note">Nothing in this table is ever shared.</p>
+  </section>
+
+  <section>
+    <h2>Bill of materials</h2>
+    <p class="intro">Raspberry Pi 5 (8 GB) &middot; Blink Mini 2 &middot; Apple Watch &middot; ESP32-S3-DevKitC-1 &middot; INMP441 MEMS mic &middot; BME280 &middot; SSD1306 OLED &middot; NEO-6M GPS &middot; ELM327 OBD-II &middot; 70mai A810 dashcam &middot; 500 GB NVMe in a USB enclosure &middot; 27 W USB-C supply</p>
+  </section>
+</main>
+
+<footer>
+  <span>&copy; <span id="yr">2026</span> Sawyer Valin &middot; Irvine, CA</span>
+  <a href="/">sawyervalin.com</a>
+</footer>
+
+<script>
+document.getElementById('yr').textContent = new Date().getFullYear();
+(function(){var n=document.getElementById('nav');function s(){n.classList.toggle('solid',scrollY>30)}s();addEventListener('scroll',s,{passive:true})})();
+</script>
+</body>
+</html>
