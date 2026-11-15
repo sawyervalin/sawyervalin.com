@@ -1,17 +1,17 @@
 /* Shared base for every page: tokens, type, nav, buttons, footer. Page-specific styles live inline.
    The system is written up in DESIGN.md at the repo root. */
 :root{
-  --ink:#26282B;       /* page ground, studio charcoal */
-  --ink-2:#2D3033;     /* raised surfaces */
-  --ink-3:#33363A;
-  --line:#3A3D41;
-  --line-2:#4B4F54;
-  --text:#ECEDE8;      /* primary text, warm white */
-  --mute:#A4A9A2;      /* secondary text */
-  --dim:#7E837D;       /* labels */
-  --accent:#B4C3B1;    /* sage, the one accent */
-  --accent-hi:#CFDACB;
-  --accent-soft:rgba(180,195,177,.12);
+  --ink:#23272E;       /* page ground, blue slate */
+  --ink-2:#2A2F37;     /* raised surfaces */
+  --ink-3:#30363F;
+  --line:#373D47;
+  --line-2:#48505C;
+  --text:#ECEEF2;      /* primary text, cool white */
+  --mute:#A3AAB6;      /* secondary text */
+  --dim:#7B8391;       /* labels */
+  --accent:#A9BED6;    /* steel blue, the one accent */
+  --accent-hi:#C9D7E8;
+  --accent-soft:rgba(169,190,214,.12);
   --f-sans:"Archivo",system-ui,-apple-system,"Segoe UI",sans-serif;
   --f-mono:"IBM Plex Mono",ui-monospace,"SF Mono",Menlo,Consolas,monospace;
   --gutter:clamp(16px,3.4vw,64px);
@@ -37,7 +37,7 @@ p{text-wrap:pretty}
 .skip:focus{top:12px}
 
 /* pills: the one button shape */
-.pill{display:inline-flex;align-items:center;gap:6px;border:1px solid rgba(236,237,232,.5);border-radius:999px;padding:5px 14px;font-size:.875rem;line-height:1.3;text-decoration:none;color:var(--text);background:none;cursor:pointer;white-space:nowrap;transition:background-color .2s,color .2s,border-color .2s}
+.pill{display:inline-flex;align-items:center;gap:6px;border:1px solid rgba(236,238,242,.5);border-radius:999px;padding:5px 14px;font-size:.875rem;line-height:1.3;text-decoration:none;color:var(--text);background:none;cursor:pointer;white-space:nowrap;transition:background-color .2s,color .2s,border-color .2s}
 .pill:hover{background:var(--text);color:var(--ink);border-color:var(--text)}
 .pill.solid{background:var(--accent);border-color:var(--accent);color:var(--ink);font-weight:500}
 .pill.solid:hover{background:var(--accent-hi);border-color:var(--accent-hi)}
@@ -48,7 +48,7 @@ p{text-wrap:pretty}
 
 /* subpage nav */
 .nav{position:fixed;top:0;left:0;right:0;z-index:50;padding-top:env(safe-area-inset-top,0px);transition:background-color .3s,border-color .3s;border-bottom:1px solid transparent}
-.nav.solid{background:rgba(38,40,43,.85);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);border-bottom-color:var(--line)}
+.nav.solid{background:rgba(35,39,46,.85);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);border-bottom-color:var(--line)}
 .nav-in{max-width:calc(var(--wrap) + 2*var(--gutter));margin-inline:auto;padding:16px var(--gutter);display:flex;align-items:center;gap:28px}
 .brand{display:flex;align-items:center;gap:10px;text-decoration:none;font-weight:600;font-size:.9375rem}
 .brand svg{width:24px;height:24px}
