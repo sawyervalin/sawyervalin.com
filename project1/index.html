@@ -5,13 +5,13 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Selling Collectibles · Sawyer Valin</title>
 <meta name="description" content="Selling a family collectibles collection and treating it as a data project: a pandas bundle cleaner and interactive Plotly dashboards.">
-<meta name="theme-color" content="#060A13">
+<meta name="theme-color" content="#26282B">
 <link rel="canonical" href="https://www.sawyervalin.com/project1/">
-<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%23060A13'/%3E%3Crect x='14' y='14' width='36' height='36' rx='4' fill='none' stroke='%234F8DFF' stroke-width='3'/%3E%3Cpath d='M14 22 L22 14' stroke='%234F8DFF' stroke-width='3'/%3E%3Ctext x='32' y='39' font-family='monospace' font-size='15' font-weight='700' text-anchor='middle' fill='%23E3E9F3'%3ESV%3C/text%3E%3C/svg%3E">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='32' fill='%2326282B'/%3E%3Ctext x='32' y='42' font-family='Arial Narrow,Arial,sans-serif' font-size='28' font-weight='700' text-anchor='middle' fill='%23B4C3B1'%3ESV%3C/text%3E%3C/svg%3E">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wdth,wght@85..100,300..700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="/assets/site.css">
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..100,400..800&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../assets/site.css">
 <style>
 .page{max-width:56rem;margin-inline:auto;padding-top:calc(120px + env(safe-area-inset-top,0px))}
 .back{font-family:var(--f-mono);font-size:.8125rem;color:var(--mute);text-decoration:none}
@@ -46,7 +46,7 @@ footer{margin-top:clamp(72px,10vw,120px)}
 <header class="nav" id="nav">
   <div class="nav-in">
     <a class="brand" href="/" aria-label="Sawyer Valin, home">
-      <svg viewBox="0 0 26 26" aria-hidden="true"><rect x="1.5" y="1.5" width="23" height="23" rx="3" fill="none" stroke="#4F8DFF" stroke-width="1.5"/><path d="M1.5 7 L7 1.5" stroke="#4F8DFF" stroke-width="1.5"/><text x="13" y="17" font-family="ui-monospace,monospace" font-size="9" font-weight="700" text-anchor="middle" fill="#E3E9F3">SV</text></svg>
+      <svg viewBox="0 0 26 26" aria-hidden="true"><circle cx="13" cy="13" r="12" fill="none" stroke="#B4C3B1" stroke-width="1.5"/><text x="13" y="17" font-family="Arial Narrow,Arial,sans-serif" font-size="10" font-weight="700" text-anchor="middle" fill="#B4C3B1">SV</text></svg>
       sawyervalin
     </a>
   </div>
@@ -139,7 +139,7 @@ footer{margin-top:clamp(72px,10vw,120px)}
 
   // dark theme shared by every chart
   const css = getComputedStyle(document.documentElement);
-  const C = { text: css.getPropertyValue('--mute').trim(), grid: css.getPropertyValue('--line').trim(), accent: '#4F8DFF', hi: '#8DB6FF', warm: '#F2C46B' };
+  const C = { text: css.getPropertyValue('--mute').trim(), grid: css.getPropertyValue('--line').trim(), accent: '#B4C3B1', hi: '#CFDACB', warm: '#F2C46B' };
   const base = (extra) => Object.assign({
     paper_bgcolor: 'rgba(0,0,0,0)', plot_bgcolor: 'rgba(0,0,0,0)',
     font: { family: 'IBM Plex Mono, monospace', size: 12, color: C.text },
